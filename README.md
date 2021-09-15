@@ -1,9 +1,4 @@
 # AgeOfEmpire
 
 
-
-## David
-## Arthur
-## Léonard
-## Lilian 
-## Nouman 
+## Arthur , David, Léonard, Lilian, Nouman 
