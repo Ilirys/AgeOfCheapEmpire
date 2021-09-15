@@ -1,5 +1,4 @@
 # AgeOfEmpire
 
 
-## Arthur , David, Léonard, Lilian, Nouman 
-## TD1
+## TD 1 : Arthur , David, Léonard, Lilian, Nouman 
