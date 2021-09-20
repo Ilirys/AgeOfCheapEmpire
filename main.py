@@ -3,7 +3,7 @@ import os
 
 from pygame.time import Clock
 
-WIDTH, HEIGHT = 900, 500 #La définition de l'écran facilement modifiable
+WIDTH, HEIGHT = 900, 500 #La définition de l'écran facilement modifiable, (0,0)= plein écran
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 60
 GREEN = (0,255,0)
@@ -29,7 +29,8 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 os.sys.exit()
-        pygame.display.update()                
+        pygame.display.update()
+    pygame.quit()   #Quite proprement en cas de plantage
 
              
 
