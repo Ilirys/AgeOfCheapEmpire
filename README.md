@@ -1,6 +1,6 @@
 # AgeOfEmpire
 
 
-## TD 1 : Arthur , David, Léonard, Lilian, Nouman 
+## Arthur , David, Léonard, Lilian, Nouman, Hamza
 
-https://docs.google.com/document/d/1NDFzMyTNC9Eg4u9IjMKViNXTThNjoVYQFZLxdRT2PV0/edit?usp=sharingCancel changes
+https://docs.google.com/document/d/1NDFzMyTNC9Eg4u9IjMKViNXTThNjoVYQFZLxdRT2PV0/edit?usp=sharingCancel
