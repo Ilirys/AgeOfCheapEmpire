@@ -1,5 +1,7 @@
+from game.case import Case
 import pygame
 import random
+from .case import Case
 from .definitions import *
 
 class World:
@@ -22,6 +24,7 @@ class World:
             for grid_y in range(self.grid_length_y):
                 world_tile = self.grid_to_world(grid_x,grid_y)
                 world[grid_x].append(world_tile)
+                print("PRINT CHECK FOR CLASS:CASE COORDINATES X Y", world_tile["case"].x,world_tile["case"].y)
 
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
                 self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + self.width/2 ,render_pos[1] + self.height/4))
@@ -30,6 +33,7 @@ class World:
 
     def grid_to_world(self, grid_x, grid_y):    #Renvoit un dictionnaire avec notamment des coordonnées isométriques pour une vue 2.5D
         
+        case1 = Case(grid_x,grid_y)
         #Matrice avec coordonées carthésiennes
         rect = [
             (grid_x * TILE_SIZE, grid_y * TILE_SIZE),
@@ -55,7 +59,8 @@ class World:
             "cart_rect": rect,
             "iso_poly": iso_poly,
             "render_pos": [minx,miny],
-            "tile": tile
+            "tile": tile,
+            "case": case1
         }
         return out
 
