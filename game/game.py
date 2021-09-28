@@ -2,6 +2,7 @@ import pygame
 import sys
 from .definitions import *
 from .world import World
+from .utils import draw_text
 
 class Game:
 
@@ -52,5 +53,7 @@ class Game:
                 p = [(x + self.width/2, y + self.height/4) for x,y in p]
                 pygame.draw.polygon(self.screen,GREEN,p,1)
 
+        draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,10))
+    
         pygame.display.flip()
 
