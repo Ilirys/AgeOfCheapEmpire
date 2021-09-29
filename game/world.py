@@ -1,7 +1,7 @@
 
 import pygame
 import random
-from .tile import Tile
+from .Tile import Tile
 from .definitions import *
 
 class World:
