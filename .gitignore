@@ -9,6 +9,7 @@ __pycache__/
 #Visual Studio
 *.vs
 .vs/
+tempCodeRunnerFile.py
 
 # Distribution / packaging
 .Python

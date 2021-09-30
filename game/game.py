@@ -2,6 +2,7 @@ import pygame
 import sys
 from .definitions import *
 from .world import World
+from .utils import draw_text
 
 class Game:
 
@@ -43,14 +44,16 @@ class Game:
                 
                 render_pos = self.world.world[x][y]["render_pos"]
                 # self.screen.blit(self.world.tiles["grass"], (render_pos[0] + self.width/2, render_pos[1] + self.height/4))
-                tile = self.world.world[x][y]["tile"]
-                if tile != "":
-                    self.screen.blit(self.world.tiles[tile], (render_pos[0] + self.width/2 +40 , render_pos[1] + self.height/4  -  (self.world.tiles[tile].get_height() - TILE_SIZE +30)))
+                extras = self.world.world[x][y]["extras"]
+                if extras != "":
+                    self.screen.blit(self.world.tiles[extras], (render_pos[0] + self.width/2 +40 , render_pos[1] + self.height/4  -  (self.world.tiles[extras].get_height() - TILE_SIZE +30)))
 
 
                 p = self.world.world[x][y]["iso_poly"]
                 p = [(x + self.width/2, y + self.height/4) for x,y in p]
                 pygame.draw.polygon(self.screen,GREEN,p,1)
 
+        draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,10))
+    
         pygame.display.flip()
 
