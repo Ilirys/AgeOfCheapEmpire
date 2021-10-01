@@ -66,12 +66,12 @@ class World:
 
 
     def load_images(self):
-
+        
         Towncenter = pygame.image.load("assets/Towncenter.png")
         grass = pygame.image.load("assets/grass.png")
         tree = pygame.image.load("assets/tree.png")
         return {"Towncenter": Towncenter, "grass": grass, "tree": tree}
-
+        
 
 
 
