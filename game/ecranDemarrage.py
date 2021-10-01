@@ -3,6 +3,7 @@ import sys
 from .font import *
 from .definitions import *
 from pygame.locals import *
+from .ecranOptions import Options
 
 
 
@@ -32,9 +33,11 @@ class StartScreen:
                     self.playing=False
             if button_2.collidepoint((mx, my)):
                 if click:
-                    self.options()
+                    options = Options(self.screen, self.clock)
+                    options.options()
 
-            #pygame.draw.rect(self.screen, (255, 215, 50), button_1) #dessin des boutons pour s'assurer de leur bonne position
+            #dessin des boutons pour s'assurer de leur bonne position
+            #pygame.draw.rect(self.screen, (255, 215, 50), button_1) 
             #pygame.draw.rect(self.screen, (255, 215, 50), button_2)
 
         
@@ -52,24 +55,6 @@ class StartScreen:
                     if event.button == 1:
                         click = True
  
-            pygame.display.update()
-            self.clock.tick(60)
-
-
-    def options(self): #accès à la page d'options ----->>>>> NON COMMENCÉE
-        self.playing = True
-        while self.playing:
-            self.screen.fill((0,0,0))
- 
-            afficher_texte(self.screen, 'Options', 10, 10, 20)
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        self.ecran_demarrage()
-        
             pygame.display.update()
             self.clock.tick(60)
 
