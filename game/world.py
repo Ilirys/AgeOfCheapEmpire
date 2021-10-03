@@ -1,6 +1,9 @@
 
 import pygame
 import random
+import noise
+
+from game.Ressource import Ressource
 from .Tile import Tile
 from .definitions import *
 
@@ -12,7 +15,9 @@ class World:
         self.width = width  #Taille écran
         self.height = height
 
-        self.grass_tiles = pygame.Surface((width, height))
+        self.perlin_scale = grid_length_x/5
+
+        self.grass_tiles = pygame.Surface((grid_length_x * TILE_SIZE * 2, grid_length_y * TILE_SIZE + 2 * TILE_SIZE)).convert_alpha()
         self.tiles = self.load_images()
         self.world = self.create_world()
         
@@ -24,16 +29,16 @@ class World:
             for grid_y in range(self.grid_length_y):
                 world_tile = self.grid_to_world(grid_x,grid_y)
                 world[grid_x].append(world_tile)
-                print("PRINT CHECK FOR CLASS:TILE COORDINATES X Y", world_tile["tile"].xTile,world_tile["tile"].yTile)
+                #print("PRINT CHECK FOR CLASS:TILE COORDINATES X Y", world_tile["tile"].xTile,world_tile["tile"].yTile)
 
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
-                self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + self.width/2 ,render_pos[1] + self.height/4))
+                self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
         return world    
 
 
     def grid_to_world(self, grid_x, grid_y):    #Renvoit un dictionnaire avec notamment des coordonnées isométriques pour une vue 2.5D
-        
-        tile1 = Tile(grid_x,grid_y)
+        rien = Ressource(0,"")
+        tile1 = Tile(grid_x,grid_y,0, rien ,0)
         #Matrice avec coordonées carthésiennes
         rect = [
             (grid_x * TILE_SIZE, grid_y * TILE_SIZE),
@@ -48,11 +53,12 @@ class World:
         minx = min([x for x,y in iso_poly])
         miny = min([y for x, y in iso_poly])
 
-        r = random.randint(1,100) #Generation aléatoire d'arbres ou autre
-        if r <= 20:
+        #Generation aléatoire d'arbres ou autre
+        perlin = 100 * noise.pnoise2(grid_x/self.perlin_scale, grid_y/self.perlin_scale)
+        if  (perlin >= 25) :
             extras = "tree"
         else:
-            extras = ""    
+            extras = ""      
 
         out = {
             "grid": [grid_x, grid_y],
@@ -72,9 +78,9 @@ class World:
 
     def load_images(self):
 
-        Towncenter = pygame.image.load("assets/Towncenter.png")
-        grass = pygame.image.load("assets/grass.png")
-        tree = pygame.image.load("assets/tree.png")
+        Towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
+        grass = pygame.image.load("assets/grass.png").convert_alpha()
+        tree = pygame.image.load("assets/tree.png").convert_alpha()
         return {"Towncenter": Towncenter, "grass": grass, "tree": tree}
 
 

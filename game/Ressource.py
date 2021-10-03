@@ -1,5 +1,5 @@
 
-from AgeOfEmpire.game.definitions import LES_RESSOURCES as ress
+from .definitions import LES_RESSOURCES as ress
 
 class Ressource:
 

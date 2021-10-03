@@ -1,4 +1,4 @@
-from AgeOfEmpire.game.Ressource import Ressource
+from .Ressource import Ressource
 class Tile:
     '''
     xTile : position sur axe des X
