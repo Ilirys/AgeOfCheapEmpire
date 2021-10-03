@@ -49,9 +49,9 @@ class Game:
                 
                 render_pos = self.world.world[x][y]["render_pos"]
                 # self.screen.blit(self.world.tiles["grass"], (render_pos[0] + self.width/2, render_pos[1] + self.height/4))
-                extras = self.world.world[x][y]["extras"]
-                if extras != "":
-                    self.screen.blit(self.world.tiles[extras], (render_pos[0] + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x +40, render_pos[1] -  (self.world.tiles[extras].get_height() - TILE_SIZE + 30) +self.camera.scroll.y))
+                nomElement = self.world.world[x][y]["tile"].nomElement
+                if nomElement != "":
+                    self.screen.blit(self.world.tiles[nomElement], (render_pos[0] + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x +40, render_pos[1] -  (self.world.tiles[nomElement].get_height() - TILE_SIZE + 30) +self.camera.scroll.y))
 
 
                 #p = self.world.world[x][y]["iso_poly"]

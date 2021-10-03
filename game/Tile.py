@@ -15,6 +15,7 @@ class Tile:
         self.empty = True
         self.ressource = Ressource.__init__()
         self.idElem = -1
+        self.nomElement = ""
 
     # Constructeur avec parametre qui initialise tous les attributs
     def __init__(self, xTile, yTile, empty, ressource, idElem):
@@ -23,6 +24,7 @@ class Tile:
         self.empty = empty
         self.ressource = ressource
         self.idElem = idElem
+        self.nomElement = ""
 
     def isEmpty(self):
         return self.empty

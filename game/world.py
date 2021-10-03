@@ -29,7 +29,7 @@ class World:
             for grid_y in range(self.grid_length_y):
                 world_tile = self.grid_to_world(grid_x,grid_y)
                 world[grid_x].append(world_tile)
-                #print("PRINT CHECK FOR CLASS:TILE COORDINATES X Y", world_tile["tile"].xTile,world_tile["tile"].yTile)
+                print("PRINT CHECK FOR CLASS:TILE COORDINATES X Y, type de ressource", world_tile["tile"].xTile, world_tile["tile"].yTile, world_tile["tile"].ressource.typeRessource)
 
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
                 self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
@@ -56,16 +56,17 @@ class World:
         #Generation aléatoire d'arbres ou autre
         perlin = 100 * noise.pnoise2(grid_x/self.perlin_scale, grid_y/self.perlin_scale)
         if  (perlin >= 25) :
-            extras = "tree"
+            tile1.nomElement = "tree"
+            tile1.ressource.nbRessource = 60
+            tile1.ressource.typeRessource = "WOOD"
         else:
-            extras = ""      
+            tile1.nomElement = ""      
 
         out = {
             "grid": [grid_x, grid_y],
             "cart_rect": rect,
             "iso_poly": iso_poly,
             "render_pos": [minx,miny],
-            "extras": extras,
             "tile": tile1
         }
         return out
