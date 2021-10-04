@@ -1,11 +1,16 @@
 import pygame
 import os 
 from game import definitions
+from game import ecranDemarrage
 from game.game import Game
+from game.font import *
+from pygame.locals import *
+from game.ecranDemarrage import StartScreen
 
 
 def main():
 
+    
     running = True
     playing = True
 
@@ -19,10 +24,12 @@ def main():
 
     #implement game
     game = Game(SCREEN,clock)
-    
+    startscreen = StartScreen(SCREEN, clock)
+
     while running:
 
         # start menu goes here
+        startscreen.ecran_demarrage()
         while playing:
             # game loop here
             game.run()
