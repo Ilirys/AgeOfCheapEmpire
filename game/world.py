@@ -54,11 +54,26 @@ class World:
         miny = min([y for x, y in iso_poly])
 
         #Generation aléatoire d'arbres ou autre
-        perlin = 100 * noise.pnoise2(grid_x/self.perlin_scale, grid_y/self.perlin_scale)
-        if  (perlin >= 25) :
+        perlin_wood = 100 * noise.pnoise2(grid_x/self.perlin_scale, grid_y/self.perlin_scale)
+        perlin_stone = 100 * noise.pnoise2(grid_x/self.perlin_scale, grid_y/self.perlin_scale)
+        perlin_food = 100 * noise.pnoise2(grid_x / self.perlin_scale, grid_y / self.perlin_scale)
+        perlin_gold = 100 * noise.pnoise2(grid_x / self.perlin_scale, grid_y / self.perlin_scale)
+        if  (perlin_wood >= 70) :
             tile1.nomElement = "tree"
             tile1.ressource.nbRessource = 60
             tile1.ressource.typeRessource = "WOOD"
+        elif (perlin_wood >= 60) :
+            tile1.nomElement = "rock"
+            tile1.ressource.nbRessource = 60
+            tile1.ressource.typeRessource = "STONE"
+        elif (perlin_wood >= 50) :
+            tile1.nomElement = "gold"
+            tile1.ressource.nbRessource = 60
+            tile1.ressource.typeRessource = "GOLD"
+        elif (perlin_wood >= 40) :
+            tile1.nomElement = "fruit"
+            tile1.ressource.nbRessource = 60
+            tile1.ressource.typeRessource = "FOOD"
         else:
             tile1.nomElement = ""      
 
@@ -82,7 +97,10 @@ class World:
         Towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         grass = pygame.image.load("assets/grass.png").convert_alpha()
         tree = pygame.image.load("assets/tree.png").convert_alpha()
-        return {"Towncenter": Towncenter, "grass": grass, "tree": tree}
+        rock = pygame.image.load("assets/rock.png").convert_alpha()
+        gold = pygame.image.load("assets/gold.png").convert_alpha()
+        fruit = pygame.image.load("assets/fruit.png").convert_alpha()
+        return {"Towncenter": Towncenter, "grass": grass, "tree": tree, "rock": rock, "gold": gold, "fruit": fruit}
         
 
 
