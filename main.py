@@ -6,10 +6,10 @@ from game.game import Game
 from game.font import *
 from pygame.locals import *
 from game.ecranDemarrage import StartScreen
+from game.bouquet import Bouquet
 
 
 def main():
-
     
     running = True
     playing = True
@@ -29,7 +29,7 @@ def main():
     while running:
 
         # start menu goes here
-        startscreen.ecran_demarrage()
+        #startscreen.ecran_demarrage()
         while playing:
             # game loop here
             game.run()
