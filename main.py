@@ -17,7 +17,8 @@ def main():
     pygame.init()
     pygame.mixer.init() #son a implementer 
     SCREEN = pygame.display.set_mode((definitions.WIDTH, definitions.HEIGHT))
-    pygame.display.set_caption("Age of Cheap Empire") #Nom du jeu affiché sur la fenetre
+    pygame.display.set_caption("Age of Cheap Empire") #Nom du jeu affiché sur la fenetre	
+    pygame.display.set_icon(pygame.image.load("assets/Icone.jpg").convert_alpha())
     clock = pygame.time.Clock()
 
     #implement menus
@@ -29,7 +30,7 @@ def main():
     while running:
 
         # start menu goes here
-        startscreen.ecran_demarrage()
+        #startscreen.ecran_demarrage()
         while playing:
             # game loop here
             game.run()
