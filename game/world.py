@@ -50,7 +50,7 @@ class World:
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
-                    world[grid_x][grid_y]["tile"].nomElement = "gold"
+                    world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"  
 
@@ -93,10 +93,10 @@ class World:
         Towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         grass = pygame.image.load("assets/grass.png").convert_alpha()
         tree = pygame.image.load("assets/tree.png").convert_alpha()
-        rock = pygame.image.load("assets/rock.png").convert_alpha()
+        stone = pygame.image.load("assets/stone.png").convert_alpha()
         gold = pygame.image.load("assets/gold.png").convert_alpha()
         fruit = pygame.image.load("assets/fruit.png").convert_alpha()
-        return {"Towncenter": Towncenter, "grass": grass, "tree": tree, "rock": rock, "gold": gold, "food": fruit}
+        return {"Towncenter": Towncenter, "grass": grass, "tree": tree, "stone": stone, "gold": gold, "food": fruit}
         
 
 
