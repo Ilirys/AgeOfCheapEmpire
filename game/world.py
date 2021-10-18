@@ -14,7 +14,6 @@ class World:
         self.width = width  #Taille écran
         self.height = height
         
-
         self.perlin_scale = grid_length_x/5
 
         self.grass_tiles = pygame.Surface((grid_length_x * TILE_SIZE * 2, grid_length_y * TILE_SIZE + 2 * TILE_SIZE)).convert_alpha()
@@ -85,7 +84,7 @@ class World:
             for grid_y in range(self.grid_length_y):
                 world_tile = self.grid_to_world(grid_x,grid_y)
                 world[grid_x].append(world_tile)
-                print("PRINT CHECK FOR CLASS:TILE COORDINATES X Y, type de ressource", world_tile["tile"].xTile, world_tile["tile"].yTile, world_tile["tile"].ressource.typeRessource)
+                #print("PRINT CHECK FOR CLASS:TILE COORDINATES X Y, type de ressource", world_tile["tile"].xTile, world_tile["tile"].yTile, world_tile["tile"].ressource.typeRessource)
 
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
                 self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))

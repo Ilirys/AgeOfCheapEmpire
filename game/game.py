@@ -1,3 +1,4 @@
+from numba.core.decorators import jit
 import pygame
 import sys
 from .definitions import *
@@ -15,12 +16,12 @@ class Game:
 
         # hud
         self.hud = Hud(self.width, self.height)
-
+    
         #World
-        self.world = World(self.hud, MAP_SIZE,MAP_SIZE,WIDTH,HEIGHT)
+        self.world = World(self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
 
         #Camera
-        self.camera = Camera(WIDTH, HEIGHT)
+        self.camera = Camera(self.width, self.height)
 
 
     def run(self):
@@ -48,9 +49,11 @@ class Game:
 
         self.screen.fill(BLACK) #Arrière plan
         self.world.draw(self.screen, self.camera) #Fonction de dessin de la map
-        draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,10)) #Affichage des fps
+        draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
 
         pygame.display.flip()
+
+        
 

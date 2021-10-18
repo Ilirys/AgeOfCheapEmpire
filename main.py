@@ -1,5 +1,6 @@
 import pygame
 import os 
+import _thread
 from game import definitions
 from game import ecranDemarrage
 from game.game import Game
@@ -16,7 +17,9 @@ def main():
 
     pygame.init()
     pygame.mixer.init() #son a implementer 
-    SCREEN = pygame.display.set_mode((definitions.WIDTH, definitions.HEIGHT))
+    infoscreen = pygame.display.Info()
+    if FULLSCREEN1 == 1: definitions.WIDTH, definitions.HEIGHT = infoscreen.current_w, infoscreen.current_h
+    SCREEN = pygame.display.set_mode((definitions.WIDTH, definitions.HEIGHT),pygame.HWSURFACE | pygame.HWACCEL)
     pygame.display.set_caption("Age of Cheap Empire") #Nom du jeu affiché sur la fenetre	
     pygame.display.set_icon(pygame.image.load("assets/Icone.jpg").convert_alpha())
     clock = pygame.time.Clock()
@@ -24,6 +27,7 @@ def main():
     #implement menus
 
     #implement game
+    print(SCREEN.get_size())
     game = Game(SCREEN,clock)
     startscreen = StartScreen(SCREEN, clock)
 
