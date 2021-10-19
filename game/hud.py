@@ -17,11 +17,11 @@ class Hud:
 
         # resouces hud
         self.resouces_surface = pygame.Surface((width*0.475, height * 0.06), pygame.SRCALPHA)
-                #self.resources_rect = self.resouces_surface.get_rect(topleft=(0, 0))
+        self.resources_rect = self.resouces_surface.get_rect(topleft=(0, 0))
 
         # building hud
         self.build_surface = pygame.Surface((width * 0.32, height * 0.21), pygame.SRCALPHA)
-                #self.build_rect = self.build_surface.get_rect(topleft=(self.width * 0.67, self.height * 0.79))
+        self.build_rect = self.build_surface.get_rect(topleft=(self.width * 0.67, self.height * 0.79))
         self.build_surface.fill(self.hud_colour)
 
         # select hud
