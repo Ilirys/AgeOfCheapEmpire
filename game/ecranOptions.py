@@ -1,6 +1,6 @@
 import pygame
 import sys
-from .font import *
+from .utils import *
 from .definitions import *
 from pygame.locals import *
 
@@ -16,7 +16,7 @@ class Options:
         while self.playing:
             self.screen.fill((0,0,0))
  
-            afficher_texte(self.screen, 'Options', 10, 10, 20)
+            draw_text(self.screen, 'Options', 30, WHITE, (20, 20))
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()

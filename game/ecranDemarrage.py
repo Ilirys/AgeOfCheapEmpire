@@ -1,6 +1,6 @@
 import pygame
 import sys
-from .font import *
+from .utils import *
 from .definitions import *
 from pygame.locals import *
 from .ecranOptions import Options
@@ -21,7 +21,7 @@ class StartScreen:
             self.screen.fill((0,0,0)) #arrière plan
             
             afficher_image(self.screen, 'assets/ecran_demarrage.png', -100) #Image de AoE
-            afficher_texte(self.screen, 'Main Menu', 10, 10, 5)
+            draw_text(self.screen, 'Main Menu', 30, WHITE, (5,5))
             mx, my = pygame.mouse.get_pos() #récupération des clics de souris
 
         
