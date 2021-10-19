@@ -1,4 +1,3 @@
-from numba.core.decorators import jit
 import pygame
 import sys
 from .definitions import *
