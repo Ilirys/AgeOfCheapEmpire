@@ -18,7 +18,6 @@ class Hud:
         # resouces hud
         self.resouces_surface = pygame.Surface((width*0.475, height * 0.06), pygame.SRCALPHA)
                 #self.resources_rect = self.resouces_surface.get_rect(topleft=(0, 0))
-        self.resouces_surface.fill(self.hud_colour)
 
         # building hud
         self.build_surface = pygame.Surface((width * 0.32, height * 0.21), pygame.SRCALPHA)
@@ -37,6 +36,10 @@ class Hud:
         
 
     def create_build_hud(self):
+        font = pygame.font.SysFont(None,25)     #next 3 lines draw the ressources hud 
+        text_surface = font.render("WOOD:                      FOOD:                   GOLD:                       STONE:                           UNITS:", True, WHITE)
+        self.resouces_surface.blit(text_surface,(0,self.resouces_surface.get_height()//3))
+
         self.hudmoi_surface.blit(self.images["smallhud"],(0,0))
         render_pos = [0, self.height-self.height * 0.21 + 40]
         object_width = self.build_surface.get_width() // 7
@@ -86,6 +89,7 @@ class Hud:
     def draw(self, screen):
 
         screen.blit(self.hudmoi_surface,(0,0))
+        screen.blit(self.resouces_surface,(0,0))
         # build hud
             #screen.blit(self.build_surface, (0, self.height-self.height * 0.21))
 
@@ -97,12 +101,6 @@ class Hud:
         
         for tile in self.tiles:
             screen.blit(tile["icon"], tile["rect"].topleft)
-
-        # pos = 10
-        # # for resource in ["WOOD:", " FOOD:", "  GOLD:", "   STONE:", "  UNITS:"]:
-        #     draw_text(screen, resource, 30, (255, 255, 255), (pos, 20))
-        #     pos += 100
-        #     print(pos)
 
     
     def load_images(self):
