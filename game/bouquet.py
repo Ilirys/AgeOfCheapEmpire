@@ -1,4 +1,4 @@
-import numpy as np
+#import numpy as np
 import random
 from .Tile import Tile
 from .definitions import *

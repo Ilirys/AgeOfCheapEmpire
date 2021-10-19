@@ -182,7 +182,10 @@ class World:
         images = {
             "Towncenter": Towncenter,
             "grass": grass,
-            "tree": tree
+            "tree": tree,
+            "gold": gold,
+            "food": fruit,
+            "stone": stone
         }
 
         return images
