@@ -1,7 +1,7 @@
 import pygame
 
 
-FULLSCREEN1 = 1
+FULLSCREEN1 = 0
 WIDTH, HEIGHT = 1300,1000  #La définition de l'écran facilement modifiable
 FPS = 200
 GREEN = (0,255,0)

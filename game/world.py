@@ -20,6 +20,7 @@ class World:
         self.grass_tiles = pygame.Surface((grid_length_x * TILE_SIZE * 2, grid_length_y * TILE_SIZE + 2 * TILE_SIZE)).convert_alpha()
         self.tiles = self.load_images()
         self.world = self.create_world()
+        #self.générerCamp = self.générer_camp()
         self.temp_tile = None
 
         
@@ -31,11 +32,9 @@ class World:
         if self.hud.selected_tile is not None:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
-
                 render_pos = self.world[grid_pos[0]][grid_pos[1]]["render_pos"]
                 iso_poly = self.world[grid_pos[0]][grid_pos[1]]["iso_poly"]
                 collision = self.world[grid_pos[0]][grid_pos[1]]["collision"]
@@ -46,11 +45,12 @@ class World:
                     "iso_poly": iso_poly,
                     "collision": collision
                 }
-
+                
                 if mouse_action[0] and not collision:
-                    self.world[grid_pos[0]][grid_pos[1]]["tile"] = self.hud.selected_tile["name"]
+                    self.world[grid_pos[0]][grid_pos[1]]["tile"].nomElement = self.hud.selected_tile["name"]
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                     self.hud.selected_tile = None
+                
 
     def draw(self, screen, camera):
         screen.blit(self.grass_tiles,(camera.scroll.x, camera.scroll.y)) #Au lieu d'iterer pour tout les block de fond, ici herbe, on le fait une fois
@@ -107,7 +107,7 @@ class World:
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"  
+                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
 
         return world    
 
@@ -156,10 +156,13 @@ class World:
         grid_y = int(cart_y // TILE_SIZE)
         return grid_x, grid_y
 
-    def générer_townhall(self):
+    def générer_camp(self):
         x=random.random()
         y= random.randint(-4,4)
         z= random.randint(-4,4)
+
+         #world[2][2]["tile"].nomElement = "Towncenter"
+
          #if x<0.25:
             #townhall (7+y, 7+z)
          #elif x<0.5:
@@ -172,7 +175,7 @@ class World:
 
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 
-        Towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
+        towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         grass = pygame.image.load("assets/grass.png").convert_alpha()
         tree = pygame.image.load("assets/tree.png").convert_alpha()
         stone = pygame.image.load("assets/stone.png").convert_alpha()
@@ -180,7 +183,7 @@ class World:
         fruit = pygame.image.load("assets/fruit.png").convert_alpha()
 
         images = {
-            "Towncenter": Towncenter,
+            "towncenter": towncenter,
             "grass": grass,
             "tree": tree,
             "gold": gold,
