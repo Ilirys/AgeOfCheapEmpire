@@ -36,6 +36,7 @@ class World:
         if self.hud.selected_tile is not None:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+            print(grid_pos[0], grid_pos[1])
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
@@ -73,8 +74,8 @@ class World:
                 nomElement = self.world[x][y]["tile"].nomElement
                 if nomElement != "":
                     screen.blit(self.tiles[nomElement],
-                                (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +40,
-                                 render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE + 30) + camera.scroll.y))
+                                (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x ,
+                                 render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE ) + camera.scroll.y))
                                  
                 #draw villagers
                 worker = self.workers[x][y]
@@ -115,21 +116,25 @@ class World:
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[0]
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["collision"] = True
                 
                 if self.Bou.M1[grid_x][grid_y] == "gold":
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[2]
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[1]
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["collision"] = True
 
         return world    
 
@@ -161,8 +166,8 @@ class World:
         return out
 
 
-    def cart_to_iso(self,x,y): #Coordonées rectangulaires en isométriques
-        iso_x = x-y 
+    def cart_to_iso(self, x, y): #Coordonées rectangulaires en isométriques
+        iso_x = x - y 
         iso_y = (x + y)/2
         return iso_x, iso_y
     
@@ -176,6 +181,12 @@ class World:
         # transform to grid coordinates
         grid_x = int(cart_x // TILE_SIZE)
         grid_y = int(cart_y // TILE_SIZE)
+
+        if grid_x > 49: grid_x = 49
+        if grid_x < 0: grid_x = 0
+        if grid_y > 49: grid_y = 49
+        if grid_y < 0: grid_y = 0
+
         return grid_x, grid_y
 
     def générer_camp(self):
