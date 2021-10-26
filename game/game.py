@@ -8,7 +8,7 @@ from .hud import Hud
 from .units import *
 from .villager import *
 from pygame import *
-
+from .benchmark import Benchmark
 
 v1 = unite()
 class Game:
@@ -27,6 +27,8 @@ class Game:
         #Camera
         self.camera = Camera(self.width, self.height)
 
+        #Benchmark
+        self.benchmark = Benchmark(self.clock)
 
     def run(self):
         self.playing = True
@@ -53,6 +55,7 @@ class Game:
         self.hud.update()
         self.world.update(self.camera)
         v1.update()
+        if BENCHMARK == 1: self.benchmark.update()
 
     def draw(self): #Construction graphiques
 
@@ -61,7 +64,10 @@ class Game:
         draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
+        
         v1.draw_unit(self.screen)
+        
+        if BENCHMARK == 1: self.benchmark.draw(self.screen)
         pygame.display.flip()
 
         
