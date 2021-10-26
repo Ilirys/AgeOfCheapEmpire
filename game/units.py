@@ -3,11 +3,15 @@ from math import *
 import pygame
 import math
 from game.deplacement import *
+from .camera import Camera
 
 class unite():
-    def __init__(self):
+    def __init__(self,camera):
         self.pv = 300  # Point de vie actuel
         self.force = 20
+
+        self.camera = camera
+
         #self.cost
         #self.portee
         #self.ressource
@@ -40,8 +44,8 @@ class unite():
         self.progression = 0
         self.update()
 
-    def draw_unit(self,screen):
-        screen.blit(self.image, (self.pos_x, self.pos_y))
+    def draw_unit(self,screen,camera):
+        screen.blit(self.image, (self.pos_x + self.camera.scroll.x, self.pos_y + self.camera.scroll.y))
 
 
     def attaquer(self, unit1):

@@ -9,8 +9,8 @@ from .units import *
 from .villager import *
 from pygame import *
 from .benchmark import Benchmark
+from .workers import Worker
 
-v1 = unite()
 class Game:
 
     def __init__(self, screen, clock):
@@ -18,17 +18,24 @@ class Game:
         self.clock = clock
         self.width, self.height = self.screen.get_size()
 
+        #entities 
+        self.entities = []
+        
         # hud
         self.hud = Hud(self.width, self.height)
     
         #World
-        self.world = World(self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
+        self.world = World(self.entities,self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
+        for _ in range(10): Worker(self.world.world[25][25], self.world)
 
         #Camera
         self.camera = Camera(self.width, self.height)
 
         #Benchmark
         self.benchmark = Benchmark(self.clock)
+
+        #Unité
+        self.unit = unite(self.camera)
 
     def run(self):
         self.playing = True
@@ -47,14 +54,15 @@ class Game:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                v1.pos_darrivee(mx,my)
+                self.unit.pos_darrivee(mx,my)
 
 
     def update(self): 
         self.camera.update()
+        for e in self.entities: e.update()
         self.hud.update()
         self.world.update(self.camera)
-        v1.update()
+        self.unit.update()
         if BENCHMARK == 1: self.benchmark.update()
 
     def draw(self): #Construction graphiques
@@ -65,7 +73,7 @@ class Game:
 
         self.hud.draw(self.screen) #Affichage du hud
         
-        v1.draw_unit(self.screen)
+        self.unit.draw_unit(self.screen,self.camera)
         
         if BENCHMARK == 1: self.benchmark.draw(self.screen)
         pygame.display.flip()

@@ -1,6 +1,6 @@
 import pygame
 
-BENCHMARK = 1
+BENCHMARK = 0
 FULLSCREEN1 = 0
 WIDTH, HEIGHT = 1300,1000  #La définition de l'écran facilement modifiable
 FPS = 200
