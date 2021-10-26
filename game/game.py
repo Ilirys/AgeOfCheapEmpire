@@ -5,7 +5,12 @@ from .world import World
 from .utils import draw_text
 from .camera import Camera
 from .hud import Hud
+from .units import *
+from .villager import *
+from pygame import *
 
+
+v1 = unite()
 class Game:
 
     def __init__(self, screen, clock):
@@ -35,14 +40,19 @@ class Game:
 
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
+            mx,my = pygame.mouse.get_pos()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                v1.pos_darrivee(mx,my)
+
 
     def update(self): 
         self.camera.update()
         self.hud.update()
         self.world.update(self.camera)
+        v1.update()
 
     def draw(self): #Construction graphiques
 
@@ -51,7 +61,7 @@ class Game:
         draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
-
+        v1.draw_unit(self.screen)
         pygame.display.flip()
 
         
