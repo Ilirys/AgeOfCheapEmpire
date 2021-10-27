@@ -80,9 +80,10 @@ class World:
                 #draw villagers
                 worker = self.workers[x][y]
                 if worker is not None:
-                            screen.blit(worker.image,
-                                            (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x,
-                                             render_pos[1] - (worker.image.get_height() - TILE_SIZE) + camera.scroll.y))   
+                            screen.blit(worker.image,(worker.pos_x  + self.grass_tiles.get_width()/2 + camera.scroll.x, worker.pos_y - (worker.image.get_height() - TILE_SIZE) + camera.scroll.y))
+                            # screen.blit(worker.image,
+                            #                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x,
+                            #                  render_pos[1] - (worker.image.get_height() - TILE_SIZE) + camera.scroll.y))   
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

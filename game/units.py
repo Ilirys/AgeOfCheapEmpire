@@ -29,14 +29,15 @@ class unite():
     def update(self):
         distance = math.sqrt((self.posArrivee[0] - self.posDepart[0]) * (self.posArrivee[0] - self.posDepart[0]) + (
                     self.posArrivee[1] - self.posDepart[1]) * (self.posArrivee[1] - self.posDepart[1]))
-        if distance != 0:
+        if True:
             dt = 1 / distance
             if self.progression < 1:
                 self.progression += self.speed * dt
             else:
                 self.progression = 1
-            self.pos_x = lerp(self.posDepart[0], self.posArrivee[0], self.progression)
-            self.pos_y = lerp(self.posDepart[1], self.posArrivee[1], self.progression)
+            self.pos_x = lerp(self.posDepart[0], self.posArrivee[0], 0.5)
+            self.pos_y = lerp(self.posDepart[1], self.posArrivee[1], 0.5)
+        
 
     def pos_darrivee(self, mx, my):
         self.posArrivee[0], self.posArrivee[1] = mx, my
