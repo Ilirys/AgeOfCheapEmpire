@@ -26,7 +26,6 @@ class Game:
     
         #World
         self.world = World(self.entities,self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
-        for _ in range(1): Worker(self.world.world[25][25], self.world)
 
         #Camera
         self.camera = Camera(self.width, self.height)
@@ -35,6 +34,7 @@ class Game:
         self.benchmark = Benchmark(self.clock)
 
         #Unité
+        for _ in range(1): Worker(self.world.world[0][0], self.world,self.camera)
         self.unit = unite(self.camera)
 
     def run(self):

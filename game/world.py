@@ -80,7 +80,8 @@ class World:
                 #draw villagers
                 worker = self.workers[x][y]
                 if worker is not None:
-                            screen.blit(worker.image,(worker.pos_x  + self.grass_tiles.get_width()/2 + camera.scroll.x, worker.pos_y - (worker.image.get_height() - TILE_SIZE) + camera.scroll.y))
+                            pygame.draw.rect(screen, (255,255,0), worker.hitbox)
+                            screen.blit(worker.image,(worker.pos_x  + self.grass_tiles.get_width()/2 + camera.scroll.x + 45, worker.pos_y -worker.image.get_height() + camera.scroll.y + 50))
                             # screen.blit(worker.image,
                             #                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x,
                             #                  render_pos[1] - (worker.image.get_height() - TILE_SIZE) + camera.scroll.y))   
