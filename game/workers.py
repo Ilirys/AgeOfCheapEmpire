@@ -90,11 +90,10 @@ class Worker:
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
             if self.progression < 1:
-                self.progression += (1/180)
+                self.progression += (1/135)
                 self.progression = round(self.progression,4)
             else:
-                self.progression = 1
-            #print(self.progression)    
+                self.progression = 1    
             self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression),3)
             self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression),3)
 

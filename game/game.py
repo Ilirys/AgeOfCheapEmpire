@@ -35,7 +35,6 @@ class Game:
 
         #Unité
         for _ in range(1): Worker(self.world.world[0][0], self.world,self.camera)
-        self.unit = unite(self.camera)
 
     def run(self):
         self.playing = True
@@ -49,12 +48,9 @@ class Game:
 
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
-            mx,my = pygame.mouse.get_pos()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.unit.pos_darrivee(mx,my)
 
 
     def update(self): 
@@ -62,7 +58,6 @@ class Game:
         for e in self.entities: e.update()
         self.hud.update()
         self.world.update(self.camera)
-        self.unit.update()
         if BENCHMARK == 1: self.benchmark.update()
 
     def draw(self): #Construction graphiques
@@ -72,8 +67,6 @@ class Game:
         draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
-        
-        self.unit.draw_unit(self.screen,self.camera)
         
         if BENCHMARK == 1: self.benchmark.draw(self.screen)
         pygame.display.flip()
