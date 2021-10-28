@@ -19,9 +19,9 @@ class Worker:
 
         # pathfinding 
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = self
-        self.move_timer = pygame.time.get_ticks()
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
+        
         #selection
         self.selected = False
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
@@ -37,7 +37,7 @@ class Worker:
                 self.grid = Grid(matrix=self.world.collision_matrix)
                 self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])    
                 self.end = self.grid.node(x, y)  
-                finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
+                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
                 self.path_index = 0
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
@@ -69,7 +69,6 @@ class Worker:
         return grid_x, grid_y            
     
     def update(self):
-        now = pygame.time.get_ticks()
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
         grid_pos = self.mouse_to_grid(mouse_pos[0],mouse_pos[1],self.camera.scroll)
@@ -79,7 +78,6 @@ class Worker:
             if mouse_action[0]:
                 self.selected = True
                 
-
         if self.selected:
             if mouse_action[2]:
                 print(grid_pos[0], grid_pos[1])
@@ -97,11 +95,10 @@ class Worker:
             self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression),3)
             self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression),3)
 
-            if  now - self.move_timer > 1000:  # update position in the world          
+            if  self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]: #now - self.move_timer > 1000:  # update position in the world          
                 self.change_tile(new_pos)
                 self.path_index += 1
                 self.progression = 0
-                self.move_timer = now
   
 
 
