@@ -22,10 +22,15 @@ class World:
         self.world = self.create_world()
         self.générerCamp = self.générer_camp()
         self.temp_tile = None
+        self.examine_tile = None
    
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
+
+        if mouse_action[2]:
+            self.examine_tile = None
+            self.hud.examined_tile = None
 
         self.temp_tile = None
         if self.hud.selected_tile is not None:
@@ -49,6 +54,17 @@ class World:
                     self.world[grid_pos[0]][grid_pos[1]]["tile"].nomElement = self.hud.selected_tile["name"]
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                     self.hud.selected_tile = None
+        else:
+
+            grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+
+            if self.can_place_tile(grid_pos):
+
+                collision = self.world[grid_pos[0]][grid_pos[1]]["collision"]
+
+                if mouse_action[0] and collision:
+                    self.examine_tile = grid_pos
+                    self.hud.examined_tile = self.world[grid_pos[0]][grid_pos[1]]
                 
     def draw(self, screen, camera):
         screen.blit(self.grass_tiles,(camera.scroll.x, camera.scroll.y)) #Au lieu d'iterer pour tout les block de fond, ici herbe, on le fait une fois
@@ -60,6 +76,12 @@ class World:
                     screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +40,
                                  render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE + 30) + camera.scroll.y))
+                    if self.examine_tile is not None:
+                        if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
+                            mask = pygame.mask.from_surface(self.tiles[nomElement]).outline()
+                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x, y + render_pos[1] - (self.tiles[nomElement].get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask]
+                            pygame.draw.polygon(screen, (255, 255, 255), mask, 3)
+
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
             iso_poly = [(x + self.grass_tiles.get_width()/2 + camera.scroll.x, y + camera.scroll.y) for x, y in iso_poly]
@@ -186,6 +208,7 @@ class World:
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
                 self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
+                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 
