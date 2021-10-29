@@ -49,6 +49,7 @@ class Worker:
                 self.progression = 0
 
                 searching_for_path = False
+            else: break    
 
     def change_tile(self,new_tile):
         self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
@@ -74,15 +75,22 @@ class Worker:
         return grid_x, grid_y            
     
     def update(self):
+        
+        #Updating mouse position and action and the grid_pos 
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
         grid_pos = self.mouse_to_grid(mouse_pos[0],mouse_pos[1],self.camera.scroll)
+        
+        #Hitbox
         self.hitbox.update(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
-
-        # iso_poly = self.tile["iso_poly"]
-        #self.iso_poly = [(x + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x, y + self.camera.scroll.y) for x, y in self.tile["iso_poly"]]
+        
+        #Selection polygon
         pos_poly = [self.pos_x + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50]
         self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] +44), (pos_poly[0] + 15, pos_poly[1] + 29), (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15 , pos_poly[1] + 59)]
+        
+        #collision matrix (for pathfinding and buildings)
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -109,6 +117,8 @@ class Worker:
             
 
             if  self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]: #now - self.move_timer > 1000:  # update position in the world          
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+                self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
                 self.path_index += 1
                 self.progression = 0
