@@ -81,6 +81,7 @@ class World:
                 worker = self.workers[x][y]
                 if worker is not None:
                             #pygame.draw.rect(screen, (255,255,0), worker.hitbox)
+                            if worker.selected: pygame.draw.polygon(screen, (255, 255, 255), worker.iso_poly, 2)
                             screen.blit(worker.image,(worker.pos_x  + self.grass_tiles.get_width()/2 + camera.scroll.x + 45, worker.pos_y -worker.image.get_height() + camera.scroll.y + 50))
                       
 
