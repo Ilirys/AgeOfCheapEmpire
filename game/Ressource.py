@@ -3,14 +3,13 @@ from .definitions import LES_RESSOURCES as ress
 
 class Ressource:
 
-    def __init__(self):
-        self.nbRessources = 0
-        self.typeRessource = ""
-
-    def __init__(self, nbRess, laRess):
-        self.nbRessources = nbRess
-        self.typeRessource = laRess
-
+    def __init__(self, *args):
+        if(len(args)==0):
+            self.nbRessources = 0
+            self.typeRessource = ""
+        elif(len(args)==2):
+            self.nbRessources = args[0]
+            self.typeRessource = args[1]
     def getTypeRessource(self):
         return self.typeRessource
 

@@ -9,22 +9,21 @@ class Tile:
     '''
 
     #Constructeur sans parametre qui initialise tous les attributs
-    def __init__(self):
-        self.xTile = 0
-        self.yTile = 0
-        self.empty = True
-        self.ressource = Ressource.__init__()
-        self.idElem = -1
-        self.nomElement = ""
-
-    # Constructeur avec parametre qui initialise tous les attributs
-    def __init__(self, xTile, yTile, empty, ressource, idElem):
-        self.xTile = xTile
-        self.yTile = yTile
-        self.empty = empty
-        self.ressource = ressource
-        self.idElem = idElem
-        self.nomElement = ""
+    def __init__(self, *args):
+        if(len(args)==0):
+            self.xTile = 0
+            self.yTile = 0
+            self.empty = True
+            self.ressource = Ressource.__init__()
+            self.idElem = -1
+            self.nomElement = ""
+        elif(len(args)==5):
+            self.xTile = args[0]
+            self.yTile = args[1]
+            self.empty = args[2]
+            self.ressource = args[3]
+            self.idElem = args[4]
+            self.nomElement = ""
 
     def isEmpty(self):
         return self.empty
@@ -36,7 +35,7 @@ class Tile:
         self.ressource = ressource
 
     def reduceRessource(self, nbRessources):
-        self.ressource = ressource - nbRessources
+        self.ressource = self.ressource - nbRessources
 
     def setEmpty(self,empty):
         self.empty = empty
