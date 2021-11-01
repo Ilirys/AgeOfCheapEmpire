@@ -84,8 +84,8 @@ class World:
                 nomElement = self.world[x][y]["tile"].nomElement
                 if nomElement != "":
                     screen.blit(self.tiles[nomElement],
-                                (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +40,
-                                 render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE + 30) + camera.scroll.y))
+                                (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
+                                 render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
                 batiment = self.batiment[x][y]
                 if batiment is not None:
                     screen.blit(batiment.image,
