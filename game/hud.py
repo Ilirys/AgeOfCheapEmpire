@@ -103,10 +103,11 @@ class Hud:
         if self.examined_tile is not None:
             w, h = self.select_rect.width, self.select_rect.height
             screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.79))
-            img = self.images[self.examined_tile["tile"].nomElement].copy()
-            img_scale = self.scale_image(img, h=h*0.9)
+            img = self.examined_tile.image.copy()
+            img_scale = self.scale_image(img, h=h*1)
             screen.blit(img_scale, (self.width * 0.35 + 10, self.height * 0.79 + 10))
-            draw_text(screen, self.examined_tile["tile"].nomElement, 40, (255, 255, 255), self.select_rect.center)
+            draw_text(screen, self.examined_tile.name, 40, (255, 255, 255), self.select_rect.topleft)
+            draw_text(screen, str(self.examined_tile.counter), 30, (255, 255, 255), self.select_rect.center)
         
         # resources (Text box top right. Should be changed) 
         screen.blit(self.resouces_surface, (0,0)) 
@@ -125,22 +126,13 @@ class Hud:
 
         # read images
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
-        grass = pygame.image.load("assets/grass.png").convert_alpha()
-        tree = pygame.image.load("assets/tree.png").convert_alpha()
-        stone = pygame.image.load("assets/stone.png").convert_alpha()
-        gold = pygame.image.load("assets/gold.png").convert_alpha()
-        fruit = pygame.image.load("assets/fruit.png").convert_alpha()
-        hud1300x1000 = pygame.image.load("assets/HUD/Hud_Villageois_AgePierre_1300-1000.png").convert_alpha()
-        hud1300x1000 = scale_image(hud1300x1000,self.width,self.height)
+        house = pygame.image.load("assets/house.png").convert_alpha()
+        smallhud = pygame.image.load("assets/HUD/Hud_Villageois_AgePierre_1300-1000.png").convert_alpha()
 
         images = {
             "towncenter": towncenter,
-            "grass": grass,
-            "tree": tree,
-            "gold": gold,
-            "food": fruit,
-            "stone": stone,
-            "smallhud" : hud1300x1000
+            "house": house,
+            "smallhud": smallhud
         }
         return images
 

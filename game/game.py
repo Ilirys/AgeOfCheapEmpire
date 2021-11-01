@@ -15,9 +15,12 @@ class Game:
 
         # hud
         self.hud = Hud(self.width, self.height)
+
+        # entities
+        self.entities = []
     
         #World
-        self.world = World(self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
+        self.world = World(self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
 
         #Camera
         self.camera = Camera(self.width, self.height)
