@@ -219,17 +219,19 @@ class World:
                     self.world[grid_x][grid_y]["tile"].ressource.nbRessource = 0
                     self.world[grid_x][grid_y]["tile"].ressource.typeRessource = ""
         render_pos = self.world[a][b]["render_pos"]
+        '''
         ent = Towncenter(render_pos)
         self.entities.append(ent)
         self.batiment[a][b] = ent
         '''
+        
         self.world[a][b]["tile"].nomElement = "towncenter"
         for i in range (2):
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
                 self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
                 self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
-        '''
+        
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()

@@ -12,12 +12,19 @@ class Hud:
 
         self.hud_colour = (198, 155, 93, 175)
 
+        self.images = self.load_images()
+
         #Screen sized hud 
         self.hudmoi_surface = pygame.Surface((width,height),pygame.SRCALPHA) 
 
         # resouces hud (Text box top left. Should be changed) 
-        self.resouces_surface = pygame.Surface((width*0.475, height * 0.06), pygame.SRCALPHA)
-        self.resources_rect = self.resouces_surface.get_rect(topleft=(0, 0))
+        self.resources_surface = pygame.Surface((width*0.42, height * 0.07), pygame.SRCALPHA)
+        self.resources_rect = self.resources_surface.get_rect(topleft=(0, 0))
+
+        # age hud
+        self.age_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.age_rect = self.age_surface.get_rect(topleft=(0, 0))
+        self.age_surface.blit(self.images["hudAge"],(0,0))
 
         # building hud (Bottom left) 
         self.build_surface = pygame.Surface((width * 0.32, height * 0.21), pygame.SRCALPHA)
@@ -29,8 +36,8 @@ class Hud:
         self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
         self.select_surface.fill(self.hud_colour)
 
-        self.images = self.load_images()
         self.tiles = self.create_build_hud()
+        self.create_ressource_hud()
 
         self.selected_tile = None
         self.examined_tile = None
@@ -39,8 +46,8 @@ class Hud:
 
     def create_build_hud(self):
         font = pygame.font.SysFont(None,25)     # next 3 lines draw the ressources hud 
-        text_surface = font.render("WOOD:                      FOOD:                   GOLD:                       STONE:                           UNITS:", True, WHITE)
-        self.resouces_surface.blit(text_surface,(0,self.resouces_surface.get_height()//3))
+        text_surface = font.render("WOOD:                      FOOD:                   GOLD:                       STONE:                           UNITS: ", True, WHITE)
+        self.resources_surface.blit(text_surface,(0,self.resources_surface.get_height()//3))
         
         #The whole hud image, considering spliting it..? 
         self.hudmoi_surface.blit(self.images["smallhud"],(0,0))
@@ -69,11 +76,15 @@ class Hud:
             render_pos[0] += self.build_surface.get_width() // 7
 
         return tiles
-
-    def create_ressource_hud(self,screen):
-        ressource_object_width = self.resouces_surface.get_width 
+    
+    def create_ressource_hud(self):
+        self.resources_surface.blit(self.images["hudRessources"],(0,0))
+        '''
+        pos=0
         for resource in ["WOOD:", " FOOD:", "  GOLD:", "   STONE:", "  UNITS:"]:
-            draw_text(screen, resource, 30, (255, 255, 255), (pos, 20))    
+            self.resources_surface.blit(pygame.font.SysFont(None,25).render(resource, True, WHITE),(pos, 20))
+            pos+=150
+        '''
 
     def update(self):
 
@@ -93,7 +104,7 @@ class Hud:
 
         #The whole hud image (screen sized) 
         screen.blit(self.hudmoi_surface,(0,0))
-        screen.blit(self.resouces_surface,(0,0))
+        screen.blit(self.resources_surface,(0,0))
  
         # build pannel hud (Bottom left) 
         screen.blit(self.build_surface, (0, self.height-self.height * 0.21)) 
@@ -110,7 +121,7 @@ class Hud:
             draw_text(screen, str(self.examined_tile.counter), 30, (255, 255, 255), self.select_rect.center)
         
         # resources (Text box top right. Should be changed) 
-        screen.blit(self.resouces_surface, (0,0)) 
+        screen.blit(self.resources_surface, (0,0)) 
         
         for tile in self.tiles:
             screen.blit(tile["icon"], tile["rect"].topleft)
@@ -127,12 +138,16 @@ class Hud:
         # read images
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         house = pygame.image.load("assets/house.png").convert_alpha()
-        smallhud = pygame.image.load("assets/HUD/Hud_Villageois_AgePierre_1300-1000.png").convert_alpha()
+        smallhud = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
+        hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
+        hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
         images = {
             "towncenter": towncenter,
             "house": house,
-            "smallhud": smallhud
+            "smallhud": smallhud,
+            "hudRessources": hudRessources,
+            "hudAge": hudAge
         }
         return images
 
