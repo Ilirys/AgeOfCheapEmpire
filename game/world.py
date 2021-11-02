@@ -5,6 +5,7 @@ from game.Ressource import Ressource
 from .Tile import Tile
 from .definitions import *
 from .bouquet import Bouquet
+from .animation import Animation
 
 class World:
 
@@ -24,7 +25,8 @@ class World:
         self.collision_matrix = self.create_collision_matrix()
 
         self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
-        #self.générerCamp = self.générer_camp()
+        self.animation = Animation()
+
         self.temp_tile = None
 
         

@@ -17,7 +17,10 @@ class Worker:
 
         #Visual and audio effects
         self.name = "villager"
-        self.image = pygame.image.load('assets/sprites/villager/Villagerwalk001.png').convert_alpha()
+        self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
+        self.temp = 0
+        self.animation = self.world.animation.villager_walk
+        self.movestraight_animation = True
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
 
         # pathfinding 
@@ -37,8 +40,8 @@ class Worker:
     def create_path(self,x,y):
         searching_for_path = True
         while searching_for_path:
-            dest_tile = self.world.world[x][y]
-            if not dest_tile["collision"]:
+            self.dest_tile = self.world.world[x][y]
+            if not self.dest_tile["collision"]:
                 self.grid = Grid(matrix=self.world.collision_matrix)
                 self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])    
                 self.end = self.grid.node(x, y)  
@@ -92,6 +95,9 @@ class Worker:
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         
+        #Animation update
+        self.update_sprite()
+
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
                 self.selected = True
@@ -105,6 +111,9 @@ class Worker:
                 self.selected = False   
 
         if self.path_index <= len(self.path) - 1:
+            #animation
+            self.movestraight_animation = True
+
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
             if self.progression < 1:
@@ -122,6 +131,20 @@ class Worker:
                 self.change_tile(new_pos)
                 self.path_index += 1
                 self.progression = 0
+        else:
+            self.movestraight_animation = False
+        
+                
+
+    def update_sprite(self):
+        if self.movestraight_animation == True:
+            self.temp +=0.2
+            self.image = self.animation[int(self.temp)]
+            if self.temp + 0.2 >= len(self.animation):
+                self.temp= 0
+        else: self.image = self.world.animation.villager_standby        
+
+
   
 
 
