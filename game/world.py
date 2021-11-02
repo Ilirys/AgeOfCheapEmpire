@@ -218,11 +218,12 @@ class World:
                     self.world[grid_x][grid_y]["tile"].nomElement = ""
                     self.world[grid_x][grid_y]["tile"].ressource.nbRessource = 0
                     self.world[grid_x][grid_y]["tile"].ressource.typeRessource = ""
-        render_pos = self.world[a][b]["render_pos"]
         '''
-        ent = Towncenter(render_pos)
+        render_pos2 = self.world[a][b]["render_pos"]
+        ent = Towncenter(render_pos2)
         self.entities.append(ent)
         self.batiment[a][b] = ent
+        self.world[a][b]["collision"] = True
         '''
         
         self.world[a][b]["tile"].nomElement = "towncenter"
