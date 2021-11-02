@@ -14,6 +14,7 @@ class Hud:
 
         self.images = self.load_images()
         self.images_hud = self.load_images_hud()
+        self.images_scale = self.load_images_scale()
 
         #Screen sized hud 
         self.hudmoi_surface = pygame.Surface((width,height),pygame.SRCALPHA) 
@@ -104,15 +105,17 @@ class Hud:
 
         #select hud (Bottom right) 
         #screen.blit(self.select_surface, (self.width*0.405 , self.height*0.79)) 
+
+        '''
         if self.examined_tile is not None:
             w, h = self.select_rect.width, self.select_rect.height
             screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.79))
             img = self.examined_tile.image.copy()
-            img_scale = self.scale_image(img, h=h*1)
+            img_scale = self.scale_image(img, h=h*0.7)
             screen.blit(img_scale, (self.width * 0.35 + 10, self.height * 0.79 + 10))
             draw_text(screen, self.examined_tile.name, 40, (255, 255, 255), self.select_rect.topleft)
             draw_text(screen, str(self.examined_tile.counter), 30, (255, 255, 255), self.select_rect.center)
-        
+        '''
         # resources (Text box top right. Should be changed) 
         screen.blit(self.resources_surface, (0,0)) 
         
@@ -127,6 +130,21 @@ class Hud:
        '''
     
     def load_images(self):
+
+        # read images
+        towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
+        house = pygame.image.load("assets/house.png").convert_alpha()
+        smallhud = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
+        hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
+        hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
+
+        images = {
+            "towncenter": towncenter,
+            "house": house
+        }
+        return images
+
+    def load_images_scale(self):
 
         # read images
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
