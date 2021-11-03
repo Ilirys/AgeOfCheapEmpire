@@ -1,7 +1,8 @@
-#import numpy as np
 import random
 from .Tile import Tile
 from .definitions import *
+
+
 class Bouquet:
     
     def __init__(self):
@@ -15,6 +16,7 @@ class Bouquet:
         self.debut_coeff_other = 70
         self.fin_coeff_other = 90
         self.M = [["    " for i in range(self.n)] for j in range(self.n)]
+        self.MM = [["" for i in range(self.n)] for j in range(self.n)]
         self.M1 = self.creation_map()
 
 
@@ -69,5 +71,26 @@ class Bouquet:
                     r = 100 * random.random()
                     self.bouquet("fruit", r, grid_x, grid_y)
         
-        return self.M            
+        return self.M
+
+    def bouquet_camp(self,type_ressource, r, grid_x, grid_y):
+        if self.MM[grid_x][grid_y] == "":
+            if r >= 50 :
+                self.MM[grid_x][grid_y] = "wood"
+                if grid_x != self.n - 1:
+                    coeff_regressif = random.randint(90,100) * 0.01
+                    self.bouquet_camp(type_ressource, r * coeff_regressif, grid_x + 1, grid_y)
+                if grid_x != 0:
+                    coeff_regressif = random.randint(90,100) * 0.01
+                    self.bouquet_camp(type_ressource, r * coeff_regressif, grid_x - 1, grid_y)
+                if grid_y != self.n - 1:
+                    coeff_regressif = random.randint(90,100) * 0.01
+                    self.bouquet_camp(type_ressource, r * coeff_regressif, grid_x, grid_y + 1)
+                if grid_y != 0:
+                    coeff_regressif = random.randint(90,100) * 0.01
+                    self.bouquet_camp(type_ressource, r * coeff_regressif, grid_x, grid_y - 1)
+
+    def creation_camp(self, grid_x, grid_y):
+        self.bouquet_camp("wood", 100, grid_x, grid_y)
+        return self.MM
 

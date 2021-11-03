@@ -5,10 +5,12 @@ from game.Ressource import Ressource
 from .Tile import Tile
 from .definitions import *
 from .bouquet import Bouquet
+from .batiment import *
 
 class World:
 
-    def __init__(self, hud, grid_length_x, grid_length_y, width, height):
+    def __init__(self, entities, hud, grid_length_x, grid_length_y, width, height):
+        self.entities = entities
         self.hud = hud
         self.grid_length_x = grid_length_x  #Taille MAP
         self.grid_length_y = grid_length_y
@@ -20,13 +22,20 @@ class World:
         self.grass_tiles = pygame.Surface((grid_length_x * TILE_SIZE * 2, grid_length_y * TILE_SIZE + 2 * TILE_SIZE)).convert_alpha()
         self.tiles = self.load_images()
         self.world = self.create_world()
-        #self.générerCamp = self.générer_camp()
-        self.temp_tile = None
+        self.générerCamp = self.générer_camp()
 
-        
+        self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.temp_tile = None
+        self.examine_tile = None
+   
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
+
+        if mouse_action[2]:
+            self.examine_tile = None
+            self.hud.examined_tile = None
 
         self.temp_tile = None
         if self.hud.selected_tile is not None:
@@ -47,10 +56,25 @@ class World:
                 }
                 
                 if mouse_action[0] and not collision:
-                    self.world[grid_pos[0]][grid_pos[1]]["tile"].nomElement = self.hud.selected_tile["name"]
+                    if self.hud.selected_tile["name"] == "towncenter":
+                        ent = Towncenter(render_pos)
+                        self.entities.append(ent)
+                        self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                    elif self.hud.selected_tile["name"] == "house":
+                        ent = House(render_pos)
+                        self.entities.append(ent)
+                        self.batiment[grid_pos[0]][grid_pos[1]] = ent
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                     self.hud.selected_tile = None
-                
+        else:
+
+            grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+
+            if self.can_place_tile(grid_pos):
+                batiment = self.batiment[grid_pos[0]][grid_pos[1]]
+                if mouse_action[0] and (batiment is not None):
+                    self.examine_tile = grid_pos
+                    self.hud.examined_tile = batiment
 
     def draw(self, screen, camera):
         screen.blit(self.grass_tiles,(camera.scroll.x, camera.scroll.y)) #Au lieu d'iterer pour tout les block de fond, ici herbe, on le fait une fois
@@ -60,8 +84,19 @@ class World:
                 nomElement = self.world[x][y]["tile"].nomElement
                 if nomElement != "":
                     screen.blit(self.tiles[nomElement],
-                                (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +40,
-                                 render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE + 30) + camera.scroll.y))
+                                (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
+                                 render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
+                batiment = self.batiment[x][y]
+                if batiment is not None:
+                    screen.blit(batiment.image,
+                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x,
+                                     render_pos[1] - (batiment.image.get_height() - TILE_SIZE) + camera.scroll.y))
+                    if self.examine_tile is not None:
+                        if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
+                            mask = pygame.mask.from_surface(batiment.image).outline()
+                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x, y + render_pos[1] - (batiment.image.get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask]
+                            pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
+        
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
             iso_poly = [(x + self.grass_tiles.get_width()/2 + camera.scroll.x, y + camera.scroll.y) for x, y in iso_poly]
@@ -93,24 +128,27 @@ class World:
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[0]
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["collision"] = True
                 
                 if self.Bou.M1[grid_x][grid_y] == "gold":
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[2]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "GOLD"
+                    world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[1]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "FOOD"
+                    world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "STONE"
+                    world[grid_x][grid_y]["collision"] = True
 
         return world    
-
 
     def grid_to_world(self, grid_x, grid_y):    #Renvoit un dictionnaire avec notamment des coordonnées isométriques pour une vue 2.5D
         rien = Ressource(0,"")
@@ -138,7 +176,6 @@ class World:
         }
         return out
 
-
     def cart_to_iso(self,x,y): #Coordonées rectangulaires en isométriques
         iso_x = x-y 
         iso_y = (x + y)/2
@@ -157,22 +194,45 @@ class World:
         return grid_x, grid_y
 
     def générer_camp(self):
-        x=random.random()
-        y= random.randint(-4,4)
-        z= random.randint(-4,4)
-
-         #world[2][2]["tile"].nomElement = "Towncenter"
-
-         #if x<0.25:
-            #townhall (7+y, 7+z)
-         #elif x<0.5:
-            #townhall (self.grid_length_x-7+y, 7+z)
-         #elif x<0.75:
-            #townhall (7+y, self.grid_length_y-7+z)
-         #else:
-            #townhall (self.grid_length_x-7+y, self.grid_length_y-7+z)
-            
-
+        générateur = random.random()
+        x = 7
+        y = random.randint(-4,4)
+        z = random.randint(-4,4)
+        print(générateur, "\t", y, "\t", z, "\n")
+        if générateur<0.25:
+            a = x+y
+            b = x+z
+        elif générateur<0.5:
+            a = self.grid_length_x-x+y
+            b = x+z
+        elif générateur<0.75:
+            a = x+y
+            b = self.grid_length_y-x+z
+        else:
+            a = self.grid_length_x-x+y
+            b = self.grid_length_y-x+z
+        M2=self.Bou.creation_camp(a, b)
+        for grid_x in range(self.grid_length_x): #On itère pour la taille de la map
+            for grid_y in range(self.grid_length_y):
+                if M2[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
+                    self.world[grid_x][grid_y]["tile"].nomElement = ""
+                    self.world[grid_x][grid_y]["tile"].ressource.nbRessource = 0
+                    self.world[grid_x][grid_y]["tile"].ressource.typeRessource = ""
+        '''
+        render_pos2 = self.world[a][b]["render_pos"]
+        ent = Towncenter(render_pos2)
+        self.entities.append(ent)
+        self.batiment[a][b] = ent
+        self.world[a][b]["collision"] = True
+        '''
+        
+        self.world[a][b]["tile"].nomElement = "towncenter"
+        for i in range (2):
+            for j in range (2):
+                self.world[a+j][b+i]["collision"] = True
+                self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
+                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+        
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
