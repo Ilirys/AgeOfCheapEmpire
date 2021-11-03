@@ -5,6 +5,11 @@ from .world import World
 from .utils import draw_text
 from .camera import Camera
 from .hud import Hud
+from .units import *
+from .villager import *
+from pygame import *
+from .benchmark import Benchmark
+from .workers import Worker
 
 class Game:
 
@@ -13,6 +18,9 @@ class Game:
         self.clock = clock
         self.width, self.height = self.screen.get_size()
 
+        #entities 
+        self.entities = []
+        
         # hud
         self.hud = Hud(self.width, self.height)
 
@@ -25,6 +33,13 @@ class Game:
         #Camera
         self.camera = Camera(self.width, self.height)
 
+        #Benchmark
+        self.benchmark = Benchmark(self.clock)
+
+        #Unité
+        #Worker(self.world.world[0][0], self.world,self.camera)
+        Worker(self.world.world[0][1], self.world,self.camera)
+        Worker(self.world.world[1][0], self.world,self.camera)
 
     def run(self):
         self.playing = True
@@ -42,10 +57,13 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
+
     def update(self): 
         self.camera.update()
+        for e in self.entities: e.update()
         self.hud.update()
         self.world.update(self.camera)
+        if BENCHMARK == 1: self.benchmark.update()
 
     def draw(self): #Construction graphiques
 
@@ -54,7 +72,8 @@ class Game:
         draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
-
+        
+        if BENCHMARK == 1: self.benchmark.draw(self.screen)
         pygame.display.flip()
 
         

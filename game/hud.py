@@ -37,6 +37,7 @@ class Hud:
         self.select_surface = pygame.Surface((width * 0.595, height * 0.209), pygame.SRCALPHA)
         self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
         self.select_surface.fill(self.hud_colour)
+        #self.select_surface.fill((255,0,0,175))
 
         self.tiles = self.create_build_hud()
         self.create_ressource_hud()
