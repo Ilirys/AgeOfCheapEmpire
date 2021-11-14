@@ -1,12 +1,14 @@
 import pygame
 import random
 import noise
+from DTO.worldDTO import WorldDTO
 from game.Ressource import Ressource
 from .Tile import Tile
 from .definitions import *
 from .bouquet import Bouquet
 from .batiment import *
 from .animation import Animation
+import pickle
 
 class World:
 
@@ -34,6 +36,10 @@ class World:
 
         self.temp_tile = None
         self.examine_tile = None
+        
+        #init
+        self.save_file_path = SAVED_GAME_FOLDER + "world"
+        self.restore_save()
    
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
@@ -296,6 +302,22 @@ class World:
         else:
             return False
 
+    def restore_save(self):
+        try:    
+            with open(self.save_file_path, "rb") as input:
+                restore_world_dto = pickle.load(input)
+                self.world = restore_world_dto.world
+                input.close()
+        except: 
+            print("Created file")
+
+    def save(self):
+        try:    
+            with open(self.save_file_path, "wb") as output:
+                worker_dto = WorldDTO(self.world)
+                pickle.dump(worker_dto,output)
+                output.close()
+        except: print("Couldnt dump in file") 
 
         
 

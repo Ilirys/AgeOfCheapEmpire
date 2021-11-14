@@ -40,7 +40,6 @@ class Worker:
         #Saves
         self.ID = len(self.world.entities)
         self.save_file_path = SAVED_GAME_FOLDER + self.name + str(self.ID)
-        print(self.save_file_path)
         self.restore_save()
         
         #init    
@@ -174,7 +173,9 @@ class Worker:
                 worker_dto = DTO.workerDTO.workerDTO(self.name,self.health_points,self.tile)
                 pickle.dump(worker_dto,output)
                 output.close()
-                print(self.tile)
+
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1
+                self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
         except: print("Couldnt dump in file")  
 
 
