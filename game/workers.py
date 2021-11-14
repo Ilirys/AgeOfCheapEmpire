@@ -1,11 +1,13 @@
+import json
 import pygame
 import random
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE
-
+from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, SAVED_GAME_FOLDER, TILE_SIZE
 from game.deplacement import lerp
+import pickle
+import DTO.workerDTO
 
 class Worker:
 
@@ -14,6 +16,7 @@ class Worker:
         self.world.entities.append(self)
         self.camera = camera
         self.tile = tile
+        self.health_points = 300
 
         #Visual and audio effects
         self.name = "villager"
@@ -34,8 +37,15 @@ class Worker:
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
             
+        #Saves
+        self.ID = len(self.world.entities)
+        self.save_file_path = SAVED_GAME_FOLDER + self.name + str(self.ID)
+        print(self.save_file_path)
+        self.restore_save()
+        
+        #init    
         self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(tile["grid"][0], tile["grid"][1])
+        self.create_path(self.tile["grid"][0], self.tile["grid"][1])
 
     def create_path(self,x,y):
         searching_for_path = True
@@ -98,18 +108,19 @@ class Worker:
         #Animation update
         self.update_sprite()
 
+        if self.selected:
+            if mouse_action[2]:
+                print(grid_pos[0], grid_pos[1])
+                self.create_path(grid_pos[0], grid_pos[1])
+                self.selected = False 
+            if mouse_action[0]:
+                self.selected = False 
+
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
                 self.selected = True
                 self.sound.play()
                 
-                
-        if self.selected:
-            if mouse_action[2]:
-                print(grid_pos[0], grid_pos[1])
-                self.create_path(grid_pos[0], grid_pos[1])
-                self.selected = False   
-
         if self.path_index <= len(self.path) - 1:
             #animation
             self.movestraight_animation = True
@@ -142,10 +153,29 @@ class Worker:
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
                 self.temp= 0
-        else: self.image = self.world.animation.villager_standby        
+        else: self.image = self.world.animation.villager_standby  
 
+    def restore_save(self):
+        try:    
+            with open(self.save_file_path, "rb") as input:
+                restore_worker_dto = pickle.load(input)
+                self.name = restore_worker_dto.name
+                self.health_points = restore_worker_dto.health_points
+                self.tile = restore_worker_dto.tile
+                self.pos_x = restore_worker_dto.pos_x
+                self.pos_y = restore_worker_dto.pos_y
+                input.close()
+        except: 
+            print("Created file")
 
-  
+    def save(self):
+        try:    
+            with open(self.save_file_path, "wb") as output:
+                worker_dto = DTO.workerDTO.workerDTO(self.name,self.health_points,self.tile)
+                pickle.dump(worker_dto,output)
+                output.close()
+                print(self.tile)
+        except: print("Couldnt dump in file")  
 
 
                 
