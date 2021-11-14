@@ -48,7 +48,7 @@ class World:
         if self.hud.selected_tile is not None:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-            print(grid_pos[0], grid_pos[1])
+            #print(grid_pos[0], grid_pos[1])
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
@@ -268,11 +268,17 @@ class World:
         self.entities.append(ent)
         self.batiment[a][b] = ent
         #self.world[a][b]["tile"].nomElement = "Towncenter"
+        for i in range (3):
+            for j in range (3):
+                self.world[a+j][b+i]["collision"] = False
+                self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
+                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+                self.collision_matrix[b+i][a+j] = 1
         for i in range (2):
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
-                self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
-                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+                self.collision_matrix[b+i][a+j] = 0
+        
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 
