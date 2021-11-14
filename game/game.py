@@ -10,6 +10,7 @@ from .villager import *
 from pygame import *
 from .benchmark import Benchmark
 from .workers import Worker
+from .Ressource import Ressource
 
 class Game:
 
@@ -21,14 +22,17 @@ class Game:
         #entities 
         self.entities = []
         
+        # resource manager
+        self.resource_manager = Ressource()
+
         # hud
-        self.hud = Hud(self.width, self.height)
+        self.hud = Hud(self.resource_manager, self.width, self.height)
 
         # entities
         self.entities = []
     
         #World
-        self.world = World(self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
+        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
 
         #Camera
         self.camera = Camera(self.width, self.height)
@@ -38,8 +42,8 @@ class Game:
 
         #Unité
         #Worker(self.world.world[0][0], self.world,self.camera)
-        Worker(self.world.world[0][1], self.world,self.camera)
-        Worker(self.world.world[1][0], self.world,self.camera)
+        #Worker(self.world.world[0][1], self.world,self.camera)
+        #Worker(self.world.world[1][0], self.world,self.camera)
 
     def run(self):
         self.playing = True
