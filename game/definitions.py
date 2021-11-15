@@ -15,7 +15,8 @@ TILE_SIZE = 64
 MAP_SIZE = 50
 
 #Resource
-LES_RESSOURCES = {"WOOD", "FOOD", "GOLD", "STONE"}
+LES_RESSOURCES = {"wood", "food", "gold", "stone"}
+INIT_RESSOURCE = [200, 20, 10, 0]
 NB_RESSOURCES = [60,100,30,40]  #Nombre de bois par arbres, de food par buisson, de gold etc
 
 #Fonts
