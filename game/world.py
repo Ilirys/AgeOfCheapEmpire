@@ -307,6 +307,7 @@ class World:
             with open(self.save_file_path, "rb") as input:
                 restore_world_dto = pickle.load(input)
                 self.world = restore_world_dto.world
+                self.collision_matrix = restore_world_dto.collision_matrix
                 input.close()
         except: 
             print("Created file")
@@ -314,7 +315,7 @@ class World:
     def save(self):
         try:    
             with open(self.save_file_path, "wb") as output:
-                worker_dto = WorldDTO(self.world)
+                worker_dto = WorldDTO(self.world,self.collision_matrix)
                 pickle.dump(worker_dto,output)
                 output.close()
         except: print("Couldnt dump in file") 
