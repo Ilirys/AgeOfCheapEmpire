@@ -1,5 +1,5 @@
 
-from .definitions import LES_RESSOURCES as ress
+from .definitions import *
 
 class Ressource:
 
@@ -13,10 +13,10 @@ class Ressource:
         
         # resources
         self.resources = {
-            "wood": 200,
-            "food": 20,
-            "gold": 5,
-            "stone": 100
+            "wood": INIT_RESSOURCE[0],
+            "food": INIT_RESSOURCE[1],
+            "gold": INIT_RESSOURCE[2],
+            "stone": INIT_RESSOURCE[3]
         }
 
         #costs
