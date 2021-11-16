@@ -1,6 +1,6 @@
 
 from .definitions import *
-
+import pickle
 class Ressource:
 
     def __init__(self, *args):
@@ -26,6 +26,9 @@ class Ressource:
             "Barrack": {"wood": 175}
         }
 
+        #Save
+        self.save_file_path = SAVED_GAME_FOLDER + "ressourceManager"
+
     def getTypeRessource(self):
         return self.typeRessource
 
@@ -49,3 +52,24 @@ class Ressource:
             if cost > self.resources[resource]:
                 affordable = False
         return affordable
+
+    def restore_save(self):
+        try:    
+            with open(self.save_file_path, "rb") as input:
+                res_manager = pickle.load(input)
+                self.costs = res_manager.costs
+                self.resources = res_manager.resources
+                self.nbRessources = res_manager.nbRessources
+                self.typeRessource = res_manager.typeRessource
+                print(self.resources["wood"])
+                input.close()
+        except: 
+            print("Created file")
+        
+
+    def save(self):
+        try:    
+            with open(self.save_file_path, "wb") as output:
+                pickle.dump(self,output)
+                output.close()
+        except: print("Couldnt dump in file") 
