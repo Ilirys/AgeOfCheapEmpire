@@ -1,6 +1,7 @@
 import pygame
 import random
 import noise
+from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
 from DTO.worldDTO import WorldDTO
 from game.Ressource import Ressource
 from .Tile import Tile
@@ -32,15 +33,17 @@ class World:
         self.animation = Animation()
 
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
-
-        self.générerCamp = self.générer_camp()
+        self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.temp_tile = None
         self.examine_tile = None
         
         #init
-        self.save_file_path = SAVED_GAME_FOLDER + "world"
+        self.map_save_file_path = SAVED_GAME_FOLDER + "world"
+        self.building_save_file_path = SAVED_GAME_FOLDER + "batiments"
         self.restore_save()
+        if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
+        print(self.batiment[1][1])
    
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
@@ -323,8 +326,9 @@ class World:
             return False
 
     def restore_save(self):
+        #Map restore
         try:    
-            with open(self.save_file_path, "rb") as input:
+            with open(self.map_save_file_path, "rb") as input:
                 restore_world_dto = pickle.load(input)
                 self.world = restore_world_dto.world
                 self.collision_matrix = restore_world_dto.collision_matrix
@@ -332,11 +336,54 @@ class World:
         except: 
             print("Created file")
 
-    def save(self):
+        #Buildings restore
         try:    
-            with open(self.save_file_path, "wb") as output:
+            with open(self.building_save_file_path, "rb") as input:
+                restore_building_dto = pickle.load(input)
+                self.batimentDTO = restore_building_dto
+                input.close()
+
+        except: 
+            print("Created file")  
+
+        for x in range(self.grid_length_x):
+            for y in range(self.grid_length_y):
+                if self.batimentDTO[x][y] != None:
+                    entDTO = self.batimentDTO[x][y]
+                    if entDTO.name == "Towncenter":
+                        ent = Towncenter(entDTO.pos, self.resource_manager)
+                    if entDTO.name == "House":
+                        ent = House(entDTO.pos, self.resource_manager)
+                    if entDTO.name == "Barrack":
+                        ent = Barrack(entDTO.pos, self.resource_manager)
+                    self.entities.append(ent)
+                    self.batiment[x][y] = ent     
+
+
+    def save(self):
+        try:   #Map save
+            with open(self.map_save_file_path, "wb") as output:
                 worker_dto = WorldDTO(self.world,self.collision_matrix)
                 pickle.dump(worker_dto,output)
+                output.close()
+        except: print("Couldnt dump in file")
+
+        #Buildings save 
+        for x in range(self.grid_length_x):
+            for y in range(self.grid_length_y):
+                if self.batiment[x][y] != None:
+                    ent = self.batiment[x][y]
+                    if ent.name == "Towncenter":
+                        entDTO = TowncenterDTO(ent.pos)
+                    if ent.name == "House":
+                        entDTO = HouseDTO(ent.pos)
+                    if ent.name == "Barrack":
+                        entDTO = BarrackDTO(ent.pos)
+                    self.batimentDTO[x][y] = entDTO
+
+        try:   
+            with open(self.building_save_file_path, "wb") as output:
+                pickle.dump(self.batimentDTO,output)
                 output.close()
         except: print("Couldnt dump in file") 
 
