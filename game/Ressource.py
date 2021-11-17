@@ -61,10 +61,9 @@ class Ressource:
                 self.resources = res_manager.resources
                 self.nbRessources = res_manager.nbRessources
                 self.typeRessource = res_manager.typeRessource
-                print(self.resources["wood"])
                 input.close()
         except: 
-            print("Created file")
+            print("Created resource save file")
         
 
     def save(self):
@@ -72,4 +71,4 @@ class Ressource:
             with open(self.save_file_path, "wb") as output:
                 pickle.dump(self,output)
                 output.close()
-        except: print("Couldnt dump in file") 
+        except: print("Couldnt dump resource save in file") 

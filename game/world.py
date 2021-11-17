@@ -30,6 +30,7 @@ class World:
         self.collision_matrix = self.create_collision_matrix()
 
         self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
         self.animation = Animation()
 
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -41,9 +42,9 @@ class World:
         #init
         self.map_save_file_path = SAVED_GAME_FOLDER + "world"
         self.building_save_file_path = SAVED_GAME_FOLDER + "batiments"
+        self.workers_save_file_path = SAVED_GAME_FOLDER + "worker"
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
-        print(self.batiment[1][1])
    
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
@@ -57,7 +58,6 @@ class World:
         if self.hud.selected_tile is not None:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-            #print(grid_pos[0], grid_pos[1])
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
@@ -245,7 +245,7 @@ class World:
         x = 7
         y = random.randint(-4,4)
         z = random.randint(-4,4)
-        print(générateur, "\t", y, "\t", z, "\n")
+        #print(générateur, "\t", y, "\t", z, "\n")
         if générateur<0.25:
             a = x+y
             b = x+z
@@ -334,7 +334,7 @@ class World:
                 self.collision_matrix = restore_world_dto.collision_matrix
                 input.close()
         except: 
-            print("Created file")
+            print("Created map save file")
 
         #Buildings restore
         try:    
@@ -344,7 +344,7 @@ class World:
                 input.close()
 
         except: 
-            print("Created file")  
+            print("Created building save file")  
 
         for x in range(self.grid_length_x):
             for y in range(self.grid_length_y):
@@ -356,6 +356,8 @@ class World:
                         ent = House(entDTO.pos, self.resource_manager)
                     if entDTO.name == "Barrack":
                         ent = Barrack(entDTO.pos, self.resource_manager)
+                    for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
+                        self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)
                     self.batiment[x][y] = ent     
 
@@ -366,7 +368,7 @@ class World:
                 worker_dto = WorldDTO(self.world,self.collision_matrix)
                 pickle.dump(worker_dto,output)
                 output.close()
-        except: print("Couldnt dump in file")
+        except: print("Couldnt dump map save in file")
 
         #Buildings save 
         for x in range(self.grid_length_x):
@@ -385,7 +387,7 @@ class World:
             with open(self.building_save_file_path, "wb") as output:
                 pickle.dump(self.batimentDTO,output)
                 output.close()
-        except: print("Couldnt dump in file") 
+        except: print("Couldnt dump building save in file") 
 
         
 
