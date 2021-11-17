@@ -1,6 +1,7 @@
 import pygame
 import random
 import noise
+from .utils import *
 from DTO.worldDTO import WorldDTO
 from game.Ressource import Ressource
 from .Tile import Tile
@@ -54,6 +55,7 @@ class World:
         if self.hud.selected_tile is not None:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+            
             #print(grid_pos[0], grid_pos[1])
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
@@ -61,6 +63,10 @@ class World:
                 render_pos = self.world[grid_pos[0]][grid_pos[1]]["render_pos"]
                 iso_poly = self.world[grid_pos[0]][grid_pos[1]]["iso_poly"]
                 collision = self.world[grid_pos[0]][grid_pos[1]]["collision"]
+                if self.can_place_tile([grid_pos[0]+1][grid_pos[1]]):
+                    collision2 = self.world[grid_pos[0]+1][grid_pos[1]]["collision"]
+                collision3 = self.world[grid_pos[0]][grid_pos[1]+1]["collision"]
+                collision4 = self.world[grid_pos[0]+1][grid_pos[1]+1]["collision"]
 
                 self.temp_tile = {
                     "image": img,
@@ -70,20 +76,27 @@ class World:
                 }
                 
                 if mouse_action[0] and not collision:
-                    if self.hud.selected_tile["name"] == "Towncenter":
-                        ent = Towncenter(render_pos, self.resource_manager)
-                        self.entities.append(ent)
-                        self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                    if self.hud.selected_tile["name"] == "Barrack":
-                        ent = Barrack(render_pos, self.resource_manager)
-                        self.entities.append(ent)
-                        self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                    elif self.hud.selected_tile["name"] == "House":
+                    taille=0
+                    if self.hud.selected_tile["name"] == "House":
                         ent = House(render_pos, self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                    self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
-                    self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
+                        taille=1
+                    elif ((not collision2) and (not collision3) and (not collision4)):
+                        if self.hud.selected_tile["name"] == "Towncenter":
+                            ent = Towncenter(render_pos, self.resource_manager)
+                            self.entities.append(ent)
+                            self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                            taille=2
+                        if self.hud.selected_tile["name"] == "Barrack":
+                            ent = Barrack(render_pos, self.resource_manager)
+                            self.entities.append(ent)
+                            self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                            taille=2
+                    for i in range (taille):
+                        for j in range (taille):
+                            self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
+                            self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
                     self.hud.selected_tile = None
         else:
 
@@ -111,7 +124,13 @@ class World:
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
                 if nomElement != "":
-                    screen.blit(self.tiles[nomElement],
+                    if self.world[x][y]["tile"].ressource.nbRessource == 0:
+                        self.world[x][y]["tile"].nomElement=""
+                        self.world[x][y]["tile"].ressource.nbRessource = ""
+                        self.world[x][y]["tile"].ressource.typeRessource = ""
+                        self.world[x][y]["collision"] = False
+                    else:
+                        screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
                                  render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
                 
@@ -149,6 +168,14 @@ class World:
                     render_pos[1] - (self.temp_tile["image"].get_height() - TILE_SIZE +15) + camera.scroll.y
                 )
             )
+        #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
+        '''
+        mouse_pos = pygame.mouse.get_pos()
+        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        txt = str(grid_pos)
+        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        '''
+
 
 
     def create_world(self): #Génère la map
