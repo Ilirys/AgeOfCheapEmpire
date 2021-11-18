@@ -43,8 +43,8 @@ class Game:
         self.benchmark = Benchmark(self.clock)
 
         #Unité
-        Worker(self.world.world[0][1], self.world,self.camera)
-        Worker(self.world.world[1][0], self.world,self.camera)
+        #Worker(self.world.world[0][1], self.world,self.camera)
+        #Worker(self.world.world[1][0], self.world,self.camera)
 
     def run(self):
         self.playing = True

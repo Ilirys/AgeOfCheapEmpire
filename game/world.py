@@ -55,7 +55,10 @@ class World:
         if self.hud.selected_tile is not None:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-            
+            collision2 = collision3 = collision4 = True
+            if self.hud.selected_tile["name"] == "House":
+                taille = 1
+            else: taille=2
             #print(grid_pos[0], grid_pos[1])
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
@@ -63,41 +66,43 @@ class World:
                 render_pos = self.world[grid_pos[0]][grid_pos[1]]["render_pos"]
                 iso_poly = self.world[grid_pos[0]][grid_pos[1]]["iso_poly"]
                 collision = self.world[grid_pos[0]][grid_pos[1]]["collision"]
-                if self.can_place_tile([grid_pos[0]+1][grid_pos[1]]):
+
+                if ((grid_pos[0]+1) < (self.grid_length_x-1)) and ((grid_pos[1]+1) < (self.grid_length_x-1)):  # détèce la collision pour la pose de batiment 2x2
                     collision2 = self.world[grid_pos[0]+1][grid_pos[1]]["collision"]
-                collision3 = self.world[grid_pos[0]][grid_pos[1]+1]["collision"]
-                collision4 = self.world[grid_pos[0]+1][grid_pos[1]+1]["collision"]
+                    collision3 = self.world[grid_pos[0]][grid_pos[1]+1]["collision"]
+                    collision4 = self.world[grid_pos[0]+1][grid_pos[1]+1]["collision"]
 
                 self.temp_tile = {
                     "image": img,
                     "render_pos": render_pos,
                     "iso_poly": iso_poly,
-                    "collision": collision
+                    "collision": collision,
+                    "taille" :  taille
                 }
                 
                 if mouse_action[0] and not collision:
-                    taille=0
+                    
                     if self.hud.selected_tile["name"] == "House":
                         ent = House(render_pos, self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                        taille=1
-                    elif ((not collision2) and (not collision3) and (not collision4)):
+
+                    elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
                         if self.hud.selected_tile["name"] == "Towncenter":
                             ent = Towncenter(render_pos, self.resource_manager)
                             self.entities.append(ent)
                             self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                            taille=2
                         if self.hud.selected_tile["name"] == "Barrack":
                             ent = Barrack(render_pos, self.resource_manager)
                             self.entities.append(ent)
                             self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                            taille=2
-                    for i in range (taille):
-                        for j in range (taille):
+
+                    for i in range (self.temp_tile["taille"]):
+                        for j in range (self.temp_tile["taille"]):
                             self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
                             self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
                     self.hud.selected_tile = None
+
         else:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
@@ -155,6 +160,7 @@ class World:
                       
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
+            print(self.temp_tile["taille"])
             iso_poly = [(x + self.grass_tiles.get_width()/2 + camera.scroll.x, y + camera.scroll.y) for x, y in iso_poly]
             if self.temp_tile["collision"]:
                 pygame.draw.polygon(screen, (255, 0, 0), iso_poly, 3)
@@ -169,12 +175,12 @@ class World:
                 )
             )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
-        '''
+        #'''
         mouse_pos = pygame.mouse.get_pos()
         grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
         txt = str(grid_pos)
         draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
-        '''
+        #'''
 
 
 
@@ -342,7 +348,7 @@ class World:
         for rect in [self.hud.resources_rect, self.hud.build_rect]:
             if rect.collidepoint(pygame.mouse.get_pos()):
                 mouse_on_panel = True
-        world_bounds = (0 <= grid_pos[0] <= self.grid_length_x) and (0 <= grid_pos[1] <= self.grid_length_x)
+        world_bounds = (0 <= grid_pos[0] <= (self.grid_length_x-1)) and (0 <= grid_pos[1] <= (self.grid_length_x-1))
 
         if world_bounds and not mouse_on_panel:
             return True
