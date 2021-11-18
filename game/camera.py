@@ -3,7 +3,6 @@ import pygame
 class Camera:
 
     def __init__(self, width, height):
-        print(width,height)
         self.width = width
         self.height = height
 

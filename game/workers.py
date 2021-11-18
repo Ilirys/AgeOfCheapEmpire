@@ -36,12 +36,7 @@ class Worker:
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
-            
-        #Saves
-        self.ID = len(self.world.entities)
-        self.save_file_path = SAVED_GAME_FOLDER + self.name + str(self.ID)
-        self.restore_save()
-        
+  
         #init    
         self.mouse_to_grid(0,0,self.camera.scroll)
         self.create_path(self.tile["grid"][0], self.tile["grid"][1])
@@ -109,7 +104,6 @@ class Worker:
 
         if self.selected:
             if mouse_action[2]:
-                print(grid_pos[0], grid_pos[1])
                 self.create_path(grid_pos[0], grid_pos[1])
                 self.selected = False 
             if mouse_action[0]:
@@ -153,30 +147,6 @@ class Worker:
             if self.temp + 0.2 >= len(self.animation):
                 self.temp= 0
         else: self.image = self.world.animation.villager_standby  
-
-    def restore_save(self):
-        try:    
-            with open(self.save_file_path, "rb") as input:
-                restore_worker_dto = pickle.load(input)
-                self.name = restore_worker_dto.name
-                self.health_points = restore_worker_dto.health_points
-                self.tile = restore_worker_dto.tile
-                self.pos_x = restore_worker_dto.pos_x
-                self.pos_y = restore_worker_dto.pos_y
-                input.close()
-        except: 
-            print("Created file")
-
-    def save(self):
-        try:    
-            with open(self.save_file_path, "wb") as output:
-                worker_dto = DTO.workerDTO.workerDTO(self.name,self.health_points,self.tile)
-                pickle.dump(worker_dto,output)
-                output.close()
-
-                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1
-                self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
-        except: print("Couldnt dump in file")  
 
 
                 

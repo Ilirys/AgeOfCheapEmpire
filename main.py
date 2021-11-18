@@ -27,7 +27,6 @@ def main():
     #implement menus
 
     #implement game
-    print(SCREEN.get_size())
     game = Game(SCREEN,clock)
     startscreen = StartScreen(SCREEN, clock)
 
