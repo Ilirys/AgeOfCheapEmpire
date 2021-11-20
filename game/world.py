@@ -59,7 +59,6 @@ class World:
             if self.hud.selected_tile["name"] == "House":
                 taille = 1
             else: taille=2
-            #print(grid_pos[0], grid_pos[1])
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
@@ -71,6 +70,7 @@ class World:
                     collision2 = self.world[grid_pos[0]+1][grid_pos[1]]["collision"]
                     collision3 = self.world[grid_pos[0]][grid_pos[1]+1]["collision"]
                     collision4 = self.world[grid_pos[0]+1][grid_pos[1]+1]["collision"]
+
 
                 self.temp_tile = {
                     "image": img,
@@ -86,6 +86,9 @@ class World:
                         ent = House(render_pos, self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                        self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
+                        self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0 
+                        self.hud.selected_tile = None
 
                     elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
                         if self.hud.selected_tile["name"] == "Towncenter":
@@ -96,12 +99,13 @@ class World:
                             ent = Barrack(render_pos, self.resource_manager)
                             self.entities.append(ent)
                             self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                            print(self.batiment[grid_pos[0]][grid_pos[1]].taille)
 
-                    for i in range (self.temp_tile["taille"]):
-                        for j in range (self.temp_tile["taille"]):
-                            self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
-                            self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
-                    self.hud.selected_tile = None
+                        for i in range (self.temp_tile["taille"]):
+                            for j in range (self.temp_tile["taille"]):
+                                self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
+                                self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
+                        self.hud.selected_tile = None
 
         else:
 
@@ -160,7 +164,6 @@ class World:
                       
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
-            print(self.temp_tile["taille"])
             iso_poly = [(x + self.grass_tiles.get_width()/2 + camera.scroll.x, y + camera.scroll.y) for x, y in iso_poly]
             if self.temp_tile["collision"]:
                 pygame.draw.polygon(screen, (255, 0, 0), iso_poly, 3)
