@@ -53,6 +53,7 @@ class World:
         if mouse_action[2]:
             self.examine_tile = None
             self.hud.examined_tile = None
+            self.hud.select_surface_empty = True
 
         self.temp_tile = None
         if self.hud.selected_tile is not None:
@@ -133,20 +134,23 @@ class World:
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
-                                self.hud.hudmoi_surface.blit(self.hud.images_hud["hudTowncenter"], (0, 0))
+                                self.hud.blit_hud("hudTowncenter")
                             elif (batiment.name=="House"):
-                                self.hud.hudmoi_surface.blit(self.hud.images_hud["hudHouse"], (0, 0))
+                                self.hud.blit_hud("hudHouse")
+                            elif (batiment.name=="Barrack"):
+                                self.hud.blit_hud("hudCaserne")
+
 
                 #draw villagers
                 worker = self.workers[x][y]
                 if worker is not None:
-                    screen.blit(worker.image, (worker.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45, worker.pos_y - worker.image.get_height() + camera.scroll.y + 50))
-                    #pygame.draw.rect(screen, (255,255,0), worker.hitbox)
                     if worker.selected:
-                        #affiche le hud du villageois (se retire pas lorsqu'on clique droit???
-                        self.hud.hudmoi_surface.blit(self.hud.images_hud["hudVillageois"], (0, 0))
+                        self.hud.blit_hud("hudVillageois")
+                        
                         #affiche le rectangle blanc autour du villageois
                         pygame.draw.polygon(screen, (255, 255, 255), worker.iso_poly, 2)
+                    screen.blit(worker.image, (worker.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45, worker.pos_y - worker.image.get_height() + camera.scroll.y + 50))
+                    #pygame.draw.rect(screen, (255,255,0), worker.hitbox)  
 
 
         if self.temp_tile is not None:

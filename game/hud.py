@@ -25,20 +25,17 @@ class Hud:
         self.resources_rect = self.resources_surface.get_rect(topleft=(0, 0))
 
         # age hud
-        self.age_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.age_surface = pygame.Surface((width*0.153, height * 0.06), pygame.SRCALPHA)
         self.age_rect = self.age_surface.get_rect(topleft=(0, 0))
-        self.age_surface.blit(self.images_hud["hudAge"],(0,0))
 
         # building hud (Bottom left) 
         self.build_surface = pygame.Surface((width * 0.32, height * 0.21), pygame.SRCALPHA)
         self.build_rect = self.build_surface.get_rect(topleft=(0, self.height * 0.79))
-        self.build_surface.fill(self.hud_colour)
 
         # select hud (Bottom right) 
-        self.select_surface = pygame.Surface((width * 0.595, height * 0.209), pygame.SRCALPHA)
+        self.select_surface = pygame.Surface((width * 0.41, height * 0.193), pygame.SRCALPHA)
         self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
-        self.select_surface.fill(self.hud_colour)
-        #self.select_surface.fill((255,0,0,175))
+        self.select_surface_empty = True
 
         self.tiles = self.create_build_hud()
         self.create_ressource_hud()
@@ -50,9 +47,13 @@ class Hud:
 
     def create_build_hud(self):
 
-        #The whole hud image, considering spliting it..? 
-        #self.hudmoi_surface.blit(self.images_hud["hudVillageois"],(0,0))
-        render_pos = [0, self.height-self.height * 0.21 + 35]
+        #self.select_surface.blit(self.images_hud["hudArcher"], (0, 0))
+
+        self.build_surface.blit(self.images_hud["hudbuild"],(0,0))
+
+        self.age_surface.blit(self.images_hud["hudAge"],(0,0))
+        
+        render_pos = [20, self.height-self.height * 0.21 + 35]
         object_width = self.build_surface.get_width() // 10
 
         tiles = []
@@ -75,7 +76,7 @@ class Hud:
                 }
             )
 
-            render_pos[0] += self.build_surface.get_width() // 7
+            render_pos[0] += self.build_surface.get_width() // 10
 
         return tiles
     
@@ -103,15 +104,18 @@ class Hud:
 
     def draw(self, screen):
 
-        #The whole hud image (screen sized) 
-        screen.blit(self.hudmoi_surface,(0,0))
+        #if not self.hudmoi_surface_empty: screen.blit(self.hudmoi_surface,(0,0))
         screen.blit(self.resources_surface,(0,0))
         #screen.blit(self.age_surface,(300,300))
+        
         # build pannel hud (Bottom left) 
         screen.blit(self.build_surface, (0, self.height-self.height * 0.21)) 
 
         #select hud (Bottom right) 
-        #screen.blit(self.select_surface, (self.width*0.405 , self.height*0.79)) 
+        if not self.select_surface_empty: screen.blit(self.select_surface, (self.width*0.599 , self.height*0.81)) 
+
+        #Top right hud
+        screen.blit(self.age_surface, (self.width * 0.85, 0))
 
         '''
         if self.examined_tile is not None:
@@ -141,6 +145,10 @@ class Hud:
             pos += 100
        '''
     
+    def blit_hud(self, imgtoblit):
+        self.select_surface_empty = False
+        self.select_surface.blit(self.images_hud[imgtoblit], (0, 0))
+
     def load_images(self):
 
         # read images
@@ -195,6 +203,7 @@ class Hud:
         hudFantassin = pygame.image.load("assets/HUD/Hud_FantassinMassue_1920-1080.png").convert_alpha()
         hudCavalier = pygame.image.load("assets/HUD/Hud_Cavalier_1920-1080.png").convert_alpha()
         hudArcher = pygame.image.load("assets/HUD/Hud_Archer_1920-1080.png").convert_alpha()
+        hudbuild = pygame.image.load("assets/HUD/build_hud.png").convert_alpha()
 
         images = {
             "hudVillageois": hudVillageois,
@@ -213,7 +222,8 @@ class Hud:
             "hudCampArchers":hudCampArchers ,
             "hudFantassin":hudFantassin,
             "hudCavalier":hudCavalier,
-            "hudArcher":hudArcher
+            "hudArcher":hudArcher,
+            "hudbuild":hudbuild
         }
         return images
 
