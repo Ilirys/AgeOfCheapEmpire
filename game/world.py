@@ -84,6 +84,7 @@ class World:
                     self.examine_tile = grid_pos
                     self.hud.examined_tile = batiment
 
+
     def create_collision_matrix(self):
         collision_matrix = [[1 for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]            
         for x in range(self.grid_length_x):

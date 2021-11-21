@@ -10,6 +10,7 @@ from .villager import *
 from pygame import *
 from .benchmark import Benchmark
 from .workers import Worker
+from .chat import Chat
 
 class Game:
 
@@ -36,6 +37,9 @@ class Game:
         #Benchmark
         self.benchmark = Benchmark(self.clock)
 
+        #Chat
+        self.chat = Chat(15, 100, 200, 30)
+
         #Unité
         #Worker(self.world.world[0][0], self.world,self.camera)
         Worker(self.world.world[0][1], self.world,self.camera)
@@ -56,6 +60,7 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            self.chat.handle_event(event)
 
 
     def update(self): 
@@ -65,6 +70,8 @@ class Game:
         self.world.update(self.camera)
         if BENCHMARK == 1: self.benchmark.update()
 
+        self.chat.update()
+
     def draw(self): #Construction graphiques
 
         self.screen.fill(BLACK) #Arrière plan
@@ -72,6 +79,8 @@ class Game:
         draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
+
+        self.chat.draw(self.screen) #Affichage du chat
         
         if BENCHMARK == 1: self.benchmark.draw(self.screen)
         pygame.display.flip()
