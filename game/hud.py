@@ -5,8 +5,9 @@ from .utils import *
 
 class Hud:
 
-    def __init__(self, width, height):
+    def __init__(self, resource_manager, width, height):
 
+        self.resource_manager = resource_manager
         self.width = width
         self.height = height
 
@@ -69,7 +70,8 @@ class Hud:
                     "name": image_name,
                     "icon": image_scale,
                     "image": self.images[image_name],
-                    "rect": rect
+                    "rect": rect,
+                    "affordable": True
                 }
             )
 
@@ -90,7 +92,11 @@ class Hud:
             self.selected_tile = None
 
         for tile in self.tiles:
-            if tile["rect"].collidepoint(mouse_pos):
+             if self.resource_manager.is_affordable(tile["name"]):
+                tile["affordable"] = True
+             else:
+                tile["affordable"] = False
+             if tile["rect"].collidepoint(mouse_pos) and tile["affordable"]:
                 if mouse_action[0]:
                     self.selected_tile = tile
 
@@ -118,7 +124,12 @@ class Hud:
             draw_text(screen, str(self.examined_tile.counter), 30, (255, 255, 255), self.select_rect.center)
         '''
         # resources (Text box top right. Should be changed) 
-        screen.blit(self.resources_surface, (0,0)) 
+        screen.blit(self.resources_surface, (0,0))
+        pos = 75
+        for resource, resource_value in self.resource_manager.resources.items():
+            txt = str(resource_value)
+            draw_text(screen, txt, 30, (255, 255, 255), (pos, 22))
+            pos += 108
         
         for tile in self.tiles:
             screen.blit(tile["icon"], tile["rect"].topleft)
@@ -136,12 +147,14 @@ class Hud:
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         house = pygame.image.load("assets/house.png").convert_alpha()
         hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
+        Barrack = pygame.image.load("assets/barrack.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
         images = {
-            "towncenter": towncenter,
-            "house": house
+            "Towncenter": Towncenter,
+            "House": House,
+            "Barrack": Barrack
         }
         return images
 
@@ -151,12 +164,14 @@ class Hud:
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         house = pygame.image.load("assets/house.png").convert_alpha()
         hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
+        Barrack = pygame.image.load("assets/barrack.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
         images = {
-            "towncenter": towncenter,
-            "house": house
+            "Towncenter": Towncenter,
+            "House": House,
+            "Barrack": Barrack
         }
         return images
 

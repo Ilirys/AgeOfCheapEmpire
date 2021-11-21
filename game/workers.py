@@ -1,11 +1,13 @@
+import json
 import pygame
 import random
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE
-
+from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, SAVED_GAME_FOLDER, TILE_SIZE
 from game.deplacement import lerp
+import pickle
+import DTO.workerDTO
 
 class Worker:
 
@@ -14,6 +16,7 @@ class Worker:
         self.world.entities.append(self)
         self.camera = camera
         self.tile = tile
+        self.health_points = 300
 
         #Visual and audio effects
         self.name = "villager"
@@ -37,9 +40,10 @@ class Worker:
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
-            
+  
+        #init    
         self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(tile["grid"][0], tile["grid"][1])
+        self.create_path(self.tile["grid"][0], self.tile["grid"][1])
 
     def create_path(self,x,y):
         searching_for_path = True
@@ -101,7 +105,7 @@ class Worker:
         
         #Animation update
         self.update_sprite()
-                
+    
         if self.selected:
             if mouse_action[2]:
                 print(grid_pos[0], grid_pos[1])
@@ -109,6 +113,7 @@ class Worker:
                 self.selected = False
             if mouse_action[0]:
                 self.selected = False
+
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -147,10 +152,7 @@ class Worker:
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
                 self.temp= 0
-        else: self.image = self.world.animation.villager_standby        
-
-
-  
+        else: self.image = self.world.animation.villager_standby  
 
 
                 

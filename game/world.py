@@ -1,16 +1,20 @@
 import pygame
 import random
 import noise
+from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
+from DTO.worldDTO import WorldDTO
 from game.Ressource import Ressource
 from .Tile import Tile
 from .definitions import *
 from .bouquet import Bouquet
 from .batiment import *
 from .animation import Animation
+import pickle
 
 class World:
 
-    def __init__(self, entities, hud, grid_length_x, grid_length_y, width, height):
+    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height):
+        self.resource_manager = resource_manager
         self.entities = entities
         self.hud = hud
         self.grid_length_x = grid_length_x  #Taille MAP
@@ -26,14 +30,21 @@ class World:
         self.collision_matrix = self.create_collision_matrix()
 
         self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
         self.animation = Animation()
 
-        self.générerCamp = self.générer_camp()
-
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.temp_tile = None
         self.examine_tile = None
+        
+        #init
+        self.map_save_file_path = SAVED_GAME_FOLDER + "world"
+        self.building_save_file_path = SAVED_GAME_FOLDER + "batiments"
+        self.workers_save_file_path = SAVED_GAME_FOLDER + "worker"
+        self.restore_save()
+        if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
    
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
@@ -47,7 +58,6 @@ class World:
         if self.hud.selected_tile is not None:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-            print(grid_pos[0], grid_pos[1])
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
@@ -63,12 +73,16 @@ class World:
                 }
                 
                 if mouse_action[0] and not collision:
-                    if self.hud.selected_tile["name"] == "towncenter":
-                        ent = Towncenter(render_pos)
+                    if self.hud.selected_tile["name"] == "Towncenter":
+                        ent = Towncenter(render_pos, self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                    elif self.hud.selected_tile["name"] == "house":
-                        ent = House(render_pos)
+                    if self.hud.selected_tile["name"] == "Barrack":
+                        ent = Barrack(render_pos, self.resource_manager)
+                        self.entities.append(ent)
+                        self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                    elif self.hud.selected_tile["name"] == "House":
+                        ent = House(render_pos, self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
@@ -103,16 +117,19 @@ class World:
                     screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
                                  render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
+                
+                #draw bâtiments    
                 batiment = self.batiment[x][y]
                 if batiment is not None:
                     screen.blit(batiment.image,
-                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x,
-                                     render_pos[1] - (batiment.image.get_height() - TILE_SIZE) + camera.scroll.y))
+                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
+                                     render_pos[1] - (batiment.image.get_height() - TILE_SIZE +15) + camera.scroll.y))
                     if self.examine_tile is not None:
                         if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
                             mask = pygame.mask.from_surface(batiment.image).outline()
-                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x, y + render_pos[1] - (batiment.image.get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask]
                             # affiche le rectangle blanc autour du batiment
+                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25, y + render_pos[1] - (batiment.image.get_height() - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
+
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
@@ -143,8 +160,8 @@ class World:
             screen.blit(
                 self.temp_tile["image"],
                 (
-                    render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x,
-                    render_pos[1] - (self.temp_tile["image"].get_height() - TILE_SIZE) + camera.scroll.y
+                    render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
+                    render_pos[1] - (self.temp_tile["image"].get_height() - TILE_SIZE +15) + camera.scroll.y
                 )
             )
 
@@ -162,19 +179,19 @@ class World:
 
                 if self.Bou.M1[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
-                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[0],"WOOD"))
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[0], LES_RESSOURCES[0]))
                     world[grid_x][grid_y]["collision"] = True
 
                     '''
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[0]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
+                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "wood"
                     world[grid_x][grid_y]["collision"] = True
                     '''
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
-                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], "FOOD"))
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], LES_RESSOURCES[1]))
                     # world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[1]
                     # world[grid_x][grid_y]["tile"].ressource.typeRessource = "FOOD"
                     world[grid_x][grid_y]["collision"] = True
@@ -182,14 +199,15 @@ class World:
                 if self.Bou.M1[grid_x][grid_y] == "gold":
 
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
-                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], "GOLD"))
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], LES_RESSOURCES[2]))
                     #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[2]
                     #world[grid_x][grid_y]["tile"].ressource.typeRessource = "GOLD"
+
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
-                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], "STONE"))
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], LES_RESSOURCES[3]))
                     #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
                     #world[grid_x][grid_y]["tile"].ressource.typeRessource = "STONE"
                     world[grid_x][grid_y]["collision"] = True
@@ -250,7 +268,7 @@ class World:
         x = 7
         y = random.randint(-4,4)
         z = random.randint(-4,4)
-        print(générateur, "\t", y, "\t", z, "\n")
+        #print(générateur, "\t", y, "\t", z, "\n")
         if générateur<0.25:
             a = x+y
             b = x+z
@@ -278,18 +296,30 @@ class World:
         self.batiment[a][b] = ent
         self.world[a][b]["collision"] = True
         '''
-        
-        self.world[a][b]["tile"].nomElement = "towncenter"
+        render_pos = self.world[a][b]["render_pos"]
+        ent = Towncenter(render_pos, self.resource_manager)
+        self.entities.append(ent)
+        self.batiment[a][b] = ent
+        #self.world[a][b]["tile"].nomElement = "Towncenter"
+        for i in range (3):
+            for j in range (3):
+                self.world[a+j][b+i]["collision"] = False
+                self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
+                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+                self.collision_matrix[b+i][a+j] = 1
         for i in range (2):
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
                 self.world[a+j][b+i]["tile"].setRessource(Ressource(0, ""))
                 #self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
                 #self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+                self.collision_matrix[b+i][a+j] = 0
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 
-        towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
+        Towncenter = pygame.image.load("assets/towncenter.png").convert_alpha()
+        House = pygame.image.load("assets/house.png").convert_alpha()
+        Barrack = pygame.image.load("assets/barrack.png").convert_alpha()
         grass = pygame.image.load("assets/grass.png").convert_alpha()
         tree = pygame.image.load("assets/tree.png").convert_alpha()
         stone = pygame.image.load("assets/stone.png").convert_alpha()
@@ -297,7 +327,9 @@ class World:
         fruit = pygame.image.load("assets/fruit.png").convert_alpha()
 
         images = {
-            "towncenter": towncenter,
+            "Towncenter": Towncenter,
+            "House": House,
+            "Barrack": Barrack,
             "grass": grass,
             "tree": tree,
             "gold": gold,
@@ -319,6 +351,69 @@ class World:
         else:
             return False
 
+    def restore_save(self):
+        #Map restore
+        try:    
+            with open(self.map_save_file_path, "rb") as input:
+                restore_world_dto = pickle.load(input)
+                self.world = restore_world_dto.world
+                self.collision_matrix = restore_world_dto.collision_matrix
+                input.close()
+        except: 
+            print("Created map save file")
+
+        #Buildings restore
+        try:    
+            with open(self.building_save_file_path, "rb") as input:
+                restore_building_dto = pickle.load(input)
+                self.batimentDTO = restore_building_dto
+                input.close()
+
+        except: 
+            print("Created building save file")  
+
+        for x in range(self.grid_length_x):
+            for y in range(self.grid_length_y):
+                if self.batimentDTO[x][y] != None:
+                    entDTO = self.batimentDTO[x][y]
+                    if entDTO.name == "Towncenter":
+                        ent = Towncenter(entDTO.pos, self.resource_manager)
+                    if entDTO.name == "House":
+                        ent = House(entDTO.pos, self.resource_manager)
+                    if entDTO.name == "Barrack":
+                        ent = Barrack(entDTO.pos, self.resource_manager)
+                    for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
+                        self.resource_manager.resources[resource] += cost  
+                    self.entities.append(ent)
+                    self.batiment[x][y] = ent     
+
+
+    def save(self):
+        try:   #Map save
+            with open(self.map_save_file_path, "wb") as output:
+                worker_dto = WorldDTO(self.world,self.collision_matrix)
+                pickle.dump(worker_dto,output)
+                output.close()
+        except: print("Couldnt dump map save in file")
+
+        #Buildings save 
+        for x in range(self.grid_length_x):
+            for y in range(self.grid_length_y):
+                if self.batiment[x][y] != None:
+                    ent = self.batiment[x][y]
+                    if ent.name == "Towncenter":
+                        entDTO = TowncenterDTO(ent.pos)
+                    if ent.name == "House":
+                        entDTO = HouseDTO(ent.pos)
+                    if ent.name == "Barrack":
+                        entDTO = BarrackDTO(ent.pos)
+                    self.batimentDTO[x][y] = entDTO
+
+        try:   
+            with open(self.building_save_file_path, "wb") as output:
+                pickle.dump(self.batimentDTO,output)
+                output.close()
+        except: print("Couldnt dump building save in file") 
 
         
 
