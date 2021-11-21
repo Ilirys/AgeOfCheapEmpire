@@ -27,7 +27,11 @@ class Worker:
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = self
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
-        
+
+        #path et path_index PAS INITIALISE (revoir cette initialisation)
+        self.path_index = 0
+        self.path = "0"
+
         #selection
         self.selected = False
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
@@ -97,18 +101,19 @@ class Worker:
         
         #Animation update
         self.update_sprite()
-
-        if self.hitbox.collidepoint(mouse_pos):
-            if mouse_action[0]:
-                self.selected = True
-                self.sound.play()
-                
                 
         if self.selected:
             if mouse_action[2]:
                 print(grid_pos[0], grid_pos[1])
                 self.create_path(grid_pos[0], grid_pos[1])
-                self.selected = False   
+                self.selected = False
+            if mouse_action[0]:
+                self.selected = False
+
+        if self.hitbox.collidepoint(mouse_pos):
+            if mouse_action[0]:
+                self.selected = True
+                self.sound.play()
 
         if self.path_index <= len(self.path) - 1:
             #animation

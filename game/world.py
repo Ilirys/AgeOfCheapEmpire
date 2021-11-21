@@ -112,15 +112,26 @@ class World:
                         if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
                             mask = pygame.mask.from_surface(batiment.image).outline()
                             mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x, y + render_pos[1] - (batiment.image.get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask]
+                            # affiche le rectangle blanc autour du batiment
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
-        
+                            #affiche hud batiment
+                            if (batiment.name=="Towncenter"):
+                                self.hud.hudmoi_surface.blit(self.hud.images_hud["hudTowncenter"], (0, 0))
+                            elif (batiment.name=="House"):
+                                self.hud.hudmoi_surface.blit(self.hud.images_hud["hudHouse"], (0, 0))
+
                 #draw villagers
                 worker = self.workers[x][y]
                 if worker is not None:
-                            #pygame.draw.rect(screen, (255,255,0), worker.hitbox)
-                            if worker.selected: pygame.draw.polygon(screen, (255, 255, 255), worker.iso_poly, 2)
-                            screen.blit(worker.image,(worker.pos_x  + self.grass_tiles.get_width()/2 + camera.scroll.x + 45, worker.pos_y -worker.image.get_height() + camera.scroll.y + 50))
-                      
+                    screen.blit(worker.image, (worker.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45, worker.pos_y - worker.image.get_height() + camera.scroll.y + 50))
+                    #pygame.draw.rect(screen, (255,255,0), worker.hitbox)
+                    if worker.selected:
+                        #affiche le hud du villageois (se retire pas lorsqu'on clique droit???
+                        self.hud.hudmoi_surface.blit(self.hud.images_hud["hudVillageois"], (0, 0))
+                        #affiche le rectangle blanc autour du villageois
+                        pygame.draw.polygon(screen, (255, 255, 255), worker.iso_poly, 2)
+
+
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
             iso_poly = [(x + self.grass_tiles.get_width()/2 + camera.scroll.x, y + camera.scroll.y) for x, y in iso_poly]
@@ -149,28 +160,38 @@ class World:
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
                 self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
 
-                if self.Bou.M1[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
+                if self.Bou.M1[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile
+                    world[grid_x][grid_y]["tile"].nomElement = "tree"
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[0],"WOOD"))
+                    world[grid_x][grid_y]["collision"] = True
+
+                    '''
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[0]
                     world[grid_x][grid_y]["tile"].ressource.typeRessource = "WOOD"
                     world[grid_x][grid_y]["collision"] = True
-                
-                if self.Bou.M1[grid_x][grid_y] == "gold":
-                    world[grid_x][grid_y]["tile"].nomElement = "gold"
-                    world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[2]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "GOLD"
-                    world[grid_x][grid_y]["collision"] = True
+                    '''
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
-                    world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[1]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "FOOD"
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], "FOOD"))
+                    # world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[1]
+                    # world[grid_x][grid_y]["tile"].ressource.typeRessource = "FOOD"
+                    world[grid_x][grid_y]["collision"] = True
+
+                if self.Bou.M1[grid_x][grid_y] == "gold":
+
+                    world[grid_x][grid_y]["tile"].nomElement = "gold"
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], "GOLD"))
+                    #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[2]
+                    #world[grid_x][grid_y]["tile"].ressource.typeRessource = "GOLD"
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
-                    world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "STONE"
+                    world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], "STONE"))
+                    #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
+                    #world[grid_x][grid_y]["tile"].ressource.typeRessource = "STONE"
                     world[grid_x][grid_y]["collision"] = True
 
         return world    
@@ -247,8 +268,9 @@ class World:
             for grid_y in range(self.grid_length_y):
                 if M2[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
                     self.world[grid_x][grid_y]["tile"].nomElement = ""
-                    self.world[grid_x][grid_y]["tile"].ressource.nbRessource = 0
-                    self.world[grid_x][grid_y]["tile"].ressource.typeRessource = ""
+                    self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
+                    #self.world[grid_x][grid_y]["tile"].ressource.nbRessource = 0
+                    #self.world[grid_x][grid_y]["tile"].ressource.typeRessource = ""
         '''
         render_pos2 = self.world[a][b]["render_pos"]
         ent = Towncenter(render_pos2)
@@ -261,8 +283,9 @@ class World:
         for i in range (2):
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
-                self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
-                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+                self.world[a+j][b+i]["tile"].setRessource(Ressource(0, ""))
+                #self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
+                #self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 

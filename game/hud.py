@@ -50,7 +50,7 @@ class Hud:
     def create_build_hud(self):
 
         #The whole hud image, considering spliting it..? 
-        self.hudmoi_surface.blit(self.images_hud["smallhud"],(0,0))
+        #self.hudmoi_surface.blit(self.images_hud["hudVillageois"],(0,0))
         render_pos = [0, self.height-self.height * 0.21 + 35]
         object_width = self.build_surface.get_width() // 10
 
@@ -100,7 +100,7 @@ class Hud:
         #The whole hud image (screen sized) 
         screen.blit(self.hudmoi_surface,(0,0))
         screen.blit(self.resources_surface,(0,0))
- 
+        #screen.blit(self.age_surface,(300,300))
         # build pannel hud (Bottom left) 
         screen.blit(self.build_surface, (0, self.height-self.height * 0.21)) 
 
@@ -135,7 +135,7 @@ class Hud:
         # read images
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         house = pygame.image.load("assets/house.png").convert_alpha()
-        smallhud = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
+        hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
@@ -150,7 +150,7 @@ class Hud:
         # read images
         towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         house = pygame.image.load("assets/house.png").convert_alpha()
-        smallhud = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
+        hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
@@ -163,14 +163,42 @@ class Hud:
     def load_images_hud(self):
 
         # read images
-        smallhud = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
+        hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
+        hudArbre= pygame.image.load("assets/HUD/Hud_Arbre_1920-1080.png").convert_alpha()
+        hudBuisson = pygame.image.load("assets/HUD/Hud_Forum_1920-1080.png").convert_alpha()
+        hudMineOr = pygame.image.load("assets/HUD/Hud_MineOr_1920-1080.png").convert_alpha()
+        hudMinePierre = pygame.image.load("assets/HUD/Hud_MinePierre_1920-1080.png").convert_alpha()
+        hudPuitStockage = pygame.image.load("assets/HUD/Hud_Puit_stockage_1920-1080.png").convert_alpha()
+        hudGrenier = pygame.image.load("assets/HUD/Hud_Grenier_1920-1080.png").convert_alpha()
+        hudHouse = pygame.image.load("assets/HUD/Hud_hutte_1920-1080.png").convert_alpha()
+        hudTowncenter = pygame.image.load("assets/HUD/Hud_Forum_1920-1080.png").convert_alpha()
+        hudEcurie = pygame.image.load("assets/HUD/Hud_Ecurie_1920-1080.png").convert_alpha()
+        hudCaserne = pygame.image.load("assets/HUD/Hud_Caserne_1920-1080.png").convert_alpha()
+        hudCampArchers = pygame.image.load("assets/HUD/Hud_CampTireArc_1920-1080.png").convert_alpha()
+        hudFantassin = pygame.image.load("assets/HUD/Hud_FantassinMassue_1920-1080.png").convert_alpha()
+        hudCavalier = pygame.image.load("assets/HUD/Hud_Cavalier_1920-1080.png").convert_alpha()
+        hudArcher = pygame.image.load("assets/HUD/Hud_Archer_1920-1080.png").convert_alpha()
 
         images = {
-            "smallhud": smallhud,
+            "hudVillageois": hudVillageois,
             "hudRessources": hudRessources,
-            "hudAge": hudAge
+            "hudAge": hudAge,
+            "hudTowncenter": hudTowncenter,
+            "hudArbre":hudArbre,
+            "hudBuisson":hudBuisson ,
+            "hudMineOr":hudMineOr ,
+            "hudMinePierre":hudMinePierre ,
+            "hudPuitStockage":hudPuitStockage ,
+            "hudGrenier":hudGrenier ,
+            "hudHouse":hudHouse ,
+            "hudEcurie":hudEcurie ,
+            "hudCaserne":hudCaserne ,
+            "hudCampArchers":hudCampArchers ,
+            "hudFantassin":hudFantassin,
+            "hudCavalier":hudCavalier,
+            "hudArcher":hudArcher
         }
         return images
 
