@@ -111,8 +111,10 @@ class Worker:
                 print(grid_pos[0], grid_pos[1])
                 self.create_path(grid_pos[0], grid_pos[1])
                 self.selected = False
+                self.world.hud.select_surface_empty = True
             if mouse_action[0]:
                 self.selected = False
+                self.world.hud.select_surface_empty = True
 
 
         if self.hitbox.collidepoint(mouse_pos):
