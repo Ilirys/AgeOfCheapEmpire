@@ -33,6 +33,12 @@ class World:
         self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
         self.animation = Animation()
 
+        self.soldier = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.horseman = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.unites = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
@@ -152,6 +158,32 @@ class World:
                     screen.blit(worker.image, (worker.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45, worker.pos_y - worker.image.get_height() + camera.scroll.y + 50))
                     #pygame.draw.rect(screen, (255,255,0), worker.hitbox)  
 
+                # draw soldiers
+                soldier = self.soldier[x][y]
+                if soldier is not None:
+                        # pygame.draw.rect(screen, (255,255,0), soldier.hitbox)
+                    if soldier.selected:
+                        pygame.draw.polygon(screen, (255, 255, 255), soldier.iso_poly, 2)
+                    screen.blit(soldier.image, (soldier.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                    soldier.pos_y - soldier.image.get_height() + camera.scroll.y + 50))
+
+                # draw horsemen
+                horseman = self.horseman[x][y]
+                if horseman is not None:
+                        # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
+                    if horseman.selected:
+                        pygame.draw.polygon(screen, (255, 255, 255), horseman.iso_poly, 2)
+                    screen.blit(horseman.image, (horseman.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                    horseman.pos_y - horseman.image.get_height() + camera.scroll.y + 50))
+
+                # draw horsemen
+                unites = self.unites[x][y]
+                if unites is not None:
+                # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
+                    if unites.selected:
+                        pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                    screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                    unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

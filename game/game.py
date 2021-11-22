@@ -16,6 +16,8 @@ from pygame import *
 from .benchmark import Benchmark
 from .workers import Worker
 from .Ressource import Ressource
+from .soldier import Soldier
+from .horseman import Horseman
 
 class Game:
 
@@ -46,8 +48,8 @@ class Game:
         self.benchmark = Benchmark(self.clock)
 
         #Unité
-        #Worker(self.world.world[0][1], self.world,self.camera)
-        #Worker(self.world.world[1][0], self.world,self.camera)
+        Horseman(self.world.world[0][1], self.world,self.camera)
+        Soldier(self.world.world[1][0], self.world,self.camera)
 
         #Save
         self.restore()
@@ -65,9 +67,9 @@ class Game:
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
             if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
-                self.resource_manager.save()
-                self.save()
-                self.world.save()
+                #self.resource_manager.save()
+                #self.save()
+                #self.world.save()
                 pygame.quit()
                 sys.exit()
 
