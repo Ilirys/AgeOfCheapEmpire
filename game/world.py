@@ -38,8 +38,10 @@ class World:
         self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
 
         self.soldier = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.soldierDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.horseman = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.horsemanDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -52,6 +54,8 @@ class World:
         self.map_save_file_path = SAVED_GAME_FOLDER + "world"
         self.building_save_file_path = SAVED_GAME_FOLDER + "batiments"
         self.workers_save_file_path = SAVED_GAME_FOLDER + "worker"
+        self.soldiers_save_file_path = SAVED_GAME_FOLDER + "soldiers"
+        self.horseman_save_file_path = SAVED_GAME_FOLDER + "horseman"
 
         #init
         self.restore_save()
@@ -150,36 +154,6 @@ class World:
                                 self.hud.blit_hud("hudHouse")
                             elif (batiment.name=="Barrack"):
                                 self.hud.blit_hud("hudCaserne")
-
-
-                #draw villagers
-                # worker = self.workers[x][y]
-                # if worker is not None:
-                #     if worker.selected:
-                #         self.hud.blit_hud("hudVillageois")
-                        
-                #         #affiche le rectangle blanc autour du villageois
-                #         pygame.draw.polygon(screen, (255, 255, 255), worker.iso_poly, 2)
-                #     screen.blit(worker.image, (worker.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45, worker.pos_y - worker.image.get_height() + camera.scroll.y + 50))
-                #     #pygame.draw.rect(screen, (255,255,0), worker.hitbox)  
-
-                # # draw soldiers
-                # soldier = self.soldier[x][y]
-                # if soldier is not None:
-                #         # pygame.draw.rect(screen, (255,255,0), soldier.hitbox)
-                #     if soldier.selected:
-                #         pygame.draw.polygon(screen, (255, 255, 255), soldier.iso_poly, 2)
-                #     screen.blit(soldier.image, (soldier.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                #     soldier.pos_y - soldier.image.get_height() + camera.scroll.y + 50))
-
-                # # draw horsemen
-                # horseman = self.horseman[x][y]
-                # if horseman is not None:
-                #     #pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
-                #     if horseman.selected:
-                #         pygame.draw.polygon(screen, (255, 255, 255), horseman.iso_poly, 2)
-                #     screen.blit(horseman.image, (horseman.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
-                #     horseman.pos_y - horseman.image.get_height() + camera.scroll.y + 55))
 
                 # draw units
                 unites = self.unites[x][y]
