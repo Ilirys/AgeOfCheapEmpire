@@ -117,16 +117,6 @@ class Hud:
         #Top right hud
         screen.blit(self.age_surface, (self.width * 0.85, 0))
 
-        '''
-        if self.examined_tile is not None:
-            w, h = self.select_rect.width, self.select_rect.height
-            screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.79))
-            img = self.examined_tile.image.copy()
-            img_scale = self.scale_image(img, h=h*0.7)
-            screen.blit(img_scale, (self.width * 0.35 + 10, self.height * 0.79 + 10))
-            draw_text(screen, self.examined_tile.name, 40, (255, 255, 255), self.select_rect.topleft)
-            draw_text(screen, str(self.examined_tile.counter), 30, (255, 255, 255), self.select_rect.center)
-        '''
         # resources (Text box top right. Should be changed) 
         screen.blit(self.resources_surface, (0,0))
         pos = 75
@@ -137,13 +127,7 @@ class Hud:
         
         for tile in self.tiles:
             screen.blit(tile["icon"], tile["rect"].topleft)
-        '''
-        # resources
-        pos = self.width - 400
-        for resource in ["wood:", "stone:", "gold:"]:
-            draw_text(screen, resource, 30, (255, 255, 255), (pos, 0))
-            pos += 100
-       '''
+
     
     def blit_hud(self, imgtoblit):
         self.select_surface_empty = False

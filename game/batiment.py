@@ -7,6 +7,7 @@ class Towncenter:
         self.image = image 
         self.name = "Towncenter"
         self.pos = pos 
+        self.taille = 2
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_manager = resource_manager
         self.resource_manager.apply_cost_to_resource(self.name)
@@ -28,6 +29,7 @@ class House:
         self.image = image 
         self.name = "House"
         self.pos = pos 
+        self.taille = 1
         self.rect = self.image.get_rect(topleft=pos) 
         self.resource_manager = resource_manager
         self.resource_manager.apply_cost_to_resource(self.name)
@@ -49,6 +51,7 @@ class Barrack:
         self.image = image 
         self.name = "Barrack"
         self.pos = pos 
+        self.taille = 2
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_manager = resource_manager
         self.resource_manager.apply_cost_to_resource(self.name)
