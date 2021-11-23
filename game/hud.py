@@ -200,7 +200,7 @@ class Hud:
         hudEcurie = pygame.image.load("assets/HUD/Hud_Ecurie_1920-1080.png").convert_alpha()
         hudCaserne = pygame.image.load("assets/HUD/Hud_Caserne_1920-1080.png").convert_alpha()
         hudCampArchers = pygame.image.load("assets/HUD/Hud_CampTireArc_1920-1080.png").convert_alpha()
-        hudFantassin = pygame.image.load("assets/HUD/Hud_FantassinMassue_1920-1080.png").convert_alpha()
+        hudSoldier = pygame.image.load("assets/HUD/Hud_FantassinMassue_1920-1080.png").convert_alpha()
         hudCavalier = pygame.image.load("assets/HUD/Hud_Cavalier_1920-1080.png").convert_alpha()
         hudArcher = pygame.image.load("assets/HUD/Hud_Archer_1920-1080.png").convert_alpha()
         hudbuild = pygame.image.load("assets/HUD/build_hud.png").convert_alpha()
@@ -220,7 +220,7 @@ class Hud:
             "hudEcurie":hudEcurie ,
             "hudCaserne":hudCaserne ,
             "hudCampArchers":hudCampArchers ,
-            "hudFantassin":hudFantassin,
+            "hudSoldier":hudSoldier,
             "hudCavalier":hudCavalier,
             "hudArcher":hudArcher,
             "hudbuild":hudbuild

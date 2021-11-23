@@ -29,26 +29,31 @@ class World:
         self.world = self.create_world()
         self.collision_matrix = self.create_collision_matrix()
 
+        self.animation = Animation()
+        
+        #Units and their corresponding save
+        self.unites = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
-        self.animation = Animation()
 
         self.soldier = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.horseman = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
-        self.unites = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
-
+        #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.temp_tile = None
         self.examine_tile = None
         
-        #init
+        #Save paths
         self.map_save_file_path = SAVED_GAME_FOLDER + "world"
         self.building_save_file_path = SAVED_GAME_FOLDER + "batiments"
         self.workers_save_file_path = SAVED_GAME_FOLDER + "worker"
+
+        #init
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
    
@@ -148,42 +153,51 @@ class World:
 
 
                 #draw villagers
-                worker = self.workers[x][y]
-                if worker is not None:
-                    if worker.selected:
-                        self.hud.blit_hud("hudVillageois")
+                # worker = self.workers[x][y]
+                # if worker is not None:
+                #     if worker.selected:
+                #         self.hud.blit_hud("hudVillageois")
                         
-                        #affiche le rectangle blanc autour du villageois
-                        pygame.draw.polygon(screen, (255, 255, 255), worker.iso_poly, 2)
-                    screen.blit(worker.image, (worker.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45, worker.pos_y - worker.image.get_height() + camera.scroll.y + 50))
-                    #pygame.draw.rect(screen, (255,255,0), worker.hitbox)  
+                #         #affiche le rectangle blanc autour du villageois
+                #         pygame.draw.polygon(screen, (255, 255, 255), worker.iso_poly, 2)
+                #     screen.blit(worker.image, (worker.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45, worker.pos_y - worker.image.get_height() + camera.scroll.y + 50))
+                #     #pygame.draw.rect(screen, (255,255,0), worker.hitbox)  
 
-                # draw soldiers
-                soldier = self.soldier[x][y]
-                if soldier is not None:
-                        # pygame.draw.rect(screen, (255,255,0), soldier.hitbox)
-                    if soldier.selected:
-                        pygame.draw.polygon(screen, (255, 255, 255), soldier.iso_poly, 2)
-                    screen.blit(soldier.image, (soldier.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                    soldier.pos_y - soldier.image.get_height() + camera.scroll.y + 50))
+                # # draw soldiers
+                # soldier = self.soldier[x][y]
+                # if soldier is not None:
+                #         # pygame.draw.rect(screen, (255,255,0), soldier.hitbox)
+                #     if soldier.selected:
+                #         pygame.draw.polygon(screen, (255, 255, 255), soldier.iso_poly, 2)
+                #     screen.blit(soldier.image, (soldier.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                #     soldier.pos_y - soldier.image.get_height() + camera.scroll.y + 50))
 
-                # draw horsemen
-                horseman = self.horseman[x][y]
-                if horseman is not None:
-                        # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
-                    if horseman.selected:
-                        pygame.draw.polygon(screen, (255, 255, 255), horseman.iso_poly, 2)
-                    screen.blit(horseman.image, (horseman.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                    horseman.pos_y - horseman.image.get_height() + camera.scroll.y + 50))
+                # # draw horsemen
+                # horseman = self.horseman[x][y]
+                # if horseman is not None:
+                #     #pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
+                #     if horseman.selected:
+                #         pygame.draw.polygon(screen, (255, 255, 255), horseman.iso_poly, 2)
+                #     screen.blit(horseman.image, (horseman.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
+                #     horseman.pos_y - horseman.image.get_height() + camera.scroll.y + 55))
 
-                # draw horsemen
+                # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
                 # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
-                    if unites.selected:
-                        pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                    screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                    unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                    if unites.name == "horseman":
+                        if unites.selected:
+                            self.hud.blit_hud("hudCavalier")
+                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
+                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
+                    
+                    else:
+                        if unites.selected:
+                            self.hud.blit_hud("hud" + unites.name)
+                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

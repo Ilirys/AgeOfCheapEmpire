@@ -9,7 +9,7 @@ from game.deplacement import lerp
 from .workers import Worker
 
 
-class Horseman:
+class Horseman(Worker):
 
     def __init__(self, tile, world, camera):
         self.world = world
@@ -36,8 +36,9 @@ class Horseman:
 
 
         # pathfinding
-        self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
+        self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
+        self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
         
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
@@ -45,7 +46,7 @@ class Horseman:
         # selection
         self.selected = False
         self.hitbox = pygame.Rect(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
-                                  self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
+                                  self.pos_y - self.image.get_height() + self.camera.scroll.y + 75, 28, 60) #Overriden
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
         self.dest_tile = 0
@@ -54,43 +55,8 @@ class Horseman:
         self.create_path(tile["grid"][0], tile["grid"][1])
         self.movestraight_animation = False
 
-    def create_path(self, x, y):
-        searching_for_path = True
-        while searching_for_path:
-            self.dest_tile = self.world.world[x][y]
-            if not self.dest_tile["collision"]:
-                self.grid = Grid(matrix=self.world.collision_matrix)
-                self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                self.end = self.grid.node(x, y)
-                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                self.path_index = 0
-                self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-                self.progression = 0
-                self.attack = False
-                searching_for_path = False
-            elif (self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]] != None):
-
-                if self.cases_libres:
-                    self.cible = self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]]
-                    self.dest_tile = self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]].cases_libres[0]
-                    self.grid = Grid(matrix=self.world.collision_matrix)
-                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                    self.end = self.grid.node(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
-                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                    self.path_index = 0
-                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
-                    self.progression = 0
-                    self.attack = True
-
-                    searching_for_path = False
-
-
-            else:
-                break
-
-                # create_path(self,x+1)
-
+    #Override
     def change_tile(self, new_tile):
         self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.unites[new_tile[0]][new_tile[1]] = self
@@ -98,24 +64,7 @@ class Horseman:
         self.world.horseman[new_tile[0]][new_tile[1]] = self
         self.tile = self.world.world[new_tile[0]][new_tile[1]]
 
-    def mouse_to_grid(self, x, y, scroll):
-        # transform to world position (removing camera scroll and offset)
-        world_x = x - scroll.x - self.world.grass_tiles.get_width() / 2
-        world_y = y - scroll.y
-        # transform to cart (inverse of cart_to_iso)
-        cart_y = (2 * world_y - world_x) / 2
-        cart_x = cart_y + world_x
-        # transform to grid coordinates
-        grid_x = int(cart_x // TILE_SIZE)
-        grid_y = int(cart_y // TILE_SIZE)
-
-        if grid_x > 49: grid_x = 49
-        if grid_x < 0: grid_x = 0
-        if grid_y > 49: grid_y = 49
-        if grid_y < 0: grid_y = 0
-
-        return grid_x, grid_y
-
+    #Override
     def update(self):
 
         # Updating mouse position and action and the grid_pos
@@ -125,11 +74,11 @@ class Horseman:
 
         # Hitbox
         self.hitbox.update(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
-                           self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
+                           self.pos_y - self.image.get_height() + self.camera.scroll.y + 75, 28, 60)    #Overriden
 
         # Selection polygon
         pos_poly = [self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
-                    self.pos_y - self.image.get_height() + self.camera.scroll.y + 50]
+                    self.pos_y - self.image.get_height() + self.camera.scroll.y + 75]
         self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] + 44), (pos_poly[0] + 15, pos_poly[1] + 29),
                          (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15, pos_poly[1] + 59)]
 
@@ -146,21 +95,26 @@ class Horseman:
 
         self.cases_libres_a()
 
-        if self.hitbox.collidepoint(mouse_pos):
-            if mouse_action[0]:
-                self.selected = True
-                self.sound.play()
 
         if self.selected:
             if mouse_action[2]:
                 self.create_path(grid_pos[0], grid_pos[1])
                 self.selected = False
+                self.world.hud.select_surface_empty = True
+            if mouse_action[0]:
+                self.selected = False
+                self.world.hud.select_surface_empty = True    
 
         if self.dest_tile == self.tile:
             if self.attack:
                 self.cible.pv -= self.dmg
                 #self.animation = self.world.animation.horseman_attack
                 print(self.cible.pv)
+
+        if self.hitbox.collidepoint(mouse_pos):
+            if mouse_action[0]:
+                self.selected = True
+                self.sound.play()
 
         if self.path_index <= len(self.path) - 1:
             self.animation
@@ -192,7 +146,8 @@ class Horseman:
 
         else:
             self.movestraight_animation = False
-
+    
+    #Override
     def update_sprite(self):
         if self.movestraight_animation == True:
             self.temp += 0.2
@@ -207,35 +162,3 @@ class Horseman:
             if self.temp + 0.2 >= len(self.sprites):
                 self.temp = 0
                 self.movestraight_animation = False
-
-    def cases_libres_a(self):
-        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] + 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1])
-
-        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] + 0 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0])
-
-        if self.tile["grid"][0] + 0 < self.world.grid_length_x and self.tile["grid"][1] + 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1])
-
-        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1])
-
-        if self.tile["grid"][0] - 1 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1])
-
-        if self.tile["grid"][0] - 1 < self.world.grid_length_x and self.tile["grid"][1] + 0 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 0]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 0])
-
-        if self.tile["grid"][0] + 0 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1])
-
-        else:
-            pass

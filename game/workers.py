@@ -20,7 +20,7 @@ class Worker:
         self.dmg = 5
         self.range = 2
         #Visual and audio effects
-        self.name = "villager"
+        self.name = "Villageois"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         self.temp = 0
         self.animation = self.world.animation.villager_walk
@@ -139,7 +139,6 @@ class Worker:
     
         if self.selected:
             if mouse_action[2]:
-                print(grid_pos[0], grid_pos[1])
                 self.create_path(grid_pos[0], grid_pos[1])
                 self.selected = False
                 self.world.hud.select_surface_empty = True
