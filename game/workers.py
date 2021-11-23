@@ -16,10 +16,11 @@ class Worker:
         self.world.entities.append(self)
         self.camera = camera
         self.tile = tile
-        self.health_points = 300
-
+        self.pv = 2000
+        self.dmg = 5
+        self.range = 2
         #Visual and audio effects
-        self.name = "villager"
+        self.name = "Villageois"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         self.temp = 0
         self.animation = self.world.animation.villager_walk
@@ -28,22 +29,28 @@ class Worker:
 
         # pathfinding 
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = self
+        self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
 
         #path et path_index PAS INITIALISE (revoir cette initialisation)
-        self.path_index = 0
-        self.path = "0"
+        #self.path_index = 0
+        #self.path = "0"
 
         #selection
         self.selected = False
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
-  
+        self.cible = self
+        self.dest_tile = 0
         #init    
         self.mouse_to_grid(0,0,self.camera.scroll)
         self.create_path(self.tile["grid"][0], self.tile["grid"][1])
+        self.attack = False
+        self.cases_libres = []
+
+
 
     def create_path(self,x,y):
         searching_for_path = True
@@ -60,11 +67,33 @@ class Worker:
                 self.progression = 0
 
                 searching_for_path = False
-            else: break    
+            elif (self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]] != None):
+
+                if self.cases_libres:
+                    self.cible = self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]]
+                    self.dest_tile = self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]].cases_libres[0]
+                    self.grid = Grid(matrix=self.world.collision_matrix)
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
+                    self.end = self.grid.node(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                    self.path_index = 0
+                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
+                    self.progression = 0
+                    self.attack = True
+
+                    searching_for_path = False
+
+
+            else:
+                break
+
+                # create_path(self,x+1)
 
     def change_tile(self,new_tile):
         self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.workers[new_tile[0]][new_tile[1]] = self
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[new_tile[0]][new_tile[1]] = self
         self.tile = self.world.world[new_tile[0]][new_tile[1]]
 
     def mouse_to_grid(self, x, y, scroll):
@@ -105,10 +134,11 @@ class Worker:
         
         #Animation update
         self.update_sprite()
+
+        self.cases_libres_a()
     
         if self.selected:
             if mouse_action[2]:
-                print(grid_pos[0], grid_pos[1])
                 self.create_path(grid_pos[0], grid_pos[1])
                 self.selected = False
                 self.world.hud.select_surface_empty = True
@@ -116,6 +146,11 @@ class Worker:
                 self.selected = False
                 self.world.hud.select_surface_empty = True
 
+        if self.dest_tile == self.tile:
+            if self.attack:
+                self.cible.pv -= self.dmg
+                # self.animation = self.world.animation._attack
+                print(self.cible.pv)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -141,6 +176,7 @@ class Worker:
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
+                self.cases_libres = []
                 self.path_index += 1
                 self.progression = 0
         else:
@@ -157,4 +193,36 @@ class Worker:
         else: self.image = self.world.animation.villager_standby  
 
 
-                
+
+    def cases_libres_a(self):
+        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] + 1 < self.world.grid_length_y:
+            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["collision"] == False):
+                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1])
+
+        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] + 0 < self.world.grid_length_y:
+            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["collision"] == False):
+                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0])
+
+        if self.tile["grid"][0] + 0 < self.world.grid_length_x and self.tile["grid"][1] + 1 < self.world.grid_length_y:
+            if (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["collision"] == False):
+                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1])
+
+        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
+            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["collision"] == False):
+                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1])
+
+        if self.tile["grid"][0] - 1 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
+            if (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["collision"] == False):
+                self.cases_libres.append(self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1])
+
+        if self.tile["grid"][0] - 1 < self.world.grid_length_x and self.tile["grid"][1] + 0 < self.world.grid_length_y:
+            if (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 0]["collision"] == False):
+                self.cases_libres.append(self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 0])
+
+        if self.tile["grid"][0] + 0 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
+            if (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["collision"] == False):
+                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1])
+
+        else:
+            pass
+
