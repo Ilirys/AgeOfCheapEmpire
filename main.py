@@ -8,6 +8,7 @@ from game.font import *
 from pygame.locals import *
 from game.ecranDemarrage import StartScreen
 from game.bouquet import Bouquet
+from game.ecranSave import Save
 
 
 def main():
@@ -29,11 +30,14 @@ def main():
     #implement game
     game = Game(SCREEN,clock)
     startscreen = StartScreen(SCREEN, clock)
+    menuscreen = Save(SCREEN, clock)
+
 
     while running:
 
         # start menu goes here
-        #startscreen.ecran_demarrage()
+        startscreen.ecran_demarrage()
+        # menuscreen.ecran_options()
         while playing:
             # game loop here
             game.run()
