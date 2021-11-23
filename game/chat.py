@@ -4,16 +4,17 @@ import pygame as pg
 pg.init()
 pg.font.init()
 
-COLOR_INACTIVE = pg.Color('lightskyblue3')
-COLOR_ACTIVE = pg.Color('dodgerblue2')
+COLOR_INACTIVE = pg.Color(127,127,127)
+COLOR_ACTIVE = pg.Color(255,255,255)
 FONT = pg.font.SysFont('arial', 20)
 
 
 class Chat:
 
-    def __init__(self, x, y, w, h, text=''):
+    def __init__(self, resource_manager, x, y, w, h, text=''):
+        self.resource_manager = resource_manager
         self.rect = pg.Rect(x, y, w, h)
-        self.color = pg.Color('lightskyblue3')
+        self.color = COLOR_INACTIVE
         self.text = text
         self.txt_surface = FONT.render(text, True, self.color)
         self.active = False
@@ -32,6 +33,10 @@ class Chat:
             if self.active:
                 if event.key == pg.K_RETURN:
                     print(self.text)
+                    if self.text == "NINJALUI":
+                        self.resource_manager.resources["wood"] += 10000
+                        self.resource_manager.resources["stone"] += 10000
+
                     self.text = ''
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]
