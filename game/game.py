@@ -51,7 +51,7 @@ class Game:
         self.benchmark = Benchmark(self.clock)
 
         #Chat
-        self.chat = Chat(self.resource_manager, 15, 100, 200, 30)
+        self.chat = Chat(self.world, self.camera, self.resource_manager, 15, 100, 200, 30)
 
         #Unité
         # Worker(self.world.world[0][0], self.world,self.camera)
