@@ -139,7 +139,7 @@ class World:
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
                 if nomElement != "":
-                    if self.world[x][y]["tile"].ressource.nbRessource == 0:
+                    if self.world[x][y]["tile"].ressource.nbRessources == 0:
                         self.world[x][y]["tile"].nomElement=""
                         self.world[x][y]["tile"].ressource.nbRessource = ""
                         self.world[x][y]["tile"].ressource.typeRessource = ""
