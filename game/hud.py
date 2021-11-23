@@ -132,7 +132,7 @@ class Hud:
         pos = 75
         for resource, resource_value in self.resource_manager.resources.items():
             txt = str(resource_value)
-            draw_text(screen, txt, 30, (255, 255, 255), (pos, 22))
+            draw_text(screen, txt, 20, (255, 255, 255), (pos, 22))
             pos += 108
         
         for tile in self.tiles:
