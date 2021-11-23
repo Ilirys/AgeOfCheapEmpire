@@ -36,17 +36,13 @@ class Options:
             mx, my = pygame.mouse.get_pos()  # récupération des clics de souris
 
             button_ok = pygame.Rect(600, 900, 280, 40)  # les boutons (ici, invisibles) -> bouton ok
-            button_save = pygame.Rect(900, 900, 280, 40)
             button_normal = pygame.Rect(170, 250, 15, 15)
             button_fast = pygame.Rect(170, 350, 15, 15)
 
             if button_ok.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (594, 902, 277, 40), 3)
                 if click:
-                    ecran_demarrage = StartScreen(self.screen, self.clock)
-                    ecran_demarrage.ecran_demarrage()
-            #if button_save.collidepoint((mx, my)):
-                #if click:
-                    #fonction sauvegarde david
+                    self.playing=False
             if button_normal.collidepoint((mx, my)):
                 if click:
                     aff = 1
@@ -60,7 +56,6 @@ class Options:
             # dessin des boutons pour s'assurer de leur bonne position
             #commentez les 3 lignes pour enlever les rectangles jaunes
             #pygame.draw.rect(self.screen, (255, 215, 50), button_ok)
-            #pygame.draw.rect(self.screen, (255, 215, 50), button_save)
             #pygame.draw.rect(self.screen, (255, 215, 50), button_fast)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_normal)
 

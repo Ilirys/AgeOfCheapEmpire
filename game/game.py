@@ -10,6 +10,7 @@ from .villager import *
 from pygame import *
 from .benchmark import Benchmark
 from .workers import Worker
+from .ecranSave import *
 
 class Game:
 
@@ -72,6 +73,8 @@ class Game:
         draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
+
+
         
         if BENCHMARK == 1: self.benchmark.draw(self.screen)
         pygame.display.flip()
