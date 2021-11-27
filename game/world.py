@@ -97,13 +97,13 @@ class World:
                     "render_pos": render_pos,
                     "iso_poly": iso_poly,
                     "collision": collision,
-                    "taille" :  taille
+                    "name" :  self.hud.selected_tile["name"]
                 }
                 
                 if mouse_action[0] and not collision:
                     
-                    if self.hud.selected_tile["name"] == "House":
-                        ent = House(render_pos, self.resource_manager)
+                    if dicoBatiment[self.hud.selected_tile["name"]][1] == 1:
+                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
@@ -111,18 +111,11 @@ class World:
                         self.hud.selected_tile = None
 
                     elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
-                        if self.hud.selected_tile["name"] == "Towncenter":
-                            ent = Towncenter(render_pos, self.resource_manager)
-                            self.entities.append(ent)
-                            self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                        if self.hud.selected_tile["name"] == "Barrack":
-                            ent = Barrack(render_pos, self.resource_manager)
-                            self.entities.append(ent)
-                            self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                            print(self.batiment[grid_pos[0]][grid_pos[1]].taille)
-
-                        for i in range (self.temp_tile["taille"]):
-                            for j in range (self.temp_tile["taille"]):
+                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
+                        self.entities.append(ent)
+                        self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                        for i in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
+                            for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
                                 self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
                         self.hud.selected_tile = None
@@ -175,7 +168,6 @@ class World:
                             mask = pygame.mask.from_surface(batiment.image).outline()
                             # affiche le rectangle blanc autour du batiment
                             mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25, y + render_pos[1] - (batiment.image.get_height() - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
-
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
@@ -254,24 +246,17 @@ class World:
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], LES_RESSOURCES[1]))
-                    # world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[1]
-                    # world[grid_x][grid_y]["tile"].ressource.typeRessource = "FOOD"
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "gold":
 
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], LES_RESSOURCES[2]))
-                    #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[2]
-                    #world[grid_x][grid_y]["tile"].ressource.typeRessource = "GOLD"
-
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], LES_RESSOURCES[3]))
-                    #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
-                    #world[grid_x][grid_y]["tile"].ressource.typeRessource = "STONE"
                     world[grid_x][grid_y]["collision"] = True
 
         return world    
@@ -349,20 +334,13 @@ class World:
                 if M2[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
                     self.world[grid_x][grid_y]["tile"].nomElement = ""
                     self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
-                    #self.world[grid_x][grid_y]["tile"].ressource.nbRessource = 0
-                    #self.world[grid_x][grid_y]["tile"].ressource.typeRessource = ""
-        '''
-        render_pos2 = self.world[a][b]["render_pos"]
-        ent = Towncenter(render_pos2)
-        self.entities.append(ent)
-        self.batiment[a][b] = ent
-        self.world[a][b]["collision"] = True
-        '''
+                    self.world[grid_x][grid_y]["collision"] = False
+
+
         render_pos = self.world[a][b]["render_pos"]
-        ent = Towncenter(render_pos, self.resource_manager)
+        ent = Batiment(render_pos, "Towncenter", self.resource_manager) # (Towncenter(render_pos, self.resource_manager)
         self.entities.append(ent)
         self.batiment[a][b] = ent
-        #self.world[a][b]["tile"].nomElement = "Towncenter"
         for i in range (3):
             for j in range (3):
                 self.world[a+j][b+i]["collision"] = False
@@ -373,8 +351,6 @@ class World:
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
                 self.world[a+j][b+i]["tile"].setRessource(Ressource(0, ""))
-                #self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
-                #self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
                 self.collision_matrix[b+i][a+j] = 0
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
@@ -438,12 +414,7 @@ class World:
             for y in range(self.grid_length_y):
                 if self.batimentDTO[x][y] != None:
                     entDTO = self.batimentDTO[x][y]
-                    if entDTO.name == "Towncenter":
-                        ent = Towncenter(entDTO.pos, self.resource_manager)
-                    if entDTO.name == "House":
-                        ent = House(entDTO.pos, self.resource_manager)
-                    if entDTO.name == "Barrack":
-                        ent = Barrack(entDTO.pos, self.resource_manager)
+                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager)
                     for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
                         self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)

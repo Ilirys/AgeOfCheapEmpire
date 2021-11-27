@@ -3,7 +3,6 @@ import pygame
 import sys
 
 from pygame.image import save
-
 from DTO.workerDTO import workerDTO
 from DTO.soldierDTO import soldierDTO
 from DTO.horsemanDTO import horsemanDTO
@@ -54,9 +53,9 @@ class Game:
         self.chat = Chat(self.resource_manager, 15, 100, 200, 30)
 
         #Unité
-        # Worker(self.world.world[0][0], self.world,self.camera)
-        # Horseman(self.world.world[0][1], self.world,self.camera)
-        # Soldier(self.world.world[1][0], self.world,self.camera)
+        #Worker(self.world.world[0][0], self.world,self.camera)
+        #Horseman(self.world.world[0][1], self.world,self.camera)
+        #Soldier(self.world.world[1][0], self.world,self.camera)
 
         #Save
         self.restore()
