@@ -1,4 +1,5 @@
 import json
+from numpy import delete
 import pygame
 import random
 from pathfinding.core.diagonal_movement import DiagonalMovement
@@ -11,12 +12,12 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera):
+    def __init__(self,tile,world,camera,pv=2000):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
         self.tile = tile
-        self.pv = 2000
+        self.pv = pv
         self.dmg = 5
         self.range = 2
         #Visual and audio effects
@@ -149,6 +150,7 @@ class Worker:
         if self.dest_tile == self.tile:
             if self.attack:
                 self.cible.pv -= self.dmg
+                if self.cible.pv <= 0: self.attack = False
                 # self.animation = self.world.animation._attack
                 print(self.cible.pv)
 
@@ -225,4 +227,13 @@ class Worker:
 
         else:
             pass
+
+    def delete(self):
+        self.world.entities.remove(self)
+
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+        self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None        
 

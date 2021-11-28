@@ -54,9 +54,9 @@ class Game:
         self.chat = Chat(self.resource_manager, 15, 100, 200, 30)
 
         #Unité
-        # Worker(self.world.world[0][0], self.world,self.camera)
-        # Horseman(self.world.world[0][1], self.world,self.camera)
-        # Soldier(self.world.world[1][0], self.world,self.camera)
+        #Worker(self.world.world[0][0], self.world,self.camera)
+        #Horseman(self.world.world[0][1], self.world,self.camera)
+        #Soldier(self.world.world[1][0], self.world,self.camera)
 
         #Save
         self.restore()
@@ -154,7 +154,7 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_workers_dto[x][y] != None:
                             currentworkerDTO = restore_workers_dto[x][y]
-                            Worker(currentworkerDTO.tile,self.world,self.camera)
+                            Worker(currentworkerDTO.tile,self.world,self.camera,currentworkerDTO.health_points)
         except: 
             print("Created worker file")     
 
@@ -166,7 +166,7 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_soldiers_dto[x][y] != None:
                             currentsoldierDTO = restore_soldiers_dto[x][y]
-                            Soldier(currentsoldierDTO.tile,self.world,self.camera)
+                            Soldier(currentsoldierDTO.tile,self.world,self.camera, currentsoldierDTO.pv)
         except: 
             print("Created soldier file") 
 
@@ -178,7 +178,7 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_horseman_dto[x][y] != None:
                             currenthorsemanDTO = restore_horseman_dto[x][y]
-                            Horseman(currenthorsemanDTO.tile,self.world,self.camera)
+                            Horseman(currenthorsemanDTO.tile,self.world,self.camera, currenthorsemanDTO.pv)
         except: 
             print("Created horseman file")      
 

@@ -188,20 +188,23 @@ class World:
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
-                # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
-                    if unites.name == "horseman":
-                        if unites.selected:
-                            self.hud.blit_hud("hudCavalier")
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
-                    
+                    if unites.pv > 0:
+                        # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
+                        if unites.name == "horseman":
+                            if unites.selected:
+                                self.hud.blit_hud("hudCavalier")
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
+
+                        else:
+                            if unites.selected:
+                                self.hud.blit_hud("hud" + unites.name)
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
                     else:
-                        if unites.selected:
-                            self.hud.blit_hud("hud" + unites.name)
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                        unites.delete()        
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

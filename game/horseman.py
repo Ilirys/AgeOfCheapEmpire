@@ -11,7 +11,7 @@ from .workers import Worker
 
 class Horseman(Worker):
 
-    def __init__(self, tile, world, camera):
+    def __init__(self, tile, world, camera, pv=2000):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
@@ -22,7 +22,7 @@ class Horseman(Worker):
         self.name = "horseman"
         self.range = 1
         self.dmg = 5
-        self.pv = 2000
+        self.pv = pv
         self.temp = 0
         self.animation = self.world.animation.horseman_walk
         self.movestraight_animation = True
@@ -162,3 +162,13 @@ class Horseman(Worker):
             if self.temp + 0.2 >= len(self.sprites):
                 self.temp = 0
                 self.movestraight_animation = False
+
+    #Override
+    def delete(self):
+        self.world.entities.remove(self)
+
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+        self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None               
