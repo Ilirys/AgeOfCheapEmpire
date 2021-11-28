@@ -6,7 +6,8 @@ class Towncenter:
         image = pygame.image.load("assets/towncenter.png").convert_alpha()
         self.image = image 
         self.name = "Towncenter"
-        self.pos = pos 
+        self.pos = pos
+        self.pv = 100 
         self.taille = 2
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_manager = resource_manager
@@ -28,7 +29,8 @@ class House:
         image = pygame.image.load("assets/house.png").convert_alpha() 
         self.image = image 
         self.name = "House"
-        self.pos = pos 
+        self.pos = pos
+        self.pv = 100 
         self.taille = 1
         self.rect = self.image.get_rect(topleft=pos) 
         self.resource_manager = resource_manager
@@ -50,7 +52,8 @@ class Barrack:
         image = pygame.image.load("assets/barrack.png").convert_alpha()
         self.image = image 
         self.name = "Barrack"
-        self.pos = pos 
+        self.pos = pos
+        self.pv = 100 
         self.taille = 2
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_manager = resource_manager

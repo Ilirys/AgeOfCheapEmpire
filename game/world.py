@@ -179,11 +179,11 @@ class World:
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
-                                self.hud.blit_hud("hudTowncenter")
+                                self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
                             elif (batiment.name=="House"):
-                                self.hud.blit_hud("hudHouse")
+                                self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
                             elif (batiment.name=="Barrack"):
-                                self.hud.blit_hud("hudCaserne")
+                                self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
 
                 # draw units
                 unites = self.unites[x][y]
