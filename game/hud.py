@@ -37,6 +37,9 @@ class Hud:
         self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
         self.select_surface_empty = True
 
+        #fonts for units hp
+        self.font = pygame.font.SysFont("arialblack", 10)
+
         self.tiles = self.create_build_hud()
         self.create_ressource_hud()
 
@@ -112,7 +115,9 @@ class Hud:
         screen.blit(self.build_surface, (0, self.height-self.height * 0.21)) 
 
         #select hud (Bottom right) 
-        if not self.select_surface_empty: screen.blit(self.select_surface, (self.width*0.599 , self.height*0.81)) 
+        if not self.select_surface_empty: 
+            screen.blit(self.select_surface, (self.width*0.599 , self.height*0.81))
+            screen.blit(self.unit_pv_img, (round(self.width * 0.64), round(self.height * 0.96))) 
 
         #Top right hud
         screen.blit(self.age_surface, (self.width * 0.85, 0))
@@ -129,9 +134,11 @@ class Hud:
             screen.blit(tile["icon"], tile["rect"].topleft)
 
     
-    def blit_hud(self, imgtoblit):
+    def blit_hud(self, imgtoblit, pv, screen):
         self.select_surface_empty = False
         self.select_surface.blit(self.images_hud[imgtoblit], (0, 0))
+        self.unit_pv_img = self.font.render(pv, True, WHITE)
+        
 
     def load_images(self):
 
