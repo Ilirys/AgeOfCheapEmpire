@@ -12,49 +12,22 @@ from .workers import Worker
 class Horseman(Worker):
 
     def __init__(self, tile, world, camera, pv=2000):
-        self.world = world
-        self.world.entities.append(self)
-        self.camera = camera
+        super().__init__(tile, world, camera, pv=2000)
 
-        self.tile = tile
-        self.cases_libres = []
         # Visual and audio effects
         self.name = "horseman"
-        self.range = 1
-        self.dmg = 5
-        self.pv = pv
-        self.temp = 0
         self.animation = self.world.animation.horseman_walk
-        self.movestraight_animation = True
-
-        self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
-
-        self.sprites = []
-        self.current_sprite = 0
-        self.sprites.append(pygame.image.load('assets\horseman\Scoutwalk001.png'))
-        self.image = self.sprites[self.current_sprite]
-
+        self.image = pygame.image.load('assets\horseman\Scoutwalk001.png').convert_alpha()
 
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
-        
-        self.pos_x = tile["render_pos"][0]
-        self.pos_y = tile["render_pos"][1]
-        self.cible = self
+
         # selection
-        self.selected = False
         self.hitbox = pygame.Rect(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
                                   self.pos_y - self.image.get_height() + self.camera.scroll.y + 75, 28, 60) #Overriden
-        iso_poly = self.tile["iso_poly"]
-        self.iso_poly = None
-        self.dest_tile = 0
-        self.attack = False
-        self.mouse_to_grid(0, 0, self.camera.scroll)
-        self.create_path(tile["grid"][0], tile["grid"][1])
-        self.movestraight_animation = False
-
+    
 
     #Override
     def change_tile(self, new_tile):
@@ -148,20 +121,13 @@ class Horseman(Worker):
     
     #Override
     def update_sprite(self):
-        if self.movestraight_animation == True:
-            self.temp += 0.2
-
-            self.image = self.animation[int(self.temp)]
-            if self.temp + 0.2 >= len(self.animation):
-                self.temp = 0
-        else:
-            self.image = self.world.animation.horseman_standby
-
-            self.current_sprite = int(self.temp)
-            if self.temp + 0.2 >= len(self.sprites):
-                self.temp = 0
-                self.movestraight_animation = False
-
+       if self.movestraight_animation == True:
+           self.temp +=0.2
+           self.image = self.animation[int(self.temp)]
+           if self.temp + 0.2 >= len(self.animation):
+               self.temp= 0
+       else: self.image = self.world.animation.horseman_standby 
+       
     #Override
     def delete(self):
         self.world.entities.remove(self)
