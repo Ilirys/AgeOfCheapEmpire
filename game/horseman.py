@@ -93,7 +93,6 @@ class Horseman(Worker):
 
         self.update_sprite()
 
-        self.cases_libres_a()
 
 
         if self.selected:

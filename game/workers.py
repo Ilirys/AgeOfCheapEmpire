@@ -33,6 +33,7 @@ class Worker:
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
+        self.temp_tile = None       #Utilisé pour enlever et remettre la collision de la case d'une unite lors du pathfinding de l'attaque
 
         #path et path_index PAS INITIALISE (revoir cette initialisation)
         #self.path_index = 0
@@ -49,7 +50,7 @@ class Worker:
         self.mouse_to_grid(0,0,self.camera.scroll)
         self.create_path(self.tile["grid"][0], self.tile["grid"][1])
         self.attack = False
-        self.cases_libres = []
+
 
 
 
@@ -68,23 +69,29 @@ class Worker:
                 self.progression = 0
 
                 searching_for_path = False
-            elif (self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]] != None):
+            elif (self.world.unites[x][y] != None): #Si la case contient une unitées, pathfinding attaque
+                #On enleve la collision de la case du soldat (Or else can't get find_path to work)
+                self.temp_tile = self.world.world[x][y] 
+                self.world.world[x][y]["collision"] = False
+                self.world.collision_matrix[y][x] = 1
+                
+                self.grid = Grid(matrix=self.world.collision_matrix)
+                self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])    
+                self.end = self.grid.node(x, y)  
+                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                self.path_index = 0
+                self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-                if self.cases_libres:
-                    self.cible = self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]]
-                    self.dest_tile = self.world.unites[self.dest_tile["grid"][0]][self.dest_tile["grid"][1]].cases_libres[0]
-                    self.grid = Grid(matrix=self.world.collision_matrix)
-                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                    self.end = self.grid.node(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
-                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                    self.path_index = 0
-                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
-                    self.progression = 0
-                    self.attack = True
+                #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
+                self.path.pop() 
+                self.cible = self.world.unites[x][y]
+                self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]
+                self.attack = True
 
-                    searching_for_path = False
+                self.progression = 0
 
-
+                searching_for_path = False
+                
             else:
                 break
 
@@ -136,7 +143,6 @@ class Worker:
         #Animation update
         self.update_sprite()
 
-        self.cases_libres_a()
     
         if self.selected:
             if mouse_action[2]:
@@ -181,6 +187,12 @@ class Worker:
                 self.cases_libres = []
                 self.path_index += 1
                 self.progression = 0
+
+                if self.temp_tile:
+                    self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                    self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
+                    self.temp_tile = None
+
         else:
             self.movestraight_animation = False
         
@@ -193,40 +205,6 @@ class Worker:
             if self.temp + 0.2 >= len(self.animation):
                 self.temp= 0
         else: self.image = self.world.animation.villager_standby  
-
-
-
-    def cases_libres_a(self):
-        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] + 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1])
-
-        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] + 0 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0])
-
-        if self.tile["grid"][0] + 0 < self.world.grid_length_x and self.tile["grid"][1] + 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1])
-
-        if self.tile["grid"][0] + 1 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1])
-
-        if self.tile["grid"][0] - 1 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1])
-
-        if self.tile["grid"][0] - 1 < self.world.grid_length_x and self.tile["grid"][1] + 0 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 0]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 0])
-
-        if self.tile["grid"][0] + 0 < self.world.grid_length_x and self.tile["grid"][1] - 1 < self.world.grid_length_y:
-            if (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["collision"] == False):
-                self.cases_libres.append(self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1])
-
-        else:
-            pass
 
     def delete(self):
         self.world.entities.remove(self)

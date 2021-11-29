@@ -11,13 +11,12 @@ from .workers import Worker
 class Soldier(Worker):
 
     def __init__(self, tile, world, camera, pv=2000):
-        super().__init__(tile,world,camera)
+        super().__init__(tile, world, camera, pv=2000)
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
 
         self.tile = tile
-        self.cases_libres = []
         # Visual and audio effects
         self.name = "Soldier"
         self.range = 2
