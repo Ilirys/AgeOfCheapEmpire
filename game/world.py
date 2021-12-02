@@ -171,16 +171,25 @@ class World:
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
+                                self.hud.display_unit_icons = False 
                                 self.hud.blit_hud("hudTowncenter")
                             elif (batiment.name=="House"):
+                                self.hud.display_unit_icons = False 
                                 self.hud.blit_hud("hudHouse")
                             elif (batiment.name=="Barrack"):
+                                self.hud.display_unit_icons = True
                                 self.hud.blit_hud("hudCaserne")
+                    elif not self.examine_tile:
+                        self.hud.display_unit_icons = False                
 
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
                 # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
+                    if unites.name == "Villageois":
+                        if unites.selected:
+                            self.hud.display_building_icons = True
+                    
                     if unites.name == "horseman":
                         if unites.selected:
                             self.hud.blit_hud("hudCavalier")

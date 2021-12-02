@@ -16,6 +16,7 @@ class Hud:
         self.images = self.load_images()
         self.images_hud = self.load_images_hud()
         self.images_scale = self.load_images_scale()
+        self.images_icons = self.load_unit_icons()
 
         #Screen sized hud 
         self.hudmoi_surface = pygame.Surface((width,height),pygame.SRCALPHA) 
@@ -37,9 +38,15 @@ class Hud:
         self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
         self.select_surface_empty = True
 
+        #Display unit and building icons boolean
+        self.display_unit_icons = False
+        self.display_building_icons = False
+
+        self.unit_icons = []
         self.tiles = self.create_build_hud()
         self.create_ressource_hud()
 
+        self.selected_unit_icon = None
         self.selected_tile = None
         self.examined_tile = None
 
@@ -47,16 +54,16 @@ class Hud:
 
     def create_build_hud(self):
 
-        #self.select_surface.blit(self.images_hud["hudArcher"], (0, 0))
-
         self.build_surface.blit(self.images_hud["hudbuild"],(0,0))
 
         self.age_surface.blit(self.images_hud["hudAge"],(0,0))
         
         render_pos = [20, self.height-self.height * 0.21 + 35]
+        unit_icons_render_pos = [20, self.height-self.height * 0.21 + 35]
         object_width = self.build_surface.get_width() // 10
 
         tiles = []
+        unit_icons = []
 
         for image_name, image in self.images.items():
 
@@ -77,6 +84,27 @@ class Hud:
             )
 
             render_pos[0] += self.build_surface.get_width() // 10
+        
+        for image_name, image in self.images_icons.items():
+
+            pos = unit_icons_render_pos.copy()
+            pos = [pos[0] + 10, pos[1]]
+            image_tmp = image.copy()
+            image_scale = self.scale_image(image_tmp, w=object_width)
+            rect = image_scale.get_rect(topleft=pos)            
+
+            unit_icons.append(
+                {
+                    "name": image_name,
+                    "icon": image_scale,
+                    "image": self.images_icons[image_name],
+                    "rect": rect,
+                    "affordable": True
+                }
+            )
+
+            unit_icons_render_pos[0] += self.build_surface.get_width() // 10
+        self.unit_icons = unit_icons    
 
         return tiles
     
@@ -92,14 +120,20 @@ class Hud:
         if mouse_action[2]:
             self.selected_tile = None
 
-        for tile in self.tiles:
-             if self.resource_manager.is_affordable(tile["name"]):
-                tile["affordable"] = True
-             else:
-                tile["affordable"] = False
-             if tile["rect"].collidepoint(mouse_pos) and tile["affordable"]:
-                if mouse_action[0]:
-                    self.selected_tile = tile
+        if self.display_building_icons:
+            for tile in self.tiles:
+                if self.resource_manager.is_affordable(tile["name"]):
+                   tile["affordable"] = True
+                else:
+                   tile["affordable"] = False
+                if tile["rect"].collidepoint(mouse_pos) and tile["affordable"]:
+                   if mouse_action[0]:
+                       self.selected_tile = tile
+        
+        # elif self.display_unit_icons:
+        #     for icons in self.unit_icons:
+
+                        
 
 
     def draw(self, screen):
@@ -125,8 +159,12 @@ class Hud:
             draw_text(screen, txt, 20, (255, 255, 255), (pos, 22))
             pos += 108
         
-        for tile in self.tiles:
-            screen.blit(tile["icon"], tile["rect"].topleft)
+        if self.display_building_icons:
+            for tile in self.tiles:
+                screen.blit(tile["icon"], tile["rect"].topleft)
+        elif self.display_unit_icons:
+            for icon in self.unit_icons:
+                 screen.blit(icon["icon"], icon["rect"].topleft)   
 
     
     def blit_hud(self, imgtoblit):
@@ -166,6 +204,20 @@ class Hud:
             "Barrack": barrack
         }
         return images
+
+    def load_unit_icons(self):
+        iconVillageois = pygame.image.load("assets/HUD/icone_villageois.png").convert_alpha()
+        iconSoldier = pygame.image.load("assets/HUD/icone_fantassinMassue.png").convert_alpha()
+        iconHorseman = pygame.image.load("assets/HUD/icone_cavalier.png").convert_alpha()
+        iconArcher = pygame.image.load("assets/HUD/icone_archer.png").convert_alpha()
+
+        images = {
+            "iconVillageois" : iconVillageois,
+            "iconSoldier" : iconSoldier,
+            "iconHorseman" : iconHorseman,
+            "iconArcher" : iconArcher
+        }
+        return images       
 
     def load_images_hud(self):
 

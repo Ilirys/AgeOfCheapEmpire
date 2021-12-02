@@ -138,13 +138,16 @@ class Worker:
         self.cases_libres_a()
     
         if self.selected:
-            if mouse_action[2]:
-                self.create_path(grid_pos[0], grid_pos[1])
-                self.selected = False
-                self.world.hud.select_surface_empty = True
-            if mouse_action[0]:
-                self.selected = False
-                self.world.hud.select_surface_empty = True
+            if self.world.can_place_tile(grid_pos):
+                if mouse_action[2]: #Clic droit
+                    self.create_path(grid_pos[0], grid_pos[1]) #Creer le chemin vers la case pointée par la souris
+                    self.selected = False
+                    self.world.hud.select_surface_empty = True  #Enlever le hud de l'unite
+                    self.world.hud.display_building_icons = False   
+                if mouse_action[0]:
+                    self.selected = False
+                    self.world.hud.select_surface_empty = True
+                    self.world.hud.display_building_icons = False
 
         if self.dest_tile == self.tile:
             if self.attack:
