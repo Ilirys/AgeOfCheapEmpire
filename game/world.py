@@ -2,6 +2,7 @@ import pygame
 import random
 import noise
 from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
+from game.workers import Worker
 from .utils import *
 from DTO.worldDTO import WorldDTO
 from game.Ressource import Ressource
@@ -14,7 +15,7 @@ import pickle
 
 class World:
 
-    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height):
+    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height, camera):
         self.resource_manager = resource_manager
         self.entities = entities
         self.hud = hud
@@ -22,6 +23,7 @@ class World:
         self.grid_length_y = grid_length_y
         self.width = width  #Taille écran
         self.height = height
+        self.camera = camera
         
         self.Bou = Bouquet() #Génération forets, ressources
 
@@ -119,6 +121,12 @@ class World:
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
                                 self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
                         self.hud.selected_tile = None
+            
+        elif self.hud.selected_unit_icon:
+            if self.hud.selected_unit_icon["name"] == "Villageois":
+                if mouse_action[0]:
+                    Worker(self.world[1][1], self, self.camera)  
+                    self.hud.selected_unit_icon = None         
 
         else:
 

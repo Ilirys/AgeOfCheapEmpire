@@ -23,7 +23,11 @@ class Ressource:
         self.costs = {
             "Towncenter": {},
             "House": {"wood": 25},
-            "Barrack": {"wood": 175}
+            "Barrack": {"wood": 175},
+            "Villageois": {"food": 175},
+            "Soldier": {"food": 175},
+            "Horseman": {"food": 175},
+            "Archer": {"food": 175},
         }
 
         #Save
@@ -42,9 +46,9 @@ class Ressource:
         self.nbRessources = nbRess
 
 
-    def apply_cost_to_resource(self, building):
+    def apply_cost_to_resource(self, building, add=1):
         for resource, cost in self.costs[building].items():
-            self.resources[resource] -= cost
+            self.resources[resource] -= cost * add
 
     def is_affordable(self, building):
         affordable = True

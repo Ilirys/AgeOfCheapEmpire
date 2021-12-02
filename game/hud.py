@@ -130,8 +130,15 @@ class Hud:
                    if mouse_action[0]:
                        self.selected_tile = tile
         
-        # elif self.display_unit_icons:
-        #     for icons in self.unit_icons:
+        elif self.display_unit_icons:
+            for icon in self.unit_icons:
+                if self.resource_manager.is_affordable(icon["name"]):
+                   icon["affordable"] = True
+                else:
+                   icon["affordable"] = False
+                if icon["rect"].collidepoint(mouse_pos) and icon["affordable"]:
+                   if mouse_action[0]:
+                       self.selected_unit_icon = icon
 
                         
 
@@ -212,10 +219,10 @@ class Hud:
         iconArcher = pygame.image.load("assets/HUD/icone_archer.png").convert_alpha()
 
         images = {
-            "iconVillageois" : iconVillageois,
-            "iconSoldier" : iconSoldier,
-            "iconHorseman" : iconHorseman,
-            "iconArcher" : iconArcher
+            "Villageois" : iconVillageois,
+            "Soldier" : iconSoldier,
+            "Horseman" : iconHorseman,
+            "Archer" : iconArcher
         }
         return images       
 

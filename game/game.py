@@ -40,11 +40,11 @@ class Game:
         # entities
         self.entities = []
     
-        #World
-        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
-
         #Camera
         self.camera = Camera(self.width, self.height)
+        
+        #World
+        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera)
 
         #Benchmark
         self.benchmark = Benchmark(self.clock)
@@ -56,7 +56,7 @@ class Game:
         #Worker(self.world.world[0][0], self.world,self.camera)
         #Horseman(self.world.world[0][1], self.world,self.camera)
         #Soldier(self.world.world[1][0], self.world,self.camera)
-
+        
         #Save
         self.restore()
 
@@ -154,6 +154,7 @@ class Game:
                         if restore_workers_dto[x][y] != None:
                             currentworkerDTO = restore_workers_dto[x][y]
                             Worker(currentworkerDTO.tile,self.world,self.camera)
+                            self.world.resource_manager.apply_cost_to_resource("Villageois", -1) #Rembourser le cout du spawn en bouffe 
         except: 
             print("Created worker file")     
 
@@ -166,6 +167,7 @@ class Game:
                         if restore_soldiers_dto[x][y] != None:
                             currentsoldierDTO = restore_soldiers_dto[x][y]
                             Soldier(currentsoldierDTO.tile,self.world,self.camera)
+                            self.world.resource_manager.apply_cost_to_resource("Soldier", -1)
         except: 
             print("Created soldier file") 
 
@@ -178,6 +180,7 @@ class Game:
                         if restore_horseman_dto[x][y] != None:
                             currenthorsemanDTO = restore_horseman_dto[x][y]
                             Horseman(currenthorsemanDTO.tile,self.world,self.camera)
+                            self.world.resource_manager.apply_cost_to_resource("Horseman", -1)
         except: 
             print("Created horseman file")      
 

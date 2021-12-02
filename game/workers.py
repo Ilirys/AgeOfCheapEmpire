@@ -45,6 +45,7 @@ class Worker:
         self.cible = self
         self.dest_tile = 0
         #init    
+        self.world.resource_manager.apply_cost_to_resource(self.name)
         self.mouse_to_grid(0,0,self.camera.scroll)
         self.create_path(self.tile["grid"][0], self.tile["grid"][1])
         self.attack = False
