@@ -71,6 +71,7 @@ class Worker:
                 searching_for_path = False
             elif (self.world.unites[x][y] != None): #Si la case contient une unitées, pathfinding attaque
                 #On enleve la collision de la case du soldat (Or else can't get find_path to work)
+                
                 self.temp_tile = self.world.world[x][y] 
                 self.world.world[x][y]["collision"] = False
                 self.world.collision_matrix[y][x] = 1
@@ -147,6 +148,11 @@ class Worker:
         if self.selected:
             if mouse_action[2]:
                 self.create_path(grid_pos[0], grid_pos[1])
+                if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                    self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                    self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
+                    self.temp_tile = None
+
                 self.selected = False
                 self.world.hud.select_surface_empty = True
             if mouse_action[0]:
@@ -158,7 +164,6 @@ class Worker:
                 self.cible.pv -= self.dmg
                 if self.cible.pv <= 0: self.attack = False
                 # self.animation = self.world.animation._attack
-                print(self.cible.pv)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -188,11 +193,6 @@ class Worker:
                 self.path_index += 1
                 self.progression = 0
 
-                if self.temp_tile:
-                    self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                    self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
-                    self.temp_tile = None
-
         else:
             self.movestraight_animation = False
         
@@ -213,5 +213,6 @@ class Worker:
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
         self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None        
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None   
+        self.selected = False     
 

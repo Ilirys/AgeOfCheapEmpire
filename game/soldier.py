@@ -55,4 +55,5 @@ class Soldier(Worker):
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
         self.world.soldier[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None            
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None 
+        self.selected = False             

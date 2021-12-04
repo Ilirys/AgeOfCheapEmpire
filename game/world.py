@@ -204,7 +204,8 @@ class World:
                             screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
                             unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
                     else:
-                        unites.delete()        
+                        unites.delete()    
+                        self.hud.select_surface_empty = True    
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

@@ -71,6 +71,11 @@ class Horseman(Worker):
         if self.selected:
             if mouse_action[2]:
                 self.create_path(grid_pos[0], grid_pos[1])
+                if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision a 1 
+                    self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                    self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
+                    self.temp_tile = None
+
                 self.selected = False
                 self.world.hud.select_surface_empty = True
             if mouse_action[0]:
@@ -81,7 +86,6 @@ class Horseman(Worker):
             if self.attack:
                 self.cible.pv -= self.dmg
                 #self.animation = self.world.animation.horseman_attack
-                print(self.cible.pv)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -136,4 +140,5 @@ class Horseman(Worker):
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
         self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None               
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None  
+        self.selected = False               
