@@ -24,10 +24,10 @@ class Ressource:
             "Towncenter": {},
             "House": {"wood": 25},
             "Barrack": {"wood": 175},
-            "Villageois": {"food": 175},
-            "Soldier": {"food": 175},
-            "Horseman": {"food": 175},
-            "Archer": {"food": 175},
+            "Villageois": {"food": 17},
+            "Soldier": {"food": 17},
+            "horseman": {"food": 17},
+            "Archer": {"food": 17},
         }
 
         #Save

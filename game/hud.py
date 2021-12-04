@@ -221,7 +221,7 @@ class Hud:
         images = {
             "Villageois" : iconVillageois,
             "Soldier" : iconSoldier,
-            "Horseman" : iconHorseman,
+            "horseman" : iconHorseman,
             "Archer" : iconArcher
         }
         return images       
