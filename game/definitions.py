@@ -1,5 +1,8 @@
 import pygame
 
+#Time-based settings
+UNITS_SPAWN_TIME = 500
+
 #Saves
 SAVED_GAME_FOLDER = "data/"
 

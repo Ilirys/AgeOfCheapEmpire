@@ -125,6 +125,12 @@ class Game:
                     self.world.collision_matrix[currenthorseman.tile["grid"][1]][currenthorseman.tile["grid"][0]] = 1
                     self.world.world[currenthorseman.tile["grid"][0]][currenthorseman.tile["grid"][1]]["collision"] = False
                     self.world.horsemanDTO[x][y] = horsemanDTO(currenthorseman.name,currenthorseman.pv,currenthorseman.range,currenthorseman.dmg,currenthorseman.tile)
+                
+                # if self.world.villager[x][y] != None:
+                #     currentvillager = self.world.villager[x][y]
+                #     self.world.collision_matrix[currentvillager.tile["grid"][1]][currentvillager.tile["grid"][0]] = 1
+                #     self.world.world[currentvillager.tile["grid"][0]][currentvillager.tile["grid"][1]]["collision"] = False
+                #     self.world.villagerDTO[x][y] = villagerDTO(currentvillager.name,currentvillager.pv,currentvillager.range,currentvillager.dmg,currentvillager.tile)
         
         try:   #Worker save
             with open(self.world.workers_save_file_path, "wb") as output:
@@ -142,7 +148,13 @@ class Game:
             with open(self.world.horseman_save_file_path, "wb") as output:
                 pickle.dump(self.world.horsemanDTO,output)
                 output.close()
-        except: print("Couldnt dumpwhorseman save in file")   
+        except: print("Couldnt dump horseman save in file")   
+        
+        # try:   #villager save
+        #     with open(self.world.villager_save_file_path, "wb") as output:
+        #         pickle.dump(self.world.villagerDTO,output)
+        #         output.close()
+        # except: print("Couldnt dump villager save in file")   
 
     def restore(self):
         try:    
@@ -183,5 +195,18 @@ class Game:
                             self.world.resource_manager.apply_cost_to_resource("Horseman", -1)
         except: 
             print("Created horseman file")      
+        
+        # try:    
+        #     with open(self.world.villager_save_file_path, "rb") as input:
+        #         restore_villager_dto = pickle.load(input)
+        #         input.close()
+        #         for x in range(self.world.grid_length_x):
+        #             for y in range(self.world.grid_length_y):
+        #                 if restore_villager_dto[x][y] != None:
+        #                     currentvillagerDTO = restore_villager_dto[x][y]
+        #                     Villager(currentvillagerDTO.tile,self.world,self.camera, currentvillagerDTO.pv)
+        #                     self.world.resource_manager.apply_cost_to_resource("villageois", -1)
+        # except: 
+        #     print("Created villager file")      
 
 

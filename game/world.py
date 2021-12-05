@@ -48,6 +48,9 @@ class World:
         self.horseman = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.horsemanDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.villager = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.villagerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+                                                                        
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -55,6 +58,7 @@ class World:
         self.temp_tile = None
         self.examine_tile = None
         self.caserne_tile = None # Used to spawn units on the right tile
+        self.move_timer = pygame.time.get_ticks()
         
         #Save paths
         self.map_save_file_path = SAVED_GAME_FOLDER + "world"
@@ -62,6 +66,7 @@ class World:
         self.workers_save_file_path = SAVED_GAME_FOLDER + "worker"
         self.soldiers_save_file_path = SAVED_GAME_FOLDER + "soldiers"
         self.horseman_save_file_path = SAVED_GAME_FOLDER + "horseman"
+        self.villager_save_file_path = SAVED_GAME_FOLDER + "villager"
 
         #init
         self.restore_save()
@@ -125,10 +130,15 @@ class World:
                                 self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
                         self.hud.selected_tile = None
             
-        elif self.hud.selected_unit_icon:
+        elif self.hud.selected_unit_icon:  #Si les icones unités sont selectionées, le clic gauche fais spawn autour de la caserne
+                now = pygame.time.get_ticks()
                 if mouse_action[0]:
-                    self.spawn_unit_autour_caserne(self.hud.selected_unit_icon["name"], self.caserne_tile)
-                    self.hud.selected_unit_icon = None         
+                    if now - self.move_timer > UNITS_SPAWN_TIME:
+                        self.spawn_unit_autour_caserne(
+                            self.hud.selected_unit_icon["name"], self.caserne_tile)
+                        self.hud.selected_unit_icon = None
+
+                        self.move_timer = now
 
         else:
 
@@ -231,12 +241,12 @@ class World:
                 )
             )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
-        '''
+        
         mouse_pos = pygame.mouse.get_pos()
         grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
         txt = str(grid_pos)
         draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
-        '''
+        
 
 
 
@@ -414,6 +424,7 @@ class World:
         if not self.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+                # Villager(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
             if unit_name == "horseman":
@@ -422,6 +433,7 @@ class World:
         elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
             if unit_name == "horseman":
@@ -430,6 +442,7 @@ class World:
         elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
             if unit_name == "horseman":
@@ -438,6 +451,7 @@ class World:
         elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] ]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "horseman":
@@ -446,6 +460,7 @@ class World:
         elif not self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
+                # Villager(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "horseman":
@@ -454,6 +469,7 @@ class World:
         elif not self.world[tile["grid"][0] ][tile["grid"][1] - 1]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "horseman":
@@ -462,6 +478,7 @@ class World:
         elif not self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "horseman":
@@ -470,6 +487,7 @@ class World:
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
             if unit_name == "horseman":
@@ -478,14 +496,16 @@ class World:
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] ]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
+                #Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
         
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ]["collision"]:
-            if unit_name == "Worker":
-                Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
+            if unit_name == "Villageois":
+                Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
+                #Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
             if unit_name == "horseman":
@@ -494,6 +514,7 @@ class World:
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "horseman":
@@ -502,6 +523,7 @@ class World:
         elif not self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ]["collision"]:
             if unit_name == "Villageois":
                 Worker(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
+                # Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "horseman":
