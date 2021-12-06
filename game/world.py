@@ -44,6 +44,9 @@ class World:
         self.horseman = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.horsemanDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -203,6 +206,10 @@ class World:
                                 pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
                             screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
                             unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+
+
+
+
                     else:
                         unites.delete()    
                         self.hud.select_surface_empty = True    

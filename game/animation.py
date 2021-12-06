@@ -11,7 +11,8 @@ class Animation:
         self.horseman_walk = self.animation_horseman_walk()
         self.horseman_standby = self.animation_horseman_standby()
         self.soldier_attack = self.animation_soldier_attack()
-        
+        self.archer_walk = self.animation_archer_walk()
+        self.archer_standby = self.animation_archer_standby()
         
     def animation_villager_standby(self):
         img = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
@@ -93,4 +94,21 @@ class Animation:
         soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack014.png').convert_alpha())
         soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack015.png').convert_alpha())
         return soldier_attack
-        
+
+    def animation_archer_walk(self):
+        archer_walk = []
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk002.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk003.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk004.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk005.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk006.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk007.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk008.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk009.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk010.png').convert_alpha())
+        return archer_walk
+
+    def animation_archer_standby(self):
+        img = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
+        return img
