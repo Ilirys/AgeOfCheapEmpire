@@ -78,7 +78,7 @@ class Worker:
 
                 self.progression = 0
                 self.attack = False
-                
+
                 searching_for_path = False
             elif (self.world.unites[x][y] != None): #Si la case contient une unitées, pathfinding attaque
                 #On enleve la collision de la case du soldat (Or else can't get find_path to work)

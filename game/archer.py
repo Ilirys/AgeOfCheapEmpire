@@ -69,7 +69,9 @@ class Archer(Worker):
                     self.attack = True
                     self.progression = 0
                     searching_for_path = False
-                else :
+                #elif:
+                    #si la distance est inférieure à 3 tiles, attaquer directement
+                else:
                     for i in range(3):
                         self.path.pop()
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]

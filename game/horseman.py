@@ -19,7 +19,7 @@ class Horseman(Worker):
         self.animation = self.world.animation.horseman_walk
         self.animation_attack = self.world.animation.horseman_attack
         self.image = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
-
+        self.dmg = 5
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
