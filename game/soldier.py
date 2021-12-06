@@ -16,8 +16,9 @@ class Soldier(Worker):
         # Visual and audio effects
         self.name = "Soldier"
         self.animation = self.world.animation.soldier_walk
-        self.image = pygame.image.load('assets\soldier\Axethrowerwalk001.png').convert_alpha()
-        
+        self.animation_attack = self.world.animation.soldier_attack
+        self.image = pygame.image.load('assets\soldier\Halbadierwalk001.png').convert_alpha()
+        self.dmg = 5
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.world.soldier[tile["grid"][0]][tile["grid"][1]] = self
@@ -45,6 +46,11 @@ class Soldier(Worker):
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
                 self.temp= 0
+        elif self.attack == True:
+            self.temp += 0.2
+            self.image = self.animation_attack[int(self.temp)]
+            if self.temp + 0.2 >= len(self.animation_attack):
+                self.temp = 0
         else: self.image = self.world.animation.soldier_standby             
 
     #Override

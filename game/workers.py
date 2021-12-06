@@ -24,10 +24,12 @@ class Worker:
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         self.temp = 0
         self.animation = self.world.animation.villager_walk
-        self.movestraight_animation = True
+        self.movestraight_animation = False
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
         self.attack_ani = False
-        self.animation_attack = self.world.animation.soldier_attack
+        self.farm_ani = False
+        self.animation_attack = self.world.animation.villager_attack
+        self.animation_farm = self.world.animation.villager_farm
 
 
         # pathfinding
@@ -71,10 +73,12 @@ class Worker:
                 self.end = self.grid.node(x, y)
                 finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
                 self.path_index = 0
+
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                 self.progression = 0
-
+                self.attack = False
+                
                 searching_for_path = False
             elif (self.world.unites[x][y] != None): #Si la case contient une unitées, pathfinding attaque
                 #On enleve la collision de la case du soldat (Or else can't get find_path to work)
@@ -88,19 +92,23 @@ class Worker:
                 self.end = self.grid.node(x, y)
                 finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
                 self.path_index = 0
-                self.path, runs = finder.find_path(self.start, self.end, self.grid)
+                if self.tile == self.dest_tile:
+                    pass
+                else :self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                 #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
+                if self.world.unites[x][y] != self.tile:
+                    self.cible = self.world.unites[x][y]
 
-                self.cible = self.world.unites[x][y]
 
-                self.path.pop()
                 if self.dest_tile == self.tile:
                     self.progression = 0
                     searching_for_path = False
                 else:
+                    self.path.pop()
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]
                     self.attack = True
+                    self.Farm = False
                     self.attack_ani = True
                     self.progression = 0
                 searching_for_path = False
@@ -124,12 +132,16 @@ class Worker:
                 self.ftile = self.dest_tile
                 if self.dest_tile == self.tile:
                     self.Farm = True
+                    self.farm_ani = True
+                    self.attack = False
                     self.progression = 0
                     searching_for_path = False
                 else :
                     self.path.pop()
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]
                     self.Farm = True
+                    self.farm_ani = True
+                    self.attack = False
                     self.progression = 0
                     searching_for_path = False
 
@@ -208,17 +220,17 @@ class Worker:
                     self.attack_ani = False
 
 
-        print(self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources)
+
 
         if self.Farm:
             if self.dest_tile == self.tile:
                 self.Ressource_Transp = self.cibleFarm.typeRessource
                 self.Nb_Ressource_Transp += self.efficiency
                 self.cibleFarm.nbRessources -= self.efficiency
-                if self.cibleFarm.nbRessources < 0:
+                if self.cibleFarm.nbRessources <= 0:
                         #self.farm_ani = False
                         self.create_path(self.ftile["grid"][0],self.ftile["grid"][1])
-                        #self.Farm = False
+
 
                         if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
                             self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
@@ -252,8 +264,13 @@ class Worker:
                             self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
                             self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
 
+                        elif not (self.path_index < len(self.path)) :
+                            self.Farm = False
 
-                print(self.Nb_Ressource_Transp, self.Ressource_Transp)
+                        print(self.pv)
+
+
+                #print(self.Nb_Ressource_Transp, self.Ressource_Transp)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -261,8 +278,8 @@ class Worker:
                 self.sound.play()
 
         if self.path_index <= len(self.path) - 1:
-            #animation
-            self.movestraight_animation = True
+            if self.dest_tile != self.tile:
+                self.movestraight_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -279,7 +296,6 @@ class Worker:
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
-                self.cases_libres = []
                 self.path_index += 1
                 self.progression = 0
 
@@ -294,13 +310,21 @@ class Worker:
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
                 self.temp= 0
-        #elif self.attack_ani == true: self.image = self.animation
+
         elif self.attack_ani == True:
             self.temp += 0.2
             self.image = self.animation_attack[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
-        else: self.image = self.world.animation.villager_standby
+
+        #elif self.farm_ani == True:
+        #    self.temp += 0.2
+        #    self.image = self.animation_farm[int(self.temp)]
+        #   if self.temp + 0.2 >= len(self.animation_farm):
+        #       self.temp = 0
+
+        else:
+            self.image = self.world.animation.villager_standby
 
     def delete(self):
         self.world.entities.remove(self)

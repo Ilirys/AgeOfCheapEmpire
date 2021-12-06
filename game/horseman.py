@@ -17,7 +17,8 @@ class Horseman(Worker):
         # Visual and audio effects
         self.name = "horseman"
         self.animation = self.world.animation.horseman_walk
-        self.image = pygame.image.load('assets\horseman\Scoutwalk001.png').convert_alpha()
+        self.animation_attack = self.world.animation.horseman_attack
+        self.image = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
 
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
@@ -129,6 +130,11 @@ class Horseman(Worker):
            self.temp +=0.2
            self.image = self.animation[int(self.temp)]
            if self.temp + 0.2 >= len(self.animation):
+               self.temp= 0
+       elif self.attack == True:
+           self.temp +=0.2
+           self.image = self.animation_attack[int(self.temp)]
+           if self.temp + 0.2 >= len(self.animation_attack):
                self.temp= 0
        else: self.image = self.world.animation.horseman_standby 
        

@@ -17,6 +17,7 @@ class Archer(Worker):
         # Visual and audio effects
         self.name = "Archer"
         self.animation = self.world.animation.archer_walk
+        self.animation_attack = self.world.animation.archer_attack
         self.image = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
 
         # pathfinding
@@ -45,7 +46,7 @@ class Archer(Worker):
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                 self.progression = 0
-
+                self.attack = False
                 searching_for_path = False
             elif (self.world.unites[x][y] != None): #Si la case contient une unitées, pathfinding attaque
                 #On enleve la collision de la case du soldat (Or else can't get find_path to work)
@@ -93,6 +94,11 @@ class Archer(Worker):
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
+                self.temp = 0
+        elif self.attack == True:
+            self.temp += 0.2
+            self.image = self.animation_attack[int(self.temp)]
+            if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
         else:
             self.image = self.world.animation.archer_standby
