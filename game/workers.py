@@ -54,7 +54,7 @@ class Worker:
 
         #Farm
         self.farm = False
-        self.Ressource_Transp = "mdr"
+        self.Ressource_Transp = ""
         self.Nb_Ressource_Transp = 0
         self.cibleFarm = 0
         self.efficiency = 3
@@ -69,7 +69,6 @@ class Worker:
 
     def create_path(self,x,y):
         searching_for_path = True
-        # self.farm = False
         self.attack = False
         while searching_for_path:
             self.dest_tile = self.world.world[x][y]
@@ -155,7 +154,7 @@ class Worker:
 
     def update(self):
 
-        print(self.farm)
+        # print(self.farm)
         #Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -305,7 +304,6 @@ class Worker:
         elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
             self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
             self.farmer_cases(self.cible) 
-            self.create_path(self.cible["grid"][0], self.cible["grid"][1])
 
         else:
             self.create_path(self.cible["grid"][0], self.cible["grid"][1])
