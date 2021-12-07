@@ -31,7 +31,6 @@ class Worker:
         self.animation_attack = self.world.animation.villager_attack
         self.animation_farm = self.world.animation.villager_farm
 
-
         # pathfinding
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = self
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
@@ -94,23 +93,22 @@ class Worker:
                 self.path_index = 0
                 if self.tile == self.dest_tile:
                     pass
-                else :self.path, runs = finder.find_path(self.start, self.end, self.grid)
+                else : self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                 #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
-                if self.world.unites[x][y] != self.tile:
+                if self.world.unites[x][y] != self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]]:
                     self.cible = self.world.unites[x][y]
 
 
                 if self.dest_tile == self.tile:
                     self.progression = 0
-                    searching_for_path = False
                 else:
                     self.path.pop()
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]
                     self.attack = True
                     self.Farm = False
                     self.attack_ani = True
-                    self.progression = 0
+                self.progression = 0
                 searching_for_path = False
 
 
@@ -127,23 +125,18 @@ class Worker:
                 self.path_index = 0
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-
                 self.cibleFarm = self.dest_tile["tile"].ressource
                 self.ftile = self.dest_tile
                 if self.dest_tile == self.tile:
-                    self.Farm = True
-                    self.farm_ani = True
-                    self.attack = False
-                    self.progression = 0
-                    searching_for_path = False
+                    pass
                 else :
                     self.path.pop()
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]
-                    self.Farm = True
-                    self.farm_ani = True
-                    self.attack = False
-                    self.progression = 0
-                    searching_for_path = False
+                self.Farm = True
+                self.farm_ani = True
+                self.attack = False
+                self.progression = 0
+                searching_for_path = False
 
             else:
                 break
@@ -228,46 +221,51 @@ class Worker:
                 self.Nb_Ressource_Transp += self.efficiency
                 self.cibleFarm.nbRessources -= self.efficiency
                 if self.cibleFarm.nbRessources <= 0:
-                        #self.farm_ani = False
-                        self.create_path(self.ftile["grid"][0],self.ftile["grid"][1])
+                    #self.farm_ani = False
+                    print(1)
+                    self.Farm = False
+                    self.create_path(self.ftile["grid"][0], self.ftile["grid"][1])
 
 
-                        if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
+                    if (self.world.world[self.ftile["grid"][0] + 1][self.ftile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] + 1][self.ftile["grid"][1] + 0]
                             self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
 
-                        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
+                    elif (self.world.world[self.ftile["grid"][0] + 0][self.ftile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] + 0][self.ftile["grid"][1] + 1]
                             self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
 
-                        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
+                    elif (self.world.world[self.ftile["grid"][0] + 1][self.ftile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] + 1][self.ftile["grid"][1] + 1]
                             self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
 
-                        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
+                    elif (self.world.world[self.tile["grid"][0] - 1][self.ftile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] - 1][self.ftile["grid"][1] + 0]
                             self.create_path(self.dest_tile["grid"][0], self.next_tile["grid"][1])
 
-                        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
+                    elif (self.world.world[self.ftile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] + 0][self.ftile["grid"][1] - 1]
                             self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
 
-                        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
+                    elif (self.world.world[self.ftile["grid"][0] - 1][self.ftile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] - 1][self.ftile["grid"][1] - 1]
                             self.create_path(self.next_tile["grid"][0],self.next_tile["grid"][1])
 
-                        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
+                    elif (self.world.world[self.ftile["grid"][0] - 1][self.ftile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] - 1][self.ftile["grid"][1] + 1]
                             self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
 
-                        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
+                    elif (self.world.world[self.ftile["grid"][0] + 1][self.ftile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                            self.next_tile = self.world.world[self.ftile["grid"][0] + 1][self.ftile["grid"][1] - 1]
                             self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
 
-                        elif not (self.path_index < len(self.path)) :
-                            self.Farm = False
 
-                        print(self.pv)
+
+                        #elif (self.world.world[self.ftile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources < 0):
+
+
+
+
 
 
                 #print(self.Nb_Ressource_Transp, self.Ressource_Transp)
