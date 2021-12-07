@@ -17,8 +17,7 @@ class Worker:
         self.camera = camera
         self.tile = tile
         self.pv = pv
-        self.dmg = 1
-        self.range = 2
+
         #Visual and audio effects
         self.name = "Villageois"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
@@ -39,9 +38,6 @@ class Worker:
         self.pos_y = tile["render_pos"][1]
         self.temp_tile = None       #Utilisé pour enlever et remettre la collision de la case d'une unite lors du pathfinding de l'attaque
 
-        #path et path_index PAS INITIALISE (revoir cette initialisation)
-        #self.path_index = 0
-        #self.path = "0"
 
         #selection
         self.selected = False
@@ -50,100 +46,82 @@ class Worker:
         self.iso_poly = None
         self.cible = self
         self.dest_tile = 0
-        #init
-        self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(self.tile["grid"][0], self.tile["grid"][1])
+        
+        #Attaque 
         self.attack = False
+        self.dmg = 1
+        self.range = 2
+
+        #Farm
+        self.farm = False
         self.Ressource_Transp = "mdr"
         self.Nb_Ressource_Transp = 0
-
         self.cibleFarm = 0
-        self.Farm = False
         self.efficiency = 3
+        
+        #init
+        self.path_index = 0
+        self.path = []
+        self.mouse_to_grid(0,0,self.camera.scroll)
+        self.create_path(self.tile["grid"][0], self.tile["grid"][1])
 
 
 
     def create_path(self,x,y):
         searching_for_path = True
+        # self.farm = False
+        self.attack = False
         while searching_for_path:
             self.dest_tile = self.world.world[x][y]
-            if not self.dest_tile["collision"]:
-                self.grid = Grid(matrix=self.world.collision_matrix)
-                self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                self.end = self.grid.node(x, y)
-                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                self.path_index = 0
+            if self.dest_tile != self.tile:
+                if not self.dest_tile["collision"]: #Condition de déplacement normal, sans rien sur la case cible
+                    self.grid = Grid(matrix=self.world.collision_matrix)
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
+                    self.end = self.grid.node(x, y)
+                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                    self.path_index = 0
 
-                self.path, runs = finder.find_path(self.start, self.end, self.grid)
+                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-                self.progression = 0
-                self.attack = False
+                    self.progression = 0
+                    self.attack = False
+                    
+                    searching_for_path = False
+                elif self.world.unites[x][y] != None or self.dest_tile["tile"].ressource.getNbRessources != 0:
+                    #Reinitialise la derniere case de destination et la cible
+                    self.cible = None
+                    
+                    #Si la case contient une unitées ou du farm,
+                    #On enleve la collision de la case du soldat (Or else can't get find_path to work)
+                    
+                    self.temp_tile = self.world.world[x][y] 
+                    self.world.world[x][y]["collision"] = False
+                    self.world.collision_matrix[y][x] = 1
+                    
+                    self.grid = Grid(matrix=self.world.collision_matrix)
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])    
+                    self.end = self.grid.node(x, y)  
+                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                    self.path_index = 0
+                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
+
+                    #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
+                    self.path.pop()
+                    
+
+                    if self.world.unites[x][y] != None:     #Condition d'attaque
+                        self.cible = self.world.unites[x][y]
+                        self.attack = True
+                    elif self.dest_tile["tile"].ressource.getNbRessources != 0: #Condition de farm
+                        self.cible = self.dest_tile
+                        self.farm = True
+
+                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]] #La case destination est la dernière de la liste path
+
+                    self.progression = 0
+
+                    searching_for_path = False
                 
-                searching_for_path = False
-            elif (self.world.unites[x][y] != None): #Si la case contient une unitées, pathfinding attaque
-                #On enleve la collision de la case du soldat (Or else can't get find_path to work)
-
-                self.temp_tile = self.world.world[x][y]
-                self.world.world[x][y]["collision"] = False
-                self.world.collision_matrix[y][x] = 1
-
-                self.grid = Grid(matrix=self.world.collision_matrix)
-                self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                self.end = self.grid.node(x, y)
-                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                self.path_index = 0
-                if self.tile == self.dest_tile:
-                    pass
-                else :self.path, runs = finder.find_path(self.start, self.end, self.grid)
-
-                #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
-                if self.world.unites[x][y] != self.tile:
-                    self.cible = self.world.unites[x][y]
-
-
-                if self.dest_tile == self.tile:
-                    self.progression = 0
-                    searching_for_path = False
-                else:
-                    self.path.pop()
-                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]
-                    self.attack = True
-                    self.Farm = False
-                    self.attack_ani = True
-                    self.progression = 0
-                searching_for_path = False
-
-
-            elif (self.dest_tile["tile"].ressource.getNbRessources != 0):
-                self.temp_tile = self.world.world[x][y]
-                self.world.world[x][y]["collision"] = False
-                self.world.collision_matrix[y][x] = 1
-
-
-                self.grid = Grid(matrix=self.world.collision_matrix)
-                self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                self.end = self.grid.node(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
-                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                self.path_index = 0
-                self.path, runs = finder.find_path(self.start, self.end, self.grid)
-
-
-                self.cibleFarm = self.dest_tile["tile"].ressource
-                self.ftile = self.dest_tile
-                if self.dest_tile == self.tile:
-                    self.Farm = True
-                    self.farm_ani = True
-                    self.attack = False
-                    self.progression = 0
-                    searching_for_path = False
-                else :
-                    self.path.pop()
-                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]
-                    self.Farm = True
-                    self.farm_ani = True
-                    self.attack = False
-                    self.progression = 0
-                    searching_for_path = False
 
             else:
                 break
@@ -177,6 +155,7 @@ class Worker:
 
     def update(self):
 
+        print(self.farm)
         #Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -219,58 +198,10 @@ class Worker:
                     self.attack = False
                     self.attack_ani = False
 
-
-
-
-        if self.Farm:
-            if self.dest_tile == self.tile:
-                self.Ressource_Transp = self.cibleFarm.typeRessource
-                self.Nb_Ressource_Transp += self.efficiency
-                self.cibleFarm.nbRessources -= self.efficiency
-                if self.cibleFarm.nbRessources <= 0:
-                        #self.farm_ani = False
-                        self.create_path(self.ftile["grid"][0],self.ftile["grid"][1])
-
-
-                        if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
-                            self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
-
-                        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
-                            self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
-
-                        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
-                            self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
-
-                        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
-                            self.create_path(self.dest_tile["grid"][0], self.next_tile["grid"][1])
-
-                        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
-                            self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
-
-                        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
-                            self.create_path(self.next_tile["grid"][0],self.next_tile["grid"][1])
-
-                        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
-                            self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
-
-                        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-                            self.next_tile = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
-                            self.create_path(self.next_tile["grid"][0], self.next_tile["grid"][1])
-
-                        elif not (self.path_index < len(self.path)) :
-                            self.Farm = False
-
-                        print(self.pv)
-
-
-                #print(self.Nb_Ressource_Transp, self.Ressource_Transp)
+            if self.farm:
+                self.farmer_cases(self.cible)
+                if self.cible["tile"].ressource.nbRessources <= 0:
+                        self.farmer_cases_autour()
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -336,3 +267,45 @@ class Worker:
         self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None   
         self.selected = False     
 
+
+    def farmer_cases(self, cible): #Farme la cible
+        self.Ressource_Transp = cible["tile"].ressource.typeRessource
+        self.Nb_Ressource_Transp += self.efficiency
+        cible["tile"].ressource.nbRessources -= self.efficiency
+
+    def farmer_cases_autour(self):      #Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée
+        if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
+            self.farmer_cases(self.cible)   
+
+        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
+            self.farmer_cases(self.cible) 
+
+        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
+            self.farmer_cases(self.cible) 
+
+        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
+            self.farmer_cases(self.cible) 
+
+        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
+            self.farmer_cases(self.cible) 
+
+        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
+            self.farmer_cases(self.cible) 
+            self.create_path(self.cible["grid"][0], self.cible["grid"][1])
+
+        else:
+            self.create_path(self.cible["grid"][0], self.cible["grid"][1])
