@@ -46,10 +46,11 @@ class Worker:
         self.cible = self
         self.dest_tile = 0
         
-        #Attaque 
+        #Attaque
         self.attack = False
         self.dmg = 1
         self.range = 2
+        self.temp_tile_a = self.tile
 
         #Farm
         self.farm = False
@@ -65,15 +66,13 @@ class Worker:
         self.mouse_to_grid(0,0,self.camera.scroll)
         self.create_path(self.tile["grid"][0], self.tile["grid"][1])
 
-
-
-    def create_path(self,x,y):
+    def create_path(self, x, y):
         searching_for_path = True
         self.attack = False
         while searching_for_path:
             self.dest_tile = self.world.world[x][y]
             if self.dest_tile != self.tile:
-                if not self.dest_tile["collision"]: #Condition de déplacement normal, sans rien sur la case cible
+                if not self.dest_tile["collision"]:  # Condition de déplacement normal, sans rien sur la case cible
                     self.grid = Grid(matrix=self.world.collision_matrix)
                     self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
                     self.end = self.grid.node(x, y)
@@ -84,45 +83,44 @@ class Worker:
 
                     self.progression = 0
                     self.attack = False
-                    
+
                     searching_for_path = False
                 elif self.world.unites[x][y] != None or self.dest_tile["tile"].ressource.getNbRessources != 0:
-                    #Reinitialise la derniere case de destination et la cible
+                    # Reinitialise la derniere case de destination et la cible
                     self.cible = None
-                    
-                    #Si la case contient une unitées ou du farm,
-                    #On enleve la collision de la case du soldat (Or else can't get find_path to work)
-                    
-                    self.temp_tile = self.world.world[x][y] 
+
+                    # Si la case contient une unitées ou du farm,
+                    # On enleve la collision de la case du soldat (Or else can't get find_path to work)
+
+                    self.temp_tile = self.world.world[x][y]
                     self.world.world[x][y]["collision"] = False
                     self.world.collision_matrix[y][x] = 1
-                    
+
                     self.grid = Grid(matrix=self.world.collision_matrix)
-                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])    
-                    self.end = self.grid.node(x, y)  
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
+                    self.end = self.grid.node(x, y)
                     finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
                     self.path_index = 0
                     self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-                    #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
+                    # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
                     if self.path: self.path.pop()
-                    
 
-                    if self.world.unites[x][y] != None:     #Condition d'attaque
+                    if self.world.unites[x][y] != None:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
+                        self.temp_tile_a = self.cible.tile
 
-                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]] #La case destination est la dernière de la liste path
+                    self.dest_tile = self.world.world[self.path[-1][0]][
+                        self.path[-1][1]]  # La case destination est la dernière de la liste path
 
                     self.progression = 0
 
                     searching_for_path = False
-                
-
             else:
                 break
 
-                # create_path(self,x+1)
+            # create_path(self,x+1)
 
     def change_tile(self,new_tile):
         self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
@@ -192,6 +190,11 @@ class Worker:
             if self.attack:
                 #self.attack_ani = True
                 self.cible.pv -= self.dmg
+                if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
+                    if self.cible.dest_tile == self.cible.tile:
+                        self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
+                        self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
+                        self.create_path(self.cible.tile["grid"][0],self.cible.tile["grid"][1])
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
