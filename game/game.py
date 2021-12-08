@@ -20,7 +20,7 @@ from .chat import Chat
 from .Ressource import Ressource
 from .soldier import Soldier
 from .horseman import Horseman
-
+from.archer import Archer
 class Game:
 
     def __init__(self, screen, clock):
@@ -58,7 +58,7 @@ class Game:
         #Soldier(self.world.world[1][0], self.world,self.camera)
         
         #Save
-        self.restore()
+        #self.restore()
 
     def run(self):
         self.playing = True
@@ -73,9 +73,9 @@ class Game:
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
             if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
-                self.resource_manager.save()
-                self.save()
-                self.world.save()
+                #self.resource_manager.save()
+                #self.save()
+                #self.world.save()
                 pygame.quit()
                 sys.exit()
             self.chat.handle_event(event)
@@ -171,7 +171,7 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_workers_dto[x][y] != None:
                             currentworkerDTO = restore_workers_dto[x][y]
-                            Worker(currentworkerDTO.tile,self.world,self.camera)
+                            Worker(currentworkerDTO.tile,self.world,self.camera,currentworkerDTO.health_points)
                             self.world.resource_manager.apply_cost_to_resource("Villageois", -1) #Rembourser le cout du spawn en bouffe 
         except: 
             print("Created worker file")     
@@ -184,7 +184,7 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_soldiers_dto[x][y] != None:
                             currentsoldierDTO = restore_soldiers_dto[x][y]
-                            Soldier(currentsoldierDTO.tile,self.world,self.camera)
+                            Soldier(currentsoldierDTO.tile,self.world,self.camera, currentsoldierDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("Soldier", -1)
         except: 
             print("Created soldier file") 
@@ -197,7 +197,7 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_horseman_dto[x][y] != None:
                             currenthorsemanDTO = restore_horseman_dto[x][y]
-                            Horseman(currenthorsemanDTO.tile,self.world,self.camera)
+                            Horseman(currenthorsemanDTO.tile,self.world,self.camera, currenthorsemanDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("horseman", -1)
         except: 
             print("Created horseman file")      

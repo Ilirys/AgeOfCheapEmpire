@@ -40,7 +40,10 @@ class World:
         self.unites = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
-        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
+        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.villager = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.villagerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.soldier = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.soldierDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -51,6 +54,9 @@ class World:
         self.villager = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.villagerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
                                                                         
+        self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -194,13 +200,13 @@ class World:
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
                                 self.hud.display_unit_icons = False 
-                                self.hud.blit_hud("hudTowncenter")
+                                self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
                             elif (batiment.name=="House"):
                                 self.hud.display_unit_icons = False 
-                                self.hud.blit_hud("hudHouse")
+                                self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
                             elif (batiment.name=="Barrack"):
                                 self.hud.display_unit_icons = True
-                                self.hud.blit_hud("hudCaserne")
+                                self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
                                 self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
@@ -208,24 +214,28 @@ class World:
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
-                # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
-                    if unites.name == "Villageois":
-                        if unites.selected:
-                            self.hud.display_building_icons = True
-                    
-                    if unites.name == "horseman":
-                        if unites.selected:
-                            self.hud.blit_hud("hudCavalier")
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
-                    
+                    if unites.pv > 0:
+                        if unites.name == "Villageois":
+                            if unites.selected:
+                                self.hud.display_building_icons = True
+                                
+                        if unites.name == "horseman":
+                            if unites.selected:
+                                self.hud.blit_hud("hudCavalier", str(unites.pv), screen)
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
+                            
+                        else:
+                            if unites.selected:
+                                self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen)
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                            
                     else:
-                        if unites.selected:
-                            self.hud.blit_hud("hud" + unites.name)
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                        unites.delete()    
+                        self.hud.select_surface_empty = True    
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

@@ -11,50 +11,24 @@ from .workers import Worker
 
 class Horseman(Worker):
 
-    def __init__(self, tile, world, camera):
-        self.world = world
-        self.world.entities.append(self)
-        self.camera = camera
+    def __init__(self, tile, world, camera, pv=2000):
+        super().__init__(tile, world, camera, pv=2000)
 
-        self.tile = tile
-        self.cases_libres = []
         # Visual and audio effects
         self.name = "horseman"
-        self.range = 1
-        self.dmg = 5
-        self.pv = 2000
-        self.temp = 0
         self.animation = self.world.animation.horseman_walk
-        self.movestraight_animation = True
-
-        self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
-
-        self.sprites = []
-        self.current_sprite = 0
-        self.sprites.append(pygame.image.load('assets\horseman\Scoutwalk001.png'))
-        self.image = self.sprites[self.current_sprite]
-
-
+        self.animation_attack = self.world.animation.horseman_attack
+        self.image = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
+        self.dmg = 5
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
-        
-        self.pos_x = tile["render_pos"][0]
-        self.pos_y = tile["render_pos"][1]
-        self.cible = self
+
         # selection
-        self.selected = False
         self.hitbox = pygame.Rect(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
                                   self.pos_y - self.image.get_height() + self.camera.scroll.y + 75, 28, 60) #Overriden
-        iso_poly = self.tile["iso_poly"]
-        self.iso_poly = None
-        self.dest_tile = 0
-        self.attack = False
-        self.mouse_to_grid(0, 0, self.camera.scroll)
-        self.create_path(tile["grid"][0], tile["grid"][1])
-        self.movestraight_animation = False
-
+    
 
     #Override
     def change_tile(self, new_tile):
@@ -93,7 +67,6 @@ class Horseman(Worker):
 
         self.update_sprite()
 
-        self.cases_libres_a()
 
 
         if self.selected:
@@ -103,6 +76,10 @@ class Horseman(Worker):
                     self.selected = False
                     self.world.hud.select_surface_empty = True
                     self.world.hud.display_building_icons = False 
+                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision a 1 
+                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
+                        self.temp_tile = None
                 if mouse_action[0]:
                     self.selected = False
                     self.world.hud.select_surface_empty = True  
@@ -112,7 +89,6 @@ class Horseman(Worker):
             if self.attack:
                 self.cible.pv -= self.dmg
                 #self.animation = self.world.animation.horseman_attack
-                print(self.cible.pv)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -152,16 +128,25 @@ class Horseman(Worker):
     
     #Override
     def update_sprite(self):
-        if self.movestraight_animation == True:
-            self.temp += 0.2
+       if self.movestraight_animation == True:
+           self.temp +=0.2
+           self.image = self.animation[int(self.temp)]
+           if self.temp + 0.2 >= len(self.animation):
+               self.temp= 0
+       elif self.attack == True:
+           self.temp +=0.2
+           self.image = self.animation_attack[int(self.temp)]
+           if self.temp + 0.2 >= len(self.animation_attack):
+               self.temp= 0
+       else: self.image = self.world.animation.horseman_standby 
+       
+    #Override
+    def delete(self):
+        self.world.entities.remove(self)
 
-            self.image = self.animation[int(self.temp)]
-            if self.temp + 0.2 >= len(self.animation):
-                self.temp = 0
-        else:
-            self.image = self.world.animation.horseman_standby
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
-            self.current_sprite = int(self.temp)
-            if self.temp + 0.2 >= len(self.sprites):
-                self.temp = 0
-                self.movestraight_animation = False
+        self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None  
+        self.selected = False               

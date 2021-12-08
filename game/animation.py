@@ -6,13 +6,85 @@ class Animation:
     def __init__(self):
         self.villager_standby = self.animation_villager_standby()
         self.villager_walk = self.animation_villager_walk()
+        self.villager_attack = self.animation_villager_attack()
+        self.villager_farm = self.animation_villager_farm()
         self.soldier_walk = self.animation_soldier_walk()
         self.soldier_standby = self.animation_soldier_standby()
+        self.soldier_attack = self.animation_soldier_attack()
         self.horseman_walk = self.animation_horseman_walk()
         self.horseman_standby = self.animation_horseman_standby()
-        self.soldier_attack = self.animation_soldier_attack()
-        
-        
+        self.horseman_attack = self.animation_horseman_attack()
+        self.archer_walk = self.animation_archer_walk()
+        self.archer_attack = self.animation_archer_attack()
+        self.archer_standby = self.animation_archer_standby()
+
+
+    def animation_villager_attack(self):
+        villager_attack = []
+        villager_attack.append(pygame.image.load('assets/villager/Villageract001.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract002.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract003.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract004.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract005.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract006.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract007.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract008.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract009.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract010.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract011.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract012.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract013.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract014.png').convert_alpha())
+        villager_attack.append(pygame.image.load('assets/villager/Villageract015.png').convert_alpha())
+        return villager_attack
+
+    def animation_villager_farm(self):
+        villager_farm = []
+        villager_farm.append(pygame.image.load('assets/villager/Villageract001.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract002.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract003.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract004.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract005.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract006.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract007.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract008.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract009.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract010.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract011.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract012.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract013.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract014.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villageract015.png').convert_alpha())
+        return villager_farm
+
+    def animation_archer_attack(self):
+        archer_attack = []
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack001.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack002.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack003.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack004.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack005.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack006.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack007.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack008.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack009.png').convert_alpha())
+        archer_attack.append(pygame.image.load('assets/archer/Archerattack010.png').convert_alpha())
+        return archer_attack
+
+    def animation_horseman_attack(self):
+        horseman_attack = []
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack001.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack002.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack003.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack004.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack005.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack006.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack007.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack008.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack009.png').convert_alpha())
+        horseman_attack.append(pygame.image.load('assets/horseman/Cavalierattack010.png').convert_alpha())
+        return horseman_attack
+
     def animation_villager_standby(self):
         img = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         return img
@@ -36,61 +108,74 @@ class Animation:
         return villager_walk
 
     def animation_soldier_standby(self):
-        img = pygame.image.load('assets/soldier/Axethrowerwalk001.png').convert_alpha()
+        img = pygame.image.load('assets/soldier/Halbadierwalk001.png').convert_alpha()
         return img
 
     def animation_soldier_walk(self):
         soldier_walk = []
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk001.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk002.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk003.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk004.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk005.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk006.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk007.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk008.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk009.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk010.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk011.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk012.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk013.png').convert_alpha())
-        soldier_walk.append(pygame.image.load('assets\soldier\Axethrowerwalk014.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk001.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk002.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk003.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk004.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk005.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk006.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk007.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk008.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk009.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk010.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk011.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk012.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk013.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk014.png').convert_alpha())
+        soldier_walk.append(pygame.image.load('assets\soldier\Halbadierwalk015.png').convert_alpha())
         return soldier_walk
 
     def animation_horseman_standby(self):
-        img = pygame.image.load('assets/horseman/Scoutwalk001.png').convert_alpha()
+        img = pygame.image.load('assets/horseman/Cavalierwalk001.png').convert_alpha()
         return img
 
     def animation_horseman_walk(self):
         horseman_walk = []
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk001.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk002.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk003.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk004.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk005.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk006.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk007.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk008.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk009.png').convert_alpha())
-        horseman_walk.append(pygame.image.load('assets/horseman/Scoutwalk010.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk001.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk002.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk003.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk004.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk005.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk006.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk007.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk008.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk009.png').convert_alpha())
+        horseman_walk.append(pygame.image.load('assets/horseman/Cavalierwalk010.png').convert_alpha())
         return horseman_walk
     
     def animation_soldier_attack(self):
         soldier_attack = []
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack001.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack002.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack003.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack004.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack005.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack006.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack007.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack008.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack009.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack010.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack011.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack012.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack013.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack014.png').convert_alpha())
-        soldier_attack.append(pygame.image.load('assets/soldier/Axethrowerattack015.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack001.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack002.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack003.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack004.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack005.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack006.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack007.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack008.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack009.png').convert_alpha())
+        soldier_attack.append(pygame.image.load('assets/soldier/Halbadierattack010.png').convert_alpha())
         return soldier_attack
-        
+
+    def animation_archer_walk(self):
+        archer_walk = []
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk002.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk003.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk004.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk005.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk006.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk007.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk008.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk009.png').convert_alpha())
+        archer_walk.append(pygame.image.load('assets/archer/Archerwalk010.png').convert_alpha())
+        return archer_walk
+
+    def animation_archer_standby(self):
+        img = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
+        return img
