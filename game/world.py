@@ -67,6 +67,7 @@ class World:
         self.soldiers_save_file_path = SAVED_GAME_FOLDER + "soldiers"
         self.horseman_save_file_path = SAVED_GAME_FOLDER + "horseman"
         self.villager_save_file_path = SAVED_GAME_FOLDER + "villager"
+        self.archer_save_file_path = SAVED_GAME_FOLDER + "archer"
 
         #init
         self.restore_save()

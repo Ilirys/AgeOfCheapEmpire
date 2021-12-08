@@ -154,7 +154,13 @@ class Game:
         #     with open(self.world.villager_save_file_path, "wb") as output:
         #         pickle.dump(self.world.villagerDTO,output)
         #         output.close()
-        # except: print("Couldnt dump villager save in file")   
+        # except: print("Couldnt dump villager save in file") 
+        
+        # try:   #archer save
+        #     with open(self.world.archer_save_file_path, "wb") as output:
+        #         pickle.dump(self.world.archerDTO,output)
+        #         output.close()
+        # except: print("Couldnt dump archer save in file") 
 
     def restore(self):
         try:    
@@ -192,7 +198,7 @@ class Game:
                         if restore_horseman_dto[x][y] != None:
                             currenthorsemanDTO = restore_horseman_dto[x][y]
                             Horseman(currenthorsemanDTO.tile,self.world,self.camera)
-                            self.world.resource_manager.apply_cost_to_resource("Horseman", -1)
+                            self.world.resource_manager.apply_cost_to_resource("horseman", -1)
         except: 
             print("Created horseman file")      
         
@@ -205,8 +211,22 @@ class Game:
         #                 if restore_villager_dto[x][y] != None:
         #                     currentvillagerDTO = restore_villager_dto[x][y]
         #                     Villager(currentvillagerDTO.tile,self.world,self.camera, currentvillagerDTO.pv)
-        #                     self.world.resource_manager.apply_cost_to_resource("villageois", -1)
+        #                     self.world.resource_manager.apply_cost_to_resource("Villageois", -1)
         # except: 
-        #     print("Created villager file")      
+        #     print("Created villager file")  
+        
+        
+        # try:    
+        #     with open(self.world.archer_save_file_path, "rb") as input:
+        #         restore_archer_dto = pickle.load(input)
+        #         input.close()
+        #         for x in range(self.world.grid_length_x):
+        #             for y in range(self.world.grid_length_y):
+        #                 if restore_archer_dto[x][y] != None:
+        #                     currentarcherDTO = restore_archer_dto[x][y]
+        #                     Archer(currentarcherDTO.tile,self.world,self.camera)
+        #                     self.world.resource_manager.apply_cost_to_resource("Archer", -1)
+        # except: 
+        #     print("Created horseman file")     
 
 
