@@ -154,6 +154,7 @@ class Worker:
     def update(self):
 
         # print(self.farm)
+        
         #Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -196,10 +197,13 @@ class Worker:
                     self.attack = False
                     self.attack_ani = False
 
-            if self.farm:
-                self.farmer_cases(self.cible)
-                if self.cible["tile"].ressource.nbRessources <= 0:
+            if self.attack == False:
+                if self.farm:
+                    self.farmer_cases(self.cible)
+                    if self.cible["tile"].ressource.nbRessources <= 0:
                         self.farmer_cases_autour()
+
+            print(self.Nb_Ressource_Transp, self.Ressource_Transp)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
