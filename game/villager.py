@@ -14,14 +14,21 @@ class Villager(Worker):
     def __init__(self, tile, world, camera, pv=2000):
         super().__init__(tile, world, camera, pv=2000)
 
+        #saves
+        self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
+        self.world.villager[tile["grid"][0]][tile["grid"][1]] = self
+        self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
+
         # Farm
         self.farm = False
         self.Ressource_Transp = ""
         self.Nb_Ressource_Transp = 0
         self.cibleFarm = 0
-        self.efficiency = 3
+        self.efficiency = 5
 
-    def create_path(self, x, y):
+
+
+    def create_path(self, x, y, farmReset=False):
         searching_for_path = True
         self.attack = False
         while searching_for_path:
@@ -37,11 +44,13 @@ class Villager(Worker):
                     self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                     self.progression = 0
+                    
                     self.attack = False
+                    if farmReset: self.farm = False
 
                     searching_for_path = False
                 elif self.world.unites[x][y] != None or self.dest_tile["tile"].ressource.getNbRessources != 0:
-                    # Reinitialise la derniere case de destination et la cible
+                    # Reinitialise la cible
                     self.cible = None
 
                     # Si la case contient une unitées ou du farm,
@@ -59,7 +68,7 @@ class Villager(Worker):
                     self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                     # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
-                    self.path.pop()
+                    if self.path: self.path.pop()
 
                     if self.world.unites[x][y] != None:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
@@ -117,7 +126,7 @@ class Villager(Worker):
 
         if self.selected:
             if mouse_action[2]:
-                self.create_path(grid_pos[0], grid_pos[1])
+                self.create_path(grid_pos[0], grid_pos[1], True)
                 if self.temp_tile:  # Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                     self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
                     self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
@@ -137,13 +146,12 @@ class Villager(Worker):
                     self.attack = False
                     self.attack_ani = False
 
-            if self.attack == False:
-                if self.farm:
-                    self.farmer_cases(self.cible)
-                    if self.cible["tile"].ressource.nbRessources <= 0:
-                        self.farmer_cases_autour()
+            elif self.farm:
+                self.farmer_cases(self.cible)
+                if self.cible["tile"].ressource.nbRessources <= 0:
+                    self.farmer_cases_autour()
 
-            print(self.Nb_Ressource_Transp, self.Ressource_Transp)
+            # print(self.Nb_Ressource_Transp, self.Ressource_Transp)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:

@@ -19,7 +19,7 @@ class Worker:
         self.pv = pv
 
         #Visual and audio effects
-        self.name = "Villager"
+        self.name = "Villageois"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         self.temp = 0
         self.animation = self.world.animation.villager_walk
@@ -104,7 +104,7 @@ class Worker:
                     self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                     #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
-                    self.path.pop()
+                    if self.path: self.path.pop()
                     
 
                     if self.world.unites[x][y] != None:     #Condition d'attaque
@@ -150,7 +150,6 @@ class Worker:
 
     def update(self):
 
-        print(self.farm)
 
         #Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
