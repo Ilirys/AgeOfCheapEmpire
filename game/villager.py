@@ -12,7 +12,7 @@ from .workers import Worker
 class Villager(Worker):
 
     def __init__(self, tile, world, camera, pv=2000):
-        super().__init__(tile, world, camera, pv=2000)
+        super().__init__(tile, world, camera, pv)
 
         #saves
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
@@ -125,18 +125,20 @@ class Villager(Worker):
         self.update_sprite()
 
         if self.selected:
-            if mouse_action[2]:
-                self.create_path(grid_pos[0], grid_pos[1], True)
-                if self.temp_tile:  # Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
-                    self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                    self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
-                    self.temp_tile = None
-
-                self.selected = False
-                self.world.hud.select_surface_empty = True
-            if mouse_action[0]:
-                self.selected = False
-                self.world.hud.select_surface_empty = True
+            if self.world.can_place_tile(grid_pos):
+                if mouse_action[2]: #Clic droit
+                    self.create_path(grid_pos[0], grid_pos[1]) #Creer le chemin vers la case pointée par la souris
+                    self.selected = False
+                    self.world.hud.select_surface_empty = True  #Enlever le hud de l'unite
+                    self.world.hud.display_building_icons = False   
+                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
+                        self.temp_tile = None
+                if mouse_action[0]:
+                    self.selected = False
+                    self.world.hud.select_surface_empty = True
+                    self.world.hud.display_building_icons = False
 
         if self.dest_tile == self.tile:
             if self.attack:

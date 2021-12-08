@@ -42,6 +42,9 @@ class Hud:
         self.display_unit_icons = False
         self.display_building_icons = False
 
+        #fonts for units hp
+        self.font = pygame.font.SysFont("arialblack", 10)
+
         self.unit_icons = []
         self.tiles = self.create_build_hud()
         self.create_ressource_hud()

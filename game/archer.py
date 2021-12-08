@@ -12,7 +12,7 @@ from .workers import Worker
 class Archer(Worker):
 
     def __init__(self, tile, world, camera, pv=2000):
-        super().__init__(tile, world, camera, pv=2000)
+        super().__init__(tile, world, camera, pv)
 
         # Visual and audio effects
         self.name = "Archer"
