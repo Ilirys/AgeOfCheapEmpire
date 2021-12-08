@@ -1,8 +1,255 @@
 import pygame
-from pygame import *
-import math
+import random
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
+from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE
 from math import *
-from game.units import *
+from game.deplacement import lerp
+from .workers import Worker
 
 
+class Villager(Worker):
+
+    def __init__(self, tile, world, camera, pv=2000):
+        super().__init__(tile, world, camera, pv=2000)
+
+        # Farm
+        self.farm = False
+        self.Ressource_Transp = ""
+        self.Nb_Ressource_Transp = 0
+        self.cibleFarm = 0
+        self.efficiency = 3
+
+    def create_path(self, x, y):
+        searching_for_path = True
+        self.attack = False
+        while searching_for_path:
+            self.dest_tile = self.world.world[x][y]
+            if self.dest_tile != self.tile:
+                if not self.dest_tile["collision"]:  # Condition de déplacement normal, sans rien sur la case cible
+                    self.grid = Grid(matrix=self.world.collision_matrix)
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
+                    self.end = self.grid.node(x, y)
+                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                    self.path_index = 0
+
+                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
+
+                    self.progression = 0
+                    self.attack = False
+
+                    searching_for_path = False
+                elif self.world.unites[x][y] != None or self.dest_tile["tile"].ressource.getNbRessources != 0:
+                    # Reinitialise la derniere case de destination et la cible
+                    self.cible = None
+
+                    # Si la case contient une unitées ou du farm,
+                    # On enleve la collision de la case du soldat (Or else can't get find_path to work)
+
+                    self.temp_tile = self.world.world[x][y]
+                    self.world.world[x][y]["collision"] = False
+                    self.world.collision_matrix[y][x] = 1
+
+                    self.grid = Grid(matrix=self.world.collision_matrix)
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
+                    self.end = self.grid.node(x, y)
+                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                    self.path_index = 0
+                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
+
+                    # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
+                    self.path.pop()
+
+                    if self.world.unites[x][y] != None:  # Condition d'attaque
+                        self.cible = self.world.unites[x][y]
+                        self.attack = True
+                        self.farm = False
+                    elif self.dest_tile["tile"].ressource.getNbRessources != 0:  # Condition de farm
+                        self.cible = self.dest_tile
+                        self.farm = True
+
+                    self.dest_tile = self.world.world[self.path[-1][0]][
+                        self.path[-1][1]]  # La case destination est la dernière de la liste path
+
+                    self.progression = 0
+
+                    searching_for_path = False
+
+
+            else:
+                break
+
+    #override
+    def change_tile(self, new_tile):
+        self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.villager[new_tile[0]][new_tile[1]] = self
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[new_tile[0]][new_tile[1]] = self
+        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+
+    #override
+    def update(self):
+
+        # print(self.farm)
+
+        # Updating mouse position and action and the grid_pos
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_action = pygame.mouse.get_pressed()
+        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], self.camera.scroll)
+
+        # Hitbox
+        self.hitbox.update(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
+                               self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
+
+            # Selection polygon
+        pos_poly = [self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
+                        self.pos_y - self.image.get_height() + self.camera.scroll.y + 50]
+        self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] + 44), (pos_poly[0] + 15, pos_poly[1] + 29),
+                             (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15, pos_poly[1] + 59)]
+
+            # collision matrix (for pathfinding and buildings)
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+
+        # Animation update
+        self.update_sprite()
+
+        if self.selected:
+            if mouse_action[2]:
+                self.create_path(grid_pos[0], grid_pos[1])
+                if self.temp_tile:  # Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                    self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                    self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
+                    self.temp_tile = None
+
+                self.selected = False
+                self.world.hud.select_surface_empty = True
+            if mouse_action[0]:
+                self.selected = False
+                self.world.hud.select_surface_empty = True
+
+        if self.dest_tile == self.tile:
+            if self.attack:
+                # self.attack_ani = True
+                self.cible.pv -= self.dmg
+                if self.cible.pv <= 0:
+                    self.attack = False
+                    self.attack_ani = False
+
+            if self.attack == False:
+                if self.farm:
+                    self.farmer_cases(self.cible)
+                    if self.cible["tile"].ressource.nbRessources <= 0:
+                        self.farmer_cases_autour()
+
+            print(self.Nb_Ressource_Transp, self.Ressource_Transp)
+
+        if self.hitbox.collidepoint(mouse_pos):
+            if mouse_action[0]:
+                self.selected = True
+                self.sound.play()
+
+        if self.path_index <= len(self.path) - 1:
+            if self.dest_tile != self.tile:
+                self.movestraight_animation = True
+
+            new_pos = self.path[self.path_index]
+            new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
+            if self.progression < 1:
+                self.progression += (1 / 135) * DISPLACEMENT_SPEED[CURRENT_SPEED]
+                self.progression = round(self.progression, 4)
+            else:
+                self.progression = 1
+            self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression), 3)
+            self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression), 3)
+
+            if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[
+                1]:  # now - self.move_timer > 1000:  # update position in the world
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
+                self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+                self.change_tile(new_pos)
+                self.path_index += 1
+                self.progression = 0
+
+        else:
+            self.movestraight_animation = False
+
+    #override
+    def update_sprite(self):
+        if self.movestraight_animation == True:
+            self.temp += 0.2
+            self.image = self.animation[int(self.temp)]
+            if self.temp + 0.2 >= len(self.animation):
+                self.temp = 0
+
+        elif self.attack_ani == True:
+            self.temp += 0.2
+            self.image = self.animation_attack[int(self.temp)]
+            if self.temp + 0.2 >= len(self.animation_attack):
+                self.temp = 0
+
+        # elif self.farm_ani == True:
+        #    self.temp += 0.2
+        #    self.image = self.animation_farm[int(self.temp)]
+        #   if self.temp + 0.2 >= len(self.animation_farm):
+        #       self.temp = 0
+
+        else:
+            self.image = self.world.animation.villager_standby
+
+    #override
+    def delete(self):
+        self.world.entities.remove(self)
+
+        self.world.collision_matrix[self.tile["grid"][1]][
+                self.tile["grid"][0]] = 1  # Free the last tile from collision
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+        self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.selected = False
+
+    #override
+    def farmer_cases(self, cible):  # Farme la cible
+        self.Ressource_Transp = cible["tile"].ressource.typeRessource
+        self.Nb_Ressource_Transp += self.efficiency
+        cible["tile"].ressource.nbRessources -= self.efficiency
+
+    #override
+    def farmer_cases_autour(self):  # Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée
+        if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
+            self.farmer_cases(self.cible)
+
+        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
+            self.farmer_cases(self.cible)
+
+        else:
+            self.create_path(self.cible["grid"][0], self.cible["grid"][1])
 

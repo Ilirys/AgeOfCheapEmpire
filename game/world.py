@@ -36,7 +36,10 @@ class World:
         self.unites = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
-        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
+        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.villager = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.villagerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.soldier = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.soldierDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]

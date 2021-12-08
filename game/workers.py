@@ -19,7 +19,7 @@ class Worker:
         self.pv = pv
 
         #Visual and audio effects
-        self.name = "Villageois"
+        self.name = "Villager"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         self.temp = 0
         self.animation = self.world.animation.villager_walk
@@ -110,9 +110,6 @@ class Worker:
                     if self.world.unites[x][y] != None:     #Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
-                    elif self.dest_tile["tile"].ressource.getNbRessources != 0: #Condition de farm
-                        self.cible = self.dest_tile
-                        self.farm = True
 
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]] #La case destination est la dernière de la liste path
 
@@ -153,8 +150,8 @@ class Worker:
 
     def update(self):
 
-        # print(self.farm)
-        
+        print(self.farm)
+
         #Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -197,13 +194,6 @@ class Worker:
                     self.attack = False
                     self.attack_ani = False
 
-            if self.attack == False:
-                if self.farm:
-                    self.farmer_cases(self.cible)
-                    if self.cible["tile"].ressource.nbRessources <= 0:
-                        self.farmer_cases_autour()
-
-            print(self.Nb_Ressource_Transp, self.Ressource_Transp)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -249,13 +239,6 @@ class Worker:
             self.image = self.animation_attack[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
-
-        #elif self.farm_ani == True:
-        #    self.temp += 0.2
-        #    self.image = self.animation_farm[int(self.temp)]
-        #   if self.temp + 0.2 >= len(self.animation_farm):
-        #       self.temp = 0
-
         else:
             self.image = self.world.animation.villager_standby
 
@@ -270,43 +253,3 @@ class Worker:
         self.selected = False     
 
 
-    def farmer_cases(self, cible): #Farme la cible
-        self.Ressource_Transp = cible["tile"].ressource.typeRessource
-        self.Nb_Ressource_Transp += self.efficiency
-        cible["tile"].ressource.nbRessources -= self.efficiency
-
-    def farmer_cases_autour(self):      #Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée
-        if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
-            self.farmer_cases(self.cible)
-
-        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)
-
-        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)   
-
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
-            self.farmer_cases(self.cible) 
-
-        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible) 
-
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible) 
-
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible) 
-
-        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible) 
-
-        else:
-            self.create_path(self.cible["grid"][0], self.cible["grid"][1])

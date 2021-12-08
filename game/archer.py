@@ -65,12 +65,12 @@ class Archer(Worker):
                 #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
 
                 self.cible = self.world.unites[x][y]
-                if self.dest_tile == self.tile:
+                if self.dest_tile == self.tile :
                     self.attack = True
                     self.progression = 0
                     searching_for_path = False
-                #elif:
-                    #si la distance est inférieure à 3 tiles, attaquer directement
+
+
                 else:
                     for i in range(3):
                         self.path.pop()
