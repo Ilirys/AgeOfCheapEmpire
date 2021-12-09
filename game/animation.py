@@ -17,6 +17,10 @@ class Animation:
         self.archer_walk = self.animation_archer_walk()
         self.archer_attack = self.animation_archer_attack()
         self.archer_standby = self.animation_archer_standby()
+        self.horseman_attack_up = self.animation_horseman_attack_up()
+        self.horseman_attack_ldown = self.animation_horseman_attack_ldown()
+        self.horseman_attack_left = self.animation_horseman_attack_left()
+        self.horseman_attack_uleft = self.animation_horseman_attack_uleft()
 
 
     def animation_villager_attack(self):
@@ -179,3 +183,60 @@ class Animation:
     def animation_archer_standby(self):
         img = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
         return img
+
+    def animation_horseman_attack_up(self):
+        horseman_attack_up = []
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack041.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack042.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack043.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack044.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack045.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack046.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack047.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack048.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack049.png').convert_alpha())
+        horseman_attack_up.append(pygame.image.load('assets/horseman/Cavalierattack050.png').convert_alpha())
+        return horseman_attack_up
+
+
+    def animation_horseman_attack_ldown(self):
+        horseman_attack_ldown = []
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack011.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack012.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack013.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack014.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack015.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack016.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack017.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack018.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack019.png').convert_alpha())
+        horseman_attack_ldown.append(pygame.image.load('assets/horseman/Cavalierattack020.png').convert_alpha())
+        return horseman_attack_ldown
+
+    def animation_horseman_attack_left(self):
+        horseman_attack_left = []
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack021.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack022.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack023.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack024.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack025.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack026.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack027.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack028.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack029.png').convert_alpha())
+        horseman_attack_left.append(pygame.image.load('assets/horseman/Cavalierattack030.png').convert_alpha())
+        return horseman_attack_left
+
+    def animation_horseman_attack_uleft(self):
+        horseman_attack_uleft = []
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack031.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack032.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack033.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack034.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack035.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack036.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack037.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack038.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack039.png').convert_alpha())
+        horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack040.png').convert_alpha())
+        return horseman_attack_uleft
