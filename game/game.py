@@ -58,7 +58,7 @@ class Game:
         # Worker(self.world.world[1][1], self.world,self.camera)
         # Horseman(self.world.world[0][1], self.world,self.camera)
         # Soldier(self.world.world[1][0], self.world,self.camera)
-        #Villager(self.world.world[1][0], self.world,self.camera)
+        # Villager(self.world.world[1][0], self.world,self.camera)
         # Archer(self.world.world[2][2], self.world,self.camera)
         
         #Save

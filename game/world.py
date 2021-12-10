@@ -176,13 +176,7 @@ class World:
             for y in range(self.grid_length_y):
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
-                if nomElement != "":
-                    if self.world[x][y]["tile"].ressource.nbRessources == 0:
-                        self.world[x][y]["tile"].nomElement=""
-                        self.world[x][y]["tile"].ressource.nbRessource = ""
-                        self.world[x][y]["tile"].ressource.typeRessource = ""
-                        self.world[x][y]["collision"] = False
-                    else:
+                if nomElement != "":  #Si le nom de l'element sur la case n'est pas vide alors on affiche la ressource correspondante (arbre etc)
                         screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
                                  render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
@@ -433,6 +427,13 @@ class World:
         else:
             return False
 
+    def reset_tile(self, x, y): #On lui fournit des coordonnées de la case et il la reinitialise ainsi que toute les collisions
+        self.world[x][y]["tile"].ressource.nbRessources == 0
+        self.world[x][y]["tile"].nomElement=""
+        self.world[x][y]["tile"].ressource.nbRessource = ""
+        self.world[x][y]["tile"].ressource.typeRessource = ""
+        self.world[x][y]["collision"] = False
+        self.collision_matrix[y][x] = 1
 
     def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
         if not self.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]:
