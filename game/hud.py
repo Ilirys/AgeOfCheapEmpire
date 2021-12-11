@@ -111,7 +111,6 @@ class Hud:
     def create_ressource_hud(self):
         self.resources_surface.blit(self.images_hud["hudRessources"],(0,0))
 
-
     def update(self):
 
         mouse_pos = pygame.mouse.get_pos()
