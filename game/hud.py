@@ -255,7 +255,8 @@ class Hud:
         hudCavalier = pygame.image.load("assets/HUD/Hud_Cavalier_1920-1080.png").convert_alpha()
         hudArcher = pygame.image.load("assets/HUD/Hud_Archer_1920-1080.png").convert_alpha()
         hudbuild = pygame.image.load("assets/HUD/build_hud.png").convert_alpha()
-
+        hudBigdaddy = pygame.image.load("assets/HUD/Hud_FantassinMassue_1920-1080.png").convert_alpha()
+        
         images = {
             "hudVillageois": hudVillageois,
             "hudRessources": hudRessources,
@@ -274,7 +275,8 @@ class Hud:
             "hudSoldier":hudSoldier,
             "hudCavalier":hudCavalier,
             "hudArcher":hudArcher,
-            "hudbuild":hudbuild
+            "hudbuild":hudbuild,
+            "hudBigdaddy":hudBigdaddy
         }
         return images
 
