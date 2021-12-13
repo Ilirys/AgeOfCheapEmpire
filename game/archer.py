@@ -33,7 +33,8 @@ class Archer(Worker):
         self.dmg = 2
 
     #override
-    def create_path(self,x,y):
+
+    def create_path(self, x, y):
         searching_for_path = True
         while searching_for_path:
             self.dest_tile = self.world.world[x][y]
@@ -48,8 +49,8 @@ class Archer(Worker):
                 self.progression = 0
                 self.attack = False
                 searching_for_path = False
-            elif (self.world.unites[x][y] != None): #Si la case contient une unitées, pathfinding attaque
-                #On enleve la collision de la case du soldat (Or else can't get find_path to work)
+            elif (self.world.unites[x][y] != None):  # Si la case contient une unitées, pathfinding attaque
+                # On enleve la collision de la case du soldat (Or else can't get find_path to work)
 
                 self.temp_tile = self.world.world[x][y]
                 self.world.world[x][y]["collision"] = False
@@ -62,22 +63,19 @@ class Archer(Worker):
                 self.path_index = 0
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-                #On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
+                # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
 
                 self.cible = self.world.unites[x][y]
-                if self.dest_tile == self.tile :
-                    self.attack = True
-                    self.progression = 0
-                    searching_for_path = False
-
-
-                else:
-                    for i in range(3):
-                        self.path.pop()
-                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
-                    self.attack = True
-                    self.progression = 0
-                    searching_for_path = False
+                if self.dest_tile != self.tile:
+                    for i in range(2):
+                        if self.path:
+                            self.path.pop()
+                            if self.path:
+                                self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                self.temp_tile_a = self.cible.tile
+                self.attack = True
+                self.progression = 0
+                searching_for_path = False
 
             else:
                 break
