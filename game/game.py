@@ -49,7 +49,7 @@ class Game:
         self.camera = Camera(self.width, self.height)
         
         #World
-        self.world = World(self.resource_manager, self.entities, self.hud, self.minimap, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera)
+        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera)
 
         #Benchmark
         self.benchmark = Benchmark(self.clock)

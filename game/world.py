@@ -15,11 +15,10 @@ import pickle
 
 class World:
 
-    def __init__(self, resource_manager, entities, hud, minimap, grid_length_x, grid_length_y, width, height, camera):
+    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height, camera):
         self.resource_manager = resource_manager
         self.entities = entities
         self.hud = hud
-        self.minimap = hud
         self.grid_length_x = grid_length_x  #Taille MAP
         self.grid_length_y = grid_length_y
         self.width = width  #Taille écran
