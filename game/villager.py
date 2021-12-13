@@ -132,6 +132,11 @@ class Villager(Worker):
         # Animation update
         self.update_sprite()
 
+        if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+            self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+            self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
+            self.temp_tile = None
+
         if self.selected:
             if self.world.can_place_tile(grid_pos):
                 if mouse_action[2]: #Clic droit
@@ -139,10 +144,10 @@ class Villager(Worker):
                     self.selected = False
                     self.world.hud.select_surface_empty = True  #Enlever le hud de l'unite
                     self.world.hud.display_building_icons = False   
-                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
-                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
-                        self.temp_tile = None
+                    # if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                    #     self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                    #     self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
+                    #     self.temp_tile = None
                 if mouse_action[0]:
                     self.selected = False
                     self.world.hud.select_surface_empty = True
