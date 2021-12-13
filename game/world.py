@@ -66,6 +66,7 @@ class World:
         self.temp_tile = None
         self.examine_tile = None
         self.caserne_tile = None # Used to spawn units on the right tile
+        self.house_tile = None # Used to drop resources of villager when full
         self.move_timer = pygame.time.get_ticks()
         
         #Save paths
@@ -200,6 +201,7 @@ class World:
                             elif (batiment.name=="House"):
                                 self.hud.display_unit_icons = False 
                                 self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
+                                self.house_tile = self.world[x][y] #Used to drop resources of villager when full
                             elif (batiment.name=="Barrack"):
                                 self.hud.display_unit_icons = True
                                 self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
@@ -598,7 +600,10 @@ class World:
                     for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
                         self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)
-                    self.batiment[x][y] = ent     
+                    self.batiment[x][y] = ent
+                    if entDTO.name == "House":
+                        self.house_tile = self.world[x][y]
+
 
 
     def save(self):

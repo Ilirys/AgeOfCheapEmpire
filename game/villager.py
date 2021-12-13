@@ -23,6 +23,8 @@ class Villager(Worker):
         self.farm = False
         self.ressource_Transp = ""
         self.nb_ressource_Transp = 0
+        self.max_ressources = 1000
+
         self.cibleFarm = 0
         self.efficiency = 5
 
@@ -49,7 +51,7 @@ class Villager(Worker):
                     if farmReset: self.farm = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.dest_tile["tile"].ressource.getNbRessources() != 0:
+                elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0:
                     # Reinitialise la cible
                     self.cible = None
 
@@ -77,6 +79,11 @@ class Villager(Worker):
                     elif self.dest_tile["tile"].ressource.getNbRessources() != 0:  # Condition de farm
                         self.cible = self.dest_tile
                         self.farm = True
+                    elif self.world.batiment[x][y]:
+                        self.farm = False
+                        self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
+                        self.nb_ressource_Transp = 0
+                        self.ressource_Transp = ""    
 
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
 
@@ -134,7 +141,7 @@ class Villager(Worker):
                     self.world.hud.display_building_icons = False   
                     if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1   # 0 pour collision!
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
                         self.temp_tile = None
                 if mouse_action[0]:
                     self.selected = False
@@ -175,7 +182,7 @@ class Villager(Worker):
 
             if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[
                 1]:  # now - self.move_timer > 1000:  # update position in the world
-                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
                 self.path_index += 1
@@ -225,6 +232,9 @@ class Villager(Worker):
         cible["tile"].ressource.nbRessources -= self.efficiency
         if cible["tile"].ressource.nbRessources <= 0:
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
+
+        if self.nb_ressource_Transp >= self.max_ressources:
+            self.create_path(self.world.house_tile["grid"][0], self.world.house_tile["grid"][1], True)    
 
     #override
     def farmer_cases_autour(self):  # Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée
