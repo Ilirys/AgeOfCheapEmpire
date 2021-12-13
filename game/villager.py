@@ -21,8 +21,8 @@ class Villager(Worker):
 
         # Farm
         self.farm = False
-        self.Ressource_Transp = ""
-        self.Nb_Ressource_Transp = 0
+        self.ressource_Transp = ""
+        self.nb_ressource_Transp = 0
         self.cibleFarm = 0
         self.efficiency = 5
 
@@ -128,7 +128,7 @@ class Villager(Worker):
         if self.selected:
             if self.world.can_place_tile(grid_pos):
                 if mouse_action[2]: #Clic droit
-                    self.create_path(grid_pos[0], grid_pos[1]) #Creer le chemin vers la case pointée par la souris
+                    self.create_path(grid_pos[0], grid_pos[1], True) #Creer le chemin vers la case pointée par la souris
                     self.selected = False
                     self.world.hud.select_surface_empty = True  #Enlever le hud de l'unite
                     self.world.hud.display_building_icons = False   
@@ -150,11 +150,9 @@ class Villager(Worker):
                     self.attack_ani = False
 
             elif self.farm:
-                # self.farmer_cases(self.cible)
-                # if self.cible["tile"].ressource.nbRessources <= 0:
                 self.farmer_cases_autour()
 
-            # print(self.Nb_Ressource_Transp, self.Ressource_Transp)
+            # print(self.nb_ressource_Transp, self.ressource_Transp)
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -213,8 +211,7 @@ class Villager(Worker):
     def delete(self):
         self.world.entities.remove(self)
 
-        self.world.collision_matrix[self.tile["grid"][1]][
-                self.tile["grid"][0]] = 1  # Free the last tile from collision
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
         self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
@@ -223,8 +220,8 @@ class Villager(Worker):
 
     #override
     def farmer_cases(self, cible):  # Farme la cible
-        self.Ressource_Transp = cible["tile"].ressource.typeRessource
-        self.Nb_Ressource_Transp += self.efficiency
+        self.ressource_Transp = cible["tile"].ressource.typeRessource
+        self.nb_ressource_Transp += self.efficiency
         cible["tile"].ressource.nbRessources -= self.efficiency
         if cible["tile"].ressource.nbRessources <= 0:
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])

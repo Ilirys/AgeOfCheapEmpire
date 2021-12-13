@@ -211,9 +211,6 @@ class World:
                 unites = self.unites[x][y]
                 if unites is not None:
                     if unites.pv > 0:
-                        if unites.name == "Villageois":
-                            if unites.selected:
-                                self.hud.display_building_icons = True
                                 
                         if unites.name == "horseman":
                             if unites.selected:
@@ -224,8 +221,12 @@ class World:
                             
                         else:
                             if unites.selected:
-                                self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen)
+                                self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
                                 pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+
+                                if unites.name == "Villageois":
+                                    self.hud.display_building_icons = True
+
                             screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
                             unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
                             

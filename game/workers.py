@@ -53,8 +53,8 @@ class Worker:
 
         #Farm
         self.farm = False
-        self.Ressource_Transp = ""
-        self.Nb_Ressource_Transp = 0
+        self.ressource_Transp = ""
+        self.nb_ressource_Transp = 0
         self.cibleFarm = 0
         self.efficiency = 3
         
