@@ -2,6 +2,11 @@ import pygame
 import random
 import noise
 from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
+from game.horseman import Horseman
+from game.soldier import Soldier
+from game.workers import Worker
+from game.villager import Villager
+from game.archer import Archer
 from .utils import *
 from DTO.worldDTO import WorldDTO
 from game.Ressource import Ressource
@@ -14,7 +19,7 @@ import pickle
 
 class World:
 
-    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height):
+    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height, camera):
         self.resource_manager = resource_manager
         self.entities = entities
         self.hud = hud
@@ -22,6 +27,7 @@ class World:
         self.grid_length_y = grid_length_y
         self.width = width  #Taille écran
         self.height = height
+        self.camera = camera
         
         self.Bou = Bouquet() #Génération forets, ressources
 
@@ -36,7 +42,10 @@ class World:
         self.unites = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
-        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)] 
+        self.workersDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.villager = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.villagerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.soldier = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.soldierDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -44,12 +53,21 @@ class World:
         self.horseman = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.horsemanDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.villager = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.villagerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+                                                                        
+        self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.temp_tile = None
         self.examine_tile = None
+        self.caserne_tile = None # Used to spawn units on the right tile
+        self.house_tile = None # Used to drop resources of villager when full
+        self.move_timer = pygame.time.get_ticks()
         
         #Save paths
         self.map_save_file_path = SAVED_GAME_FOLDER + "world"
@@ -57,6 +75,8 @@ class World:
         self.workers_save_file_path = SAVED_GAME_FOLDER + "worker"
         self.soldiers_save_file_path = SAVED_GAME_FOLDER + "soldiers"
         self.horseman_save_file_path = SAVED_GAME_FOLDER + "horseman"
+        self.villager_save_file_path = SAVED_GAME_FOLDER + "villager"
+        self.archer_save_file_path = SAVED_GAME_FOLDER + "archer"
 
         #init
         self.restore_save()
@@ -97,13 +117,13 @@ class World:
                     "render_pos": render_pos,
                     "iso_poly": iso_poly,
                     "collision": collision,
-                    "taille" :  taille
+                    "name" :  self.hud.selected_tile["name"]
                 }
                 
                 if mouse_action[0] and not collision:
                     
-                    if self.hud.selected_tile["name"] == "House":
-                        ent = House(render_pos, self.resource_manager)
+                    if dicoBatiment[self.hud.selected_tile["name"]][1] == 1:
+                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
@@ -111,21 +131,25 @@ class World:
                         self.hud.selected_tile = None
 
                     elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
-                        if self.hud.selected_tile["name"] == "Towncenter":
-                            ent = Towncenter(render_pos, self.resource_manager)
-                            self.entities.append(ent)
-                            self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                        if self.hud.selected_tile["name"] == "Barrack":
-                            ent = Barrack(render_pos, self.resource_manager)
-                            self.entities.append(ent)
-                            self.batiment[grid_pos[0]][grid_pos[1]] = ent
-                            print(self.batiment[grid_pos[0]][grid_pos[1]].taille)
-
-                        for i in range (self.temp_tile["taille"]):
-                            for j in range (self.temp_tile["taille"]):
+                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
+                        self.entities.append(ent)
+                        self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                        for i in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
+                            for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
                                 self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
                         self.hud.selected_tile = None
+            
+        elif self.hud.selected_unit_icon:  #Si les icones unités sont selectionées, le clic gauche fais spawn autour de la caserne
+                now = pygame.time.get_ticks()
+                if mouse_action[0]:
+                    if now - self.move_timer > UNITS_SPAWN_TIME:
+                        self.spawn_unit_autour_caserne(
+                            self.hud.selected_unit_icon["name"], self.caserne_tile)
+                        self.hud.selected_unit_icon = None
+
+                        self.move_timer = now
+                    else: self.hud.selected_unit_icon = None   
 
         else:
 
@@ -153,13 +177,7 @@ class World:
             for y in range(self.grid_length_y):
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
-                if nomElement != "":
-                    if self.world[x][y]["tile"].ressource.nbRessources == 0:
-                        self.world[x][y]["tile"].nomElement=""
-                        self.world[x][y]["tile"].ressource.nbRessource = ""
-                        self.world[x][y]["tile"].ressource.typeRessource = ""
-                        self.world[x][y]["collision"] = False
-                    else:
+                if nomElement != "":  #Si le nom de l'element sur la case n'est pas vide alors on affiche la ressource correspondante (arbre etc)
                         screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
                                  render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
@@ -168,40 +186,55 @@ class World:
                 batiment = self.batiment[x][y]
                 if batiment is not None:
                     screen.blit(batiment.image,
-                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
-                                     render_pos[1] - (batiment.image.get_height() - TILE_SIZE +15) + camera.scroll.y))
+                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/4,
+                                     render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y))
                     if self.examine_tile is not None:
                         if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
                             mask = pygame.mask.from_surface(batiment.image).outline()
                             # affiche le rectangle blanc autour du batiment
-                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25, y + render_pos[1] - (batiment.image.get_height() - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
-
+                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/4, y + render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
-                                self.hud.blit_hud("hudTowncenter")
+                                self.hud.display_unit_icons = False 
+                                self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
                             elif (batiment.name=="House"):
-                                self.hud.blit_hud("hudHouse")
+                                self.hud.display_unit_icons = False 
+                                self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
+                                self.house_tile = self.world[x][y] #Used to drop resources of villager when full
                             elif (batiment.name=="Barrack"):
-                                self.hud.blit_hud("hudCaserne")
+                                self.hud.display_unit_icons = True
+                                self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
+                                self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
+                    elif not self.examine_tile:
+                        self.hud.display_unit_icons = False                
 
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
-                # pygame.draw.rect(screen, (255,255,0), horseman.hitbox)
-                    if unites.name == "horseman":
-                        if unites.selected:
-                            self.hud.blit_hud("hudCavalier")
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
-                    
+                    if unites.pv > 0:
+                                
+                        if unites.name == "horseman":
+                            if unites.selected:
+                                self.hud.blit_hud("hudCavalier", str(unites.pv), screen)
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
+                            
+                        else:
+                            if unites.selected:
+                                self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+
+                                if unites.name == "Villageois":
+                                    self.hud.display_building_icons = True
+
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                            
                     else:
-                        if unites.selected:
-                            self.hud.blit_hud("hud" + unites.name)
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                        unites.delete()    
+                        self.hud.select_surface_empty = True    
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
@@ -214,17 +247,17 @@ class World:
             screen.blit(
                 self.temp_tile["image"],
                 (
-                    render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
-                    render_pos[1] - (self.temp_tile["image"].get_height() - TILE_SIZE +15) + camera.scroll.y
+                    render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (self.temp_tile["image"].get_width()*(dicoBatiment[self.temp_tile["name"]][1]-1))/4,
+                    render_pos[1] - (self.temp_tile["image"].get_height()/dicoBatiment[self.temp_tile["name"]][1] - TILE_SIZE +15) + camera.scroll.y
                 )
             )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
-        '''
-        mouse_pos = pygame.mouse.get_pos()
-        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-        txt = str(grid_pos)
-        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
-        '''
+        
+        # mouse_pos = pygame.mouse.get_pos()
+        # grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        # txt = str(grid_pos)
+        # draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        
 
 
 
@@ -254,24 +287,17 @@ class World:
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], LES_RESSOURCES[1]))
-                    # world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[1]
-                    # world[grid_x][grid_y]["tile"].ressource.typeRessource = "FOOD"
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "gold":
 
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], LES_RESSOURCES[2]))
-                    #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[2]
-                    #world[grid_x][grid_y]["tile"].ressource.typeRessource = "GOLD"
-
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], LES_RESSOURCES[3]))
-                    #world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[3]
-                    #world[grid_x][grid_y]["tile"].ressource.typeRessource = "STONE"
                     world[grid_x][grid_y]["collision"] = True
 
         return world    
@@ -349,20 +375,13 @@ class World:
                 if M2[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
                     self.world[grid_x][grid_y]["tile"].nomElement = ""
                     self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
-                    #self.world[grid_x][grid_y]["tile"].ressource.nbRessource = 0
-                    #self.world[grid_x][grid_y]["tile"].ressource.typeRessource = ""
-        '''
-        render_pos2 = self.world[a][b]["render_pos"]
-        ent = Towncenter(render_pos2)
-        self.entities.append(ent)
-        self.batiment[a][b] = ent
-        self.world[a][b]["collision"] = True
-        '''
+                    self.world[grid_x][grid_y]["collision"] = False
+
+
         render_pos = self.world[a][b]["render_pos"]
-        ent = Towncenter(render_pos, self.resource_manager)
+        ent = Batiment(render_pos, "Towncenter", self.resource_manager) # (Towncenter(render_pos, self.resource_manager)
         self.entities.append(ent)
         self.batiment[a][b] = ent
-        #self.world[a][b]["tile"].nomElement = "Towncenter"
         for i in range (3):
             for j in range (3):
                 self.world[a+j][b+i]["collision"] = False
@@ -373,8 +392,6 @@ class World:
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
                 self.world[a+j][b+i]["tile"].setRessource(Ressource(0, ""))
-                #self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
-                #self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
                 self.collision_matrix[b+i][a+j] = 0
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
@@ -413,6 +430,147 @@ class World:
         else:
             return False
 
+    def reset_tile(self, x, y): #On lui fournit des coordonnées de la case et il la reinitialise ainsi que toute les collisions
+        self.world[x][y]["tile"].ressource.nbRessources == 0
+        self.world[x][y]["tile"].nomElement=""
+        self.world[x][y]["tile"].ressource.nbRessource = ""
+        self.world[x][y]["tile"].ressource.typeRessource = ""
+        self.world[x][y]["collision"] = False
+        self.collision_matrix[y][x] = 1
+
+    def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
+        if not self.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+                Villager(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+        
+        elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
+                Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
+                Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
+                Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
+                Villager(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] ][tile["grid"][1] - 1]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
+                Villager(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
+                Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
+                Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
+                Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
+                Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
+                Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
+        
+        elif not self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
+                Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
+            if unit_name == "Soldier":
+                Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
+            if unit_name == "horseman":
+                Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
+            if unit_name == "Archer":
+                Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
+
     def restore_save(self):
         #Map restore
         try:    
@@ -438,16 +596,14 @@ class World:
             for y in range(self.grid_length_y):
                 if self.batimentDTO[x][y] != None:
                     entDTO = self.batimentDTO[x][y]
-                    if entDTO.name == "Towncenter":
-                        ent = Towncenter(entDTO.pos, self.resource_manager)
-                    if entDTO.name == "House":
-                        ent = House(entDTO.pos, self.resource_manager)
-                    if entDTO.name == "Barrack":
-                        ent = Barrack(entDTO.pos, self.resource_manager)
+                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager)
                     for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
                         self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)
-                    self.batiment[x][y] = ent     
+                    self.batiment[x][y] = ent
+                    if entDTO.name == "House":
+                        self.house_tile = self.world[x][y]
+
 
 
     def save(self):

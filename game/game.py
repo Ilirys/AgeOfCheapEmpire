@@ -3,7 +3,8 @@ import pygame
 import sys
 
 from pygame.image import save
-
+from DTO.archerDTO import archerDTO
+from DTO.villagerDTO import villagerDTO
 from DTO.workerDTO import workerDTO
 from DTO.soldierDTO import soldierDTO
 from DTO.horsemanDTO import horsemanDTO
@@ -21,7 +22,7 @@ from .chat import Chat
 from .Ressource import Ressource
 from .soldier import Soldier
 from .horseman import Horseman
-
+from.archer import Archer
 class Game:
 
     def __init__(self, screen, clock):
@@ -41,25 +42,27 @@ class Game:
         # entities
         self.entities = []
     
-        #World
-        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width)
-
         #Camera
         self.camera = Camera(self.width, self.height)
+        
+        #World
+        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera)
 
         #Benchmark
-        self.benchmark = Benchmark(self.clock)
+        #self.benchmark = Benchmark(self.clock)
 
         #Chat
         self.chat = Chat(self.resource_manager, 15, 100, 200, 30)
 
         #Unité
-        # Worker(self.world.world[0][0], self.world,self.camera)
+        # Worker(self.world.world[1][1], self.world,self.camera)
         # Horseman(self.world.world[0][1], self.world,self.camera)
         # Soldier(self.world.world[1][0], self.world,self.camera)
-
+        Villager(self.world.world[1][0], self.world,self.camera)
+        # Archer(self.world.world[2][2], self.world,self.camera)
+        
         #Save
-        self.restore()
+        #self.restore()
 
     def run(self):
         self.playing = True
@@ -74,9 +77,9 @@ class Game:
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
             if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
-                self.resource_manager.save()
-                self.save()
-                self.world.save()
+                #self.resource_manager.save()
+                #self.save()
+                #self.world.save()
                 pygame.quit()
                 sys.exit()
             self.chat.handle_event(event)
@@ -125,7 +128,20 @@ class Game:
                     currenthorseman = self.world.horseman[x][y]
                     self.world.collision_matrix[currenthorseman.tile["grid"][1]][currenthorseman.tile["grid"][0]] = 1
                     self.world.world[currenthorseman.tile["grid"][0]][currenthorseman.tile["grid"][1]]["collision"] = False
+                    print("save", currenthorseman.pv)
                     self.world.horsemanDTO[x][y] = horsemanDTO(currenthorseman.name,currenthorseman.pv,currenthorseman.range,currenthorseman.dmg,currenthorseman.tile)
+                
+                if self.world.villager[x][y] != None:
+                    currentvillager = self.world.villager[x][y]
+                    self.world.collision_matrix[currentvillager.tile["grid"][1]][currentvillager.tile["grid"][0]] = 1
+                    self.world.world[currentvillager.tile["grid"][0]][currentvillager.tile["grid"][1]]["collision"] = False
+                    self.world.villagerDTO[x][y] = villagerDTO(currentvillager.name,currentvillager.pv,currentvillager.range,currentvillager.dmg,currentvillager.tile)
+                
+                if self.world.archer[x][y] != None:
+                    currentarcher = self.world.archer[x][y]
+                    self.world.collision_matrix[currentarcher.tile["grid"][1]][currentarcher.tile["grid"][0]] = 1
+                    self.world.world[currentarcher.tile["grid"][0]][currentarcher.tile["grid"][1]]["collision"] = False
+                    self.world.archerDTO[x][y] = archerDTO(currentarcher.name,currentarcher.pv,currentarcher.range,currentarcher.dmg,currentarcher.tile)
         
         try:   #Worker save
             with open(self.world.workers_save_file_path, "wb") as output:
@@ -143,7 +159,19 @@ class Game:
             with open(self.world.horseman_save_file_path, "wb") as output:
                 pickle.dump(self.world.horsemanDTO,output)
                 output.close()
-        except: print("Couldnt dumpwhorseman save in file")   
+        except: print("Couldnt dump horseman save in file")   
+        
+        try:   #villager save
+            with open(self.world.villager_save_file_path, "wb") as output:
+                pickle.dump(self.world.villagerDTO,output)
+                output.close()
+        except: print("Couldnt dump villager save in file") 
+        
+        try:   #archer save
+            with open(self.world.archer_save_file_path, "wb") as output:
+                pickle.dump(self.world.archerDTO,output)
+                output.close()
+        except: print("Couldnt dump archer save in file") 
 
     def restore(self):
         try:    
@@ -154,7 +182,8 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_workers_dto[x][y] != None:
                             currentworkerDTO = restore_workers_dto[x][y]
-                            Worker(currentworkerDTO.tile,self.world,self.camera)
+                            Worker(currentworkerDTO.tile,self.world,self.camera,currentworkerDTO.health_points)
+                            self.world.resource_manager.apply_cost_to_resource("Villageois", -1) #Rembourser le cout du spawn en bouffe 
         except: 
             print("Created worker file")     
 
@@ -166,7 +195,8 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_soldiers_dto[x][y] != None:
                             currentsoldierDTO = restore_soldiers_dto[x][y]
-                            Soldier(currentsoldierDTO.tile,self.world,self.camera)
+                            Soldier(currentsoldierDTO.tile,self.world,self.camera, currentsoldierDTO.pv)
+                            self.world.resource_manager.apply_cost_to_resource("Soldier", -1)
         except: 
             print("Created soldier file") 
 
@@ -178,8 +208,37 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_horseman_dto[x][y] != None:
                             currenthorsemanDTO = restore_horseman_dto[x][y]
-                            Horseman(currenthorsemanDTO.tile,self.world,self.camera)
+                            print(currenthorsemanDTO.pv)
+                            Horseman(currenthorsemanDTO.tile,self.world,self.camera, currenthorsemanDTO.pv)
+                            self.world.resource_manager.apply_cost_to_resource("horseman", -1)
         except: 
             print("Created horseman file")      
+        
+        try:    
+            with open(self.world.villager_save_file_path, "rb") as input:
+                restore_villager_dto = pickle.load(input)
+                input.close()
+                for x in range(self.world.grid_length_x):
+                    for y in range(self.world.grid_length_y):
+                        if restore_villager_dto[x][y] != None:
+                            currentvillagerDTO = restore_villager_dto[x][y]
+                            Villager(currentvillagerDTO.tile,self.world,self.camera, currentvillagerDTO.pv)
+                            self.world.resource_manager.apply_cost_to_resource("Villageois", -1)
+        except: 
+            print("Created villager file")  
+        
+        
+        try:    
+            with open(self.world.archer_save_file_path, "rb") as input:
+                restore_archer_dto = pickle.load(input)
+                input.close()
+                for x in range(self.world.grid_length_x):
+                    for y in range(self.world.grid_length_y):
+                        if restore_archer_dto[x][y] != None:
+                            currentarcherDTO = restore_archer_dto[x][y]
+                            Archer(currentarcherDTO.tile,self.world,self.camera, currentarcherDTO.pv)
+                            self.world.resource_manager.apply_cost_to_resource("Archer", -1)
+        except: 
+            print("Created archer file")     
 
 

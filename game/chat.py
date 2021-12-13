@@ -35,6 +35,7 @@ class Chat:
                     print(self.text)
                     if self.text == "NINJALUI":
                         self.resource_manager.resources["wood"] += 10000
+                        self.resource_manager.resources["food"] += 10000
                         self.resource_manager.resources["stone"] += 10000
 
                     self.text = ''
