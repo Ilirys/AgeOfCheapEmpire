@@ -67,7 +67,7 @@ class Game:
         # Archer(self.world.world[2][2], self.world,self.camera)
         
         #Save
-        #self.restore()
+        self.restore()
 
     def run(self):
         self.playing = True
