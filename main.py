@@ -30,14 +30,13 @@ def main():
     #implement game
     game = Game(SCREEN,clock)
     startscreen = StartScreen(SCREEN, clock)
-    menuscreen = Save(SCREEN, clock)
 
 
     while running:
 
         # start menu goes here
-        #startscreen.ecran_demarrage()
-        # menuscreen.ecran_options()
+        startscreen.ecran_demarrage()
+
         while playing:
             # game loop here
             game.run()

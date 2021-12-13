@@ -8,6 +8,7 @@ from .definitions import *
 
 
 class Options:
+    aff=1
     click = False
     def __init__(self, screen, clock):
         self.screen = screen
@@ -15,7 +16,7 @@ class Options:
         self.width, self.height = self.screen.get_size()
 
     def options(self): #accès à la page d'options
-        aff = 1
+        aff=1
         self.playing = True
         while self.playing:
 
@@ -54,9 +55,9 @@ class Options:
 
 
             # dessin des boutons pour s'assurer de leur bonne position
-            #commentez les 3 lignes pour enlever les rectangles jaunes
-            #pygame.draw.rect(self.screen, (255, 215, 50), button_ok)
-            #pygame.draw.rect(self.screen, (255, 215, 50), button_fast)
+            # commentez les 3 lignes pour enlever les rectangles jaunes
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_ok)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_fast)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_normal)
 
             click = False

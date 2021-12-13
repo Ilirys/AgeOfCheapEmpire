@@ -23,6 +23,8 @@ from .Ressource import Ressource
 from .soldier import Soldier
 from .horseman import Horseman
 from.archer import Archer
+from .ecranSave import Save
+
 class Game:
 
     def __init__(self, screen, clock):
@@ -54,6 +56,9 @@ class Game:
         #Chat
         self.chat = Chat(self.world, self.camera, self.resource_manager, 15, 100, 200, 30)
 
+        #Menu
+        self.ecran_options = Save(self.screen, self.clock, self)
+
         #Unité
         # Worker(self.world.world[1][1], self.world,self.camera)
         # Horseman(self.world.world[0][1], self.world,self.camera)
@@ -71,17 +76,12 @@ class Game:
             self.events()
             self.update()
             self.draw()
+            self.ecran_options.ecran_options()
 
 
 
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
-            if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
-                #self.resource_manager.save()
-                #self.save()
-                #self.world.save()
-                pygame.quit()
-                sys.exit()
             self.chat.handle_event(event)
 
 
