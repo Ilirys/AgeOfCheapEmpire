@@ -188,7 +188,7 @@ class Worker:
 
         if self.dest_tile == self.tile:
             if self.attack:
-                #self.attack_ani = True
+                self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
                     if self.cible.dest_tile == self.cible.tile:

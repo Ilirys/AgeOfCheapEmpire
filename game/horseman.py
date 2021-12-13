@@ -18,6 +18,10 @@ class Horseman(Worker):
         self.name = "horseman"
         self.animation = self.world.animation.horseman_walk
         self.animation_attack = self.world.animation.horseman_attack
+        self.animation_attack_up = self.world.animation.horseman_attack_up
+        self.animation_attack_ldown = self.world.animation.horseman_attack_ldown
+        self.animation_attack_left = self.world.animation.horseman_attack_left
+        self.animation_attack_uleft = self.world.animation.horseman_attack_uleft
         self.image = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
         self.dmg = 5
         # pathfinding
@@ -47,9 +51,24 @@ class Horseman(Worker):
            self.image = self.animation[int(self.temp)]
            if self.temp + 0.2 >= len(self.animation):
                self.temp= 0
-       elif self.attack == True:
+       elif self.attack_ani == True and self.attack == True:
            self.temp +=0.2
-           self.image = self.animation_attack[int(self.temp)]
+           if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+               self.image = self.animation_attack_up[int(self.temp)]
+           elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+               self.image = self.animation_attack[int(self.temp)]
+           elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+               self.image = self.animation_attack_ldown[int(self.temp)]
+           elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+               self.image = self.animation_attack_left[int(self.temp)]
+           elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+               self.image = self.animation_attack_uleft[int(self.temp)]
+           #elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+            #   self.image = self.animation_attack[int(self.temp)]
+
+
+           else :
+               self.image = self.animation_attack[int(self.temp)]
            if self.temp + 0.2 >= len(self.animation_attack):
                self.temp= 0
        else: self.image = self.world.animation.horseman_standby 
