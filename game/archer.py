@@ -77,6 +77,11 @@ class Archer(Worker):
                 self.progression = 0
                 searching_for_path = False
 
+                if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
+                        self.temp_tile = None
+
             else:
                 break
 
@@ -86,7 +91,11 @@ class Archer(Worker):
         self.world.unites[new_tile[0]][new_tile[1]] = self
         self.world.archer[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.archer[new_tile[0]][new_tile[1]] = self
+
         self.tile = self.world.world[new_tile[0]][new_tile[1]]
+
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
     # #Override
     def update_sprite(self):

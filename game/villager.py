@@ -81,9 +81,12 @@ class Villager(Worker):
                         self.farm = True
                     elif self.world.batiment[x][y]:
                         self.farm = False
-                        self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
-                        self.nb_ressource_Transp = 0
-                        self.ressource_Transp = ""    
+                        self.transfer_resources
+
+                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
+                        self.temp_tile = None    
 
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
 
@@ -103,7 +106,12 @@ class Villager(Worker):
         self.world.villager[new_tile[0]][new_tile[1]] = self
         self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.unites[new_tile[0]][new_tile[1]] = self
+
         self.tile = self.world.world[new_tile[0]][new_tile[1]]
+
+        # collision matrix (for pathfinding and buildings)
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
     #override
     def update(self):
@@ -125,10 +133,6 @@ class Villager(Worker):
         self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] + 44), (pos_poly[0] + 15, pos_poly[1] + 29),
                              (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15, pos_poly[1] + 59)]
 
-            # collision matrix (for pathfinding and buildings)
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
-
         # Animation update
         self.update_sprite()
 
@@ -144,10 +148,7 @@ class Villager(Worker):
                     self.selected = False
                     self.world.hud.select_surface_empty = True  #Enlever le hud de l'unite
                     self.world.hud.display_building_icons = False   
-                    # if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
-                    #     self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                    #     self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
-                    #     self.temp_tile = None
+            
                 if mouse_action[0]:
                     self.selected = False
                     self.world.hud.select_surface_empty = True
@@ -216,12 +217,6 @@ class Villager(Worker):
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
 
-        # elif self.farm_ani == True:
-        #    self.temp += 0.2
-        #    self.image = self.animation_farm[int(self.temp)]
-        #   if self.temp + 0.2 >= len(self.animation_farm):
-        #       self.temp = 0
-
         else:
             self.image = self.world.animation.villager_standby
 
@@ -284,4 +279,11 @@ class Villager(Worker):
         else:
             if self.dest_tile == self.tile:
                 self.create_path(self.cible["grid"][0], self.cible["grid"][1])
+
+
+    def transfer_resources(self): #Si la capacité a atteint son max, on transfere les ressources du villageois, au compteur de ressources
+        if self.nb_ressource_Transp >= self.max_ressources:
+            self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
+            self.nb_ressource_Transp = 0
+            self.ressource_Transp = "" 
 

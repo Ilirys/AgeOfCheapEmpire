@@ -111,8 +111,12 @@ class Worker:
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
-                    self.dest_tile = self.world.world[self.path[-1][0]][
-                        self.path[-1][1]]  # La case destination est la dernière de la liste path
+                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
+
+                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
+                        self.temp_tile = None
 
                     self.progression = 0
 
@@ -120,14 +124,19 @@ class Worker:
             else:
                 break
 
-            # create_path(self,x+1)
 
     def change_tile(self,new_tile):
+        #Updates worker and unit matrices
         self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.workers[new_tile[0]][new_tile[1]] = self
         self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.unites[new_tile[0]][new_tile[1]] = self
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+
+        self.tile = self.world.world[new_tile[0]][new_tile[1]]  #Change tile
+
+        #collision matrix (for pathfinding and buildings): Active collision for the current tile 
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
     def mouse_to_grid(self, x, y, scroll):
         # transform to world position (removing camera scroll and offset)
@@ -162,10 +171,6 @@ class Worker:
         pos_poly = [self.pos_x + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50]
         self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] +44), (pos_poly[0] + 15, pos_poly[1] + 29), (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15 , pos_poly[1] + 59)]
 
-        #collision matrix (for pathfinding and buildings)
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
-
         #Animation update
         self.update_sprite()
 
@@ -175,16 +180,13 @@ class Worker:
                 if mouse_action[2]: #Clic droit
                     self.create_path(grid_pos[0], grid_pos[1]) #Creer le chemin vers la case pointée par la souris
                     self.selected = False
-                    self.world.hud.select_surface_empty = True  #Enlever le hud de l'unite
+                    self.world.hud.select_surface_empty = True  #Afficher le hud de l'unite
                     self.world.hud.display_building_icons = False   
-                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
-                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
-                        self.temp_tile = None
-                if mouse_action[0]:
-                    self.selected = False
-                    self.world.hud.select_surface_empty = True
-                    self.world.hud.display_building_icons = False
+                    
+                if mouse_action[0]: #Clic gauche
+                    self.selected = False   #unselect
+                    self.world.hud.select_surface_empty = True  #Afficher son hud
+                    self.world.hud.display_building_icons = False   #Ne plus afficher les icones de constructions
 
         if self.dest_tile == self.tile:
             if self.attack:
@@ -247,7 +249,7 @@ class Worker:
         else:
             self.image = self.world.animation.villager_standby
 
-    def delete(self):
+    def delete(self):   #Bonne manière de completement supprimer l'unité
         self.world.entities.remove(self)
 
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
