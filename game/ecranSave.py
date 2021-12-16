@@ -37,46 +37,42 @@ class Save:
 
                         mx, my = pygame.mouse.get_pos()  # récupération des clics de souris
 
-                        button_1 = pygame.Rect(898, 520, 176, 35)  # les boutons (ici, invisibles) -> bouton quitter
-                        button_2 = pygame.Rect(898, 570, 176, 35)  # -> bouton charger
-                        button_3 = pygame.Rect(898, 615, 176, 35)  # -> bouton save
-                        button_4 = pygame.Rect(898, 665, 176, 35)  # -> bouton annuler
+                        button_1 = pygame.Rect(880, 519, 230, 52)  # les boutons (ici, invisibles) -> bouton quitter
+                        button_2 = pygame.Rect(880, 579, 230, 52)  # -> bouton options
+                        button_3 = pygame.Rect(880, 639, 230, 52)  # -> bouton save
+                        button_4 = pygame.Rect(880, 699, 230, 52)  # -> bouton annuler
 
                         if button_1.collidepoint((mx, my)):  # zone de collision des boutons et action quand cliqué
-                            pygame.draw.rect(self.screen, (255, 255, 255), (896, 518, 180, 40), 3)
+                            pygame.draw.rect(self.screen, (255, 255, 255), (880, 521, 228, 50), 3)
                             if click:
                                 pygame.quit()
                                 sys.exit()
                         if button_2.collidepoint((mx, my)):
-                            pygame.draw.rect(self.screen, (255, 255, 255), (896, 568, 180, 40), 3)
+                            pygame.draw.rect(self.screen, (255, 255, 255), (880, 583, 228, 50), 3)
                             # if click:
-                            # charger sauvegarde
+                            # page options
                         if button_3.collidepoint((mx, my)):
-                            pygame.draw.rect(self.screen, (255, 255, 255), (896, 613, 180, 40), 3)
+                            pygame.draw.rect(self.screen, (255, 255, 255), (880, 639, 228, 50), 3)
                             if click:
                                 self.game.resource_manager.save()
                                 self.game.save()
                                 self.game.world.save()
                         if button_4.collidepoint((mx, my)):
-                            pygame.draw.rect(self.screen, (255, 255, 255), (896, 663, 180, 40), 3)
+                            pygame.draw.rect(self.screen, (255, 255, 255), (880, 699, 228, 50), 3)
                             if click:
                                 tmp = 0
 
                         # dessin des boutons pour s'assurer de leur bonne position
-                        # pygame.draw.rect(self.screen, (255, 215, 50), button_1)
-                        # pygame.draw.rect(self.screen, (255, 215, 50), button_2)
-                        # pygame.draw.rect(self.screen, (255, 215, 50), button_3)
-                        # pygame.draw.rect(self.screen, (255, 215, 50), button_4)
+                        #pygame.draw.rect(self.screen, (255, 215, 50), button_1)
+                        #pygame.draw.rect(self.screen, (255, 215, 50), button_2)
+                        #pygame.draw.rect(self.screen, (255, 215, 50), button_3)
+                        #pygame.draw.rect(self.screen, (255, 215, 50), button_4)
 
                         click = False
                         for event in pygame.event.get():
                             if event.type == pygame.QUIT:
                                 pygame.quit()
                                 sys.exit()
-                            if event.type == KEYDOWN:
-                                if event.key == K_ESCAPE:
-                                    pygame.quit()
-                                    sys.exit()
                             if event.type == MOUSEBUTTONDOWN:
                                 if event.button == 1:
                                     click = True
