@@ -11,12 +11,14 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera,pv=2000):
+    def __init__(self,tile,world,camera,team,pv=2000):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
         self.tile = tile
         self.pv = pv
+        self.team = team
+
 
         #Visual and audio effects
         self.name = "Villageois"
@@ -190,6 +192,7 @@ class Worker:
             if self.attack:
                 self.attack_ani = True
                 self.cible.pv -= self.dmg
+                #self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
                     if self.cible.dest_tile == self.cible.tile:
                         self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True

@@ -24,6 +24,7 @@ from .soldier import Soldier
 from .horseman import Horseman
 from.archer import Archer
 from .ecranSave import Save
+from .IA import IA
 
 class Game:
 

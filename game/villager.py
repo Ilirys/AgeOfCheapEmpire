@@ -11,8 +11,8 @@ from .workers import Worker
 
 class Villager(Worker):
 
-    def __init__(self, tile, world, camera, pv=2000):
-        super().__init__(tile, world, camera, pv)
+    def __init__(self, tile, world, camera, team, pv=2000):
+        super().__init__(tile, world, camera,team, pv)
 
         #saves
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
@@ -76,6 +76,7 @@ class Villager(Worker):
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.farm = False
+                        self.temp_tile_a = self.cible.tile
                     elif self.dest_tile["tile"].ressource.getNbRessources() != 0:  # Condition de farm
                         self.cible = self.dest_tile
                         self.farm = True
