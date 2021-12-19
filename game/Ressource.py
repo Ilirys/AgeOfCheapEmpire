@@ -24,6 +24,7 @@ class Ressource:
             "Towncenter": {},
             "House": {"wood": 25},
             "Barrack": {"wood": 175},
+            "Storage": {"wood": 100},
             "Villageois": {"food": 17},
             "Soldier": {"food": 17},
             "horseman": {"food": 17},

@@ -1,7 +1,7 @@
 import pygame
 import random
 import noise
-from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
+from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO, StorageDTO
 from game.horseman import Horseman
 from game.soldier import Soldier
 from game.workers import Worker
@@ -198,6 +198,10 @@ class World:
                             if (batiment.name=="Towncenter"):
                                 self.hud.display_unit_icons = False 
                                 self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
+                            if (batiment.name=="Storage"):
+                                self.hud.display_unit_icons = False
+                                self.hud.blit_hud("hudGrenier", str(batiment.pv), screen)
+                                # A COMPLETER
                             elif (batiment.name=="House"):
                                 self.hud.display_unit_icons = False 
                                 self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
@@ -276,13 +280,6 @@ class World:
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[0], LES_RESSOURCES[0]))
                     world[grid_x][grid_y]["collision"] = True
-
-                    '''
-                    world[grid_x][grid_y]["tile"].nomElement = "tree"
-                    world[grid_x][grid_y]["tile"].ressource.nbRessource = NB_RESSOURCES[0]
-                    world[grid_x][grid_y]["tile"].ressource.typeRessource = "wood"
-                    world[grid_x][grid_y]["collision"] = True
-                    '''
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
@@ -399,6 +396,7 @@ class World:
         Towncenter = pygame.image.load("assets/towncenter.png").convert_alpha()
         House = pygame.image.load("assets/house.png").convert_alpha()
         Barrack = pygame.image.load("assets/barrack.png").convert_alpha()
+        Storage = pygame.image.load("assets/stone_storage.png").convert_alpha()
         grass = pygame.image.load("assets/grass.png").convert_alpha()
         tree = pygame.image.load("assets/tree.png").convert_alpha()
         stone = pygame.image.load("assets/stone.png").convert_alpha()
@@ -409,6 +407,7 @@ class World:
             "Towncenter": Towncenter,
             "House": House,
             "Barrack": Barrack,
+            "Storage": Storage,
             "grass": grass,
             "tree": tree,
             "gold": gold,
@@ -625,6 +624,8 @@ class World:
                         entDTO = HouseDTO(ent.pos)
                     if ent.name == "Barrack":
                         entDTO = BarrackDTO(ent.pos)
+                    if ent.name == "Storage":
+                        entDTO = StorageDTO(ent.pos)
                     self.batimentDTO[x][y] = entDTO
 
         try:   
