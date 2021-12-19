@@ -17,6 +17,14 @@ class Soldier(Worker):
         self.name = "Soldier"
         self.animation = self.world.animation.soldier_walk
         self.animation_attack = self.world.animation.soldier_attack
+        self.animation_attack_up = self.world.animation.soldier_attack_up
+        self.animation_attack_ldown = self.world.animation.soldier_attack_ldown
+        self.animation_attack_left = self.world.animation.soldier_attack_left
+        self.animation_attack_uleft = self.world.animation.soldier_attack_uleft
+        self.animation_attack_right = self.world.animation.soldier_attack_right
+        self.animation_attack_uright = self.world.animation.soldier_attack_uright
+        self.animation_attack_rdown = self.world.animation.soldier_attack_rdown
+
         self.image = pygame.image.load('assets\soldier\Halbadierwalk001.png').convert_alpha()
         self.dmg = 5
         # pathfinding
@@ -42,13 +50,28 @@ class Soldier(Worker):
     # #Override
     def update_sprite(self):
         if self.movestraight_animation == True:
-            self.temp +=0.2
+            self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
-                self.temp= 0
-        elif self.attack == True:
+                self.temp = 0
+        elif self.attack_ani == True and self.attack == True:
             self.temp += 0.2
-            self.image = self.animation_attack[int(self.temp)]
+            if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_up[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack[int(self.temp)]
+            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack_ldown[int(self.temp)]
+            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack_left[int(self.temp)]
+            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                self.image = self.animation_attack_uleft[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_right[int(self.temp)]
+            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_uright[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                self.image = self.animation_attack_rdown[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
         else: self.image = self.world.animation.soldier_standby             

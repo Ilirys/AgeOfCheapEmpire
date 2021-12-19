@@ -8,7 +8,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../AgeOfEmpire Sprite" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assets/soldier" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\PresidentZabuza\Desktop\AgeOfEmpire\assets\soldier" />
+      <recent name="C:\Users\PresidentZabuza\Desktop\AgeOfEmpire\assets\archer" />
+      <recent name="C:\Users\PresidentZabuza\Desktop\AgeOfEmpire\assets\horseman" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">

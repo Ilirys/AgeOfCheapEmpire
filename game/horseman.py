@@ -22,6 +22,10 @@ class Horseman(Worker):
         self.animation_attack_ldown = self.world.animation.horseman_attack_ldown
         self.animation_attack_left = self.world.animation.horseman_attack_left
         self.animation_attack_uleft = self.world.animation.horseman_attack_uleft
+        self.animation_attack_right = self.world.animation.horseman_attack_right
+        self.animation_attack_uright = self.world.animation.horseman_attack_uright
+        self.animation_attack_rdown = self.world.animation.horseman_attack_rdown
+
         self.image = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
         self.dmg = 5
         # pathfinding
@@ -63,12 +67,13 @@ class Horseman(Worker):
                self.image = self.animation_attack_left[int(self.temp)]
            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
                self.image = self.animation_attack_uleft[int(self.temp)]
-           #elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
-            #   self.image = self.animation_attack[int(self.temp)]
+           elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+               self.image = self.animation_attack_right[int(self.temp)]
+           elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+               self.image = self.animation_attack_uright[int(self.temp)]
+           elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+               self.image = self.animation_attack_rdown[int(self.temp)]
 
-
-           else :
-               self.image = self.animation_attack[int(self.temp)]
            if self.temp + 0.2 >= len(self.animation_attack):
                self.temp= 0
        else: self.image = self.world.animation.horseman_standby 
