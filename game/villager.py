@@ -81,7 +81,7 @@ class Villager(Worker):
                         self.farm = True
                     elif self.world.batiment[x][y]:
                         self.farm = False
-                        self.transfer_resources
+                        self.transfer_resources()
 
                     if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
