@@ -96,9 +96,6 @@ class World:
 
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
             collision2 = collision3 = collision4 = True
-            if self.hud.selected_tile["name"] == "House":
-                taille = 1
-            else: taille=2
             if self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
@@ -190,7 +187,7 @@ class World:
                                      render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y))
                     if self.examine_tile is not None:
                         if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
-                            mask = pygame.mask.from_surface(batiment.image).outline()
+                            mask = pygame.mask.from_surface(batiment.image.convert_alpha()).outline()
                             # affiche le rectangle blanc autour du batiment
                             mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/4, y + render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
