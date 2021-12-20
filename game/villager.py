@@ -240,7 +240,7 @@ class Villager(Worker):
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
 
         if self.nb_ressource_Transp >= self.max_ressources:
-            self.create_path(self.world.house_tile["grid"][0], self.world.house_tile["grid"][1], True)    
+            self.create_path(self.world.storage_tile["grid"][0], self.world.storage_tile["grid"][1], True)    
 
     #override
     def farmer_cases_autour(self):  # Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée
