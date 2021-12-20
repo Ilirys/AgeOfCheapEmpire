@@ -344,7 +344,7 @@ class World:
 
         return grid_x, grid_y
 
-    def générer_camp(self):
+    def générer_camp(self,team="blue"):
         générateur = random.random()
         x = 7
         y = random.randint(-4,4)
@@ -369,11 +369,16 @@ class World:
                     self.world[grid_x][grid_y]["tile"].nomElement = ""
                     self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
                     self.world[grid_x][grid_y]["collision"] = False
+                    self.collision_matrix[grid_y][grid_x] = 1
 
 
         render_pos = self.world[a][b]["render_pos"]
         ent = Batiment(render_pos, "Towncenter", self.resource_manager) # (Towncenter(render_pos, self.resource_manager)
         self.entities.append(ent)
+
+        self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
+        self.spawn_unit_autour_caserne("Villageois",self.storage_tile)    #Spawn villageois initial
+
         self.batiment[a][b] = ent
         for i in range (3):
             for j in range (3):
@@ -573,6 +578,7 @@ class World:
                 restore_world_dto = pickle.load(input)
                 self.world = restore_world_dto.world
                 self.collision_matrix = restore_world_dto.collision_matrix
+                self.storage_tile = restore_world_dto.storage_tile
                 input.close()
         except: 
             print("Created map save file")
@@ -604,7 +610,7 @@ class World:
     def save(self):
         try:   #Map save
             with open(self.map_save_file_path, "wb") as output:
-                worker_dto = WorldDTO(self.world,self.collision_matrix)
+                worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile)
                 pickle.dump(worker_dto,output)
                 output.close()
         except: print("Couldnt dump map save in file")
