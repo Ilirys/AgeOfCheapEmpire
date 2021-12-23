@@ -49,7 +49,7 @@ class Game:
         self.camera = Camera(self.width, self.height)
         
         #World
-        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera)
+        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera, self.minimap)
 
         #Benchmark
         self.benchmark = Benchmark(self.clock)
@@ -90,7 +90,7 @@ class Game:
         self.camera.update()
         for e in self.entities: e.update()
         self.hud.update()
-        self.minimap.update(self.world)
+        # self.minimap.update(self.world)
         self.world.update(self.camera)
         if BENCHMARK == 1: self.benchmark.update()
 
