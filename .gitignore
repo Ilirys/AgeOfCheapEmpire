@@ -12,7 +12,8 @@ __pycache__/
 tempCodeRunnerFile.py
 
 #pycharm
-*.ida
+*.idea
+.idea
 
 # Distribution / packaging
 .Python
