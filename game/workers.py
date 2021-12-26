@@ -11,18 +11,21 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera,pv=2000):
+    def __init__(self,tile,world,camera,pv=2000, team=1):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
         self.tile = tile
         self.pv = pv
+        self.team = team
+
 
         #Visual and audio effects
         self.name = "Villageois"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         self.temp = 0
         self.animation = self.world.animation.villager_walk
+        self.animation_mort = self.world.animation.villager_mort
         self.movestraight_animation = False
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
         self.attack_ani = False
@@ -44,7 +47,7 @@ class Worker:
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
         self.cible = self
-        self.dest_tile = 0
+        self.dest_tile = self.tile
         
         #Attaque
         self.attack = False
@@ -58,6 +61,11 @@ class Worker:
         self.nb_ressource_Transp = 0
         self.cibleFarm = 0
         self.efficiency = 3
+
+        #Construction
+        self.construire = False #Pour savoir si il doit faire un chemin vers le batiment a construire
+        self.batiment_tile = None   #Case où aller construire
+        self.batiment_pv = 0
         
         #init
         self.world.resource_manager.apply_cost_to_resource(self.name)
@@ -111,8 +119,12 @@ class Worker:
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
-                    self.dest_tile = self.world.world[self.path[-1][0]][
-                        self.path[-1][1]]  # La case destination est la dernière de la liste path
+                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
+
+                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
+                        self.temp_tile = None
 
                     self.progression = 0
 
@@ -120,14 +132,19 @@ class Worker:
             else:
                 break
 
-            # create_path(self,x+1)
 
     def change_tile(self,new_tile):
+        #Updates worker and unit matrices
         self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.workers[new_tile[0]][new_tile[1]] = self
         self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.unites[new_tile[0]][new_tile[1]] = self
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+
+        self.tile = self.world.world[new_tile[0]][new_tile[1]]  #Change tile
+
+        #collision matrix (for pathfinding and buildings): Active collision for the current tile 
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
     def mouse_to_grid(self, x, y, scroll):
         # transform to world position (removing camera scroll and offset)
@@ -162,10 +179,6 @@ class Worker:
         pos_poly = [self.pos_x + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50]
         self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] +44), (pos_poly[0] + 15, pos_poly[1] + 29), (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15 , pos_poly[1] + 59)]
 
-        #collision matrix (for pathfinding and buildings)
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
-
         #Animation update
         self.update_sprite()
 
@@ -175,21 +188,21 @@ class Worker:
                 if mouse_action[2]: #Clic droit
                     self.create_path(grid_pos[0], grid_pos[1]) #Creer le chemin vers la case pointée par la souris
                     self.selected = False
-                    self.world.hud.select_surface_empty = True  #Enlever le hud de l'unite
+                    self.world.hud.select_surface_empty = True  #Afficher le hud de l'unite
                     self.world.hud.display_building_icons = False   
-                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
-                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 1
-                        self.temp_tile = None
-                if mouse_action[0]:
-                    self.selected = False
-                    self.world.hud.select_surface_empty = True
-                    self.world.hud.display_building_icons = False
+                    
+                if mouse_action[0]: #Clic gauche
+                    self.selected = False   #unselect
+                    self.world.hud.select_surface_empty = True  #Afficher son hud
+                    self.world.hud.display_building_icons = False   #Ne plus afficher les icones de constructions
 
         if self.dest_tile == self.tile:
             if self.attack:
+                self.cible.attacked = True
+                self.cible.attacker = self
                 self.attack_ani = True
                 self.cible.pv -= self.dmg
+                #self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
                     if self.cible.dest_tile == self.cible.tile:
                         self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
@@ -248,13 +261,18 @@ class Worker:
             self.image = self.world.animation.villager_standby
 
     def delete(self):
-        self.world.entities.remove(self)
+        self.temp += 0.2
+        self.image = self.world.animation.animation_mort[int(self.temp)]
+        if self.temp >= 11:
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+            self.world.entities.remove(self)
 
-        self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None   
-        self.selected = False     
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+            self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.selected = False
+            self.temp = 0
 
 

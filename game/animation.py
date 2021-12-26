@@ -21,6 +21,25 @@ class Animation:
         self.horseman_attack_ldown = self.animation_horseman_attack_ldown()
         self.horseman_attack_left = self.animation_horseman_attack_left()
         self.horseman_attack_uleft = self.animation_horseman_attack_uleft()
+        self.horseman_attack_right = self.animation_horseman_attack_right()
+        self.horseman_attack_uright = self.animation_horseman_attack_uright()
+        self.horseman_attack_rdown = self.animation_horseman_attack_rdown()
+        self.archer_attack_up = self.animation_archer_attack_up()
+        self.archer_attack_ldown = self.animation_archer_attack_ldown()
+        self.archer_attack_left = self.animation_archer_attack_left()
+        self.archer_attack_uleft = self.animation_archer_attack_uleft()
+        self.archer_attack_right = self.animation_archer_attack_right()
+        self.archer_attack_uright = self.animation_archer_attack_uright()
+        self.archer_attack_rdown = self.animation_archer_attack_rdown()
+        self.soldier_attack_up = self.animation_soldier_attack_up()
+        self.soldier_attack_ldown = self.animation_soldier_attack_ldown()
+        self.soldier_attack_left = self.animation_soldier_attack_left()
+        self.soldier_attack_uleft = self.animation_soldier_attack_uleft()
+        self.soldier_attack_right = self.animation_soldier_attack_right()
+        self.soldier_attack_uright = self.animation_soldier_attack_uright()
+        self.soldier_attack_rdown = self.animation_soldier_attack_rdown()
+        self.villager_mort = self.animation_villager_mort()
+
 
 
     def animation_villager_attack(self):
@@ -240,3 +259,271 @@ class Animation:
         horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack039.png').convert_alpha())
         horseman_attack_uleft.append(pygame.image.load('assets/horseman/Cavalierattack040.png').convert_alpha())
         return horseman_attack_uleft
+
+
+    def animation_horseman_attack_uright(self):
+        horseman_attack_uright = []
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (1).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (2).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (3).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (4).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (5).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (6).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (7).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (8).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (9).png').convert_alpha())
+        horseman_attack_uright.append(pygame.image.load('assets/horseman/Cavalierattack031r (10).png').convert_alpha())
+        return horseman_attack_uright
+
+
+    def animation_horseman_attack_right(self):
+        horseman_attack_right = []
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (1).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (2).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (3).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (4).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (5).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (6).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (7).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (8).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (9).png').convert_alpha())
+        horseman_attack_right.append(pygame.image.load('assets/horseman/Cavalierattack030r (10).png').convert_alpha())
+        return horseman_attack_right
+
+
+    def animation_horseman_attack_rdown(self):
+        horseman_attack_rdown = []
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (1).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (2).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (3).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (4).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (5).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (6).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (7).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (8).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (9).png').convert_alpha())
+        horseman_attack_rdown.append(pygame.image.load('assets/horseman/Cavalierattack020r (10).png').convert_alpha())
+        return horseman_attack_rdown
+
+
+    def animation_archer_attack_right(self):
+        archer_attack_right = []
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (1).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (2).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (3).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (4).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (5).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (6).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (7).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (8).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (9).png').convert_alpha())
+        archer_attack_right.append(pygame.image.load('assets/archer/Archerattack030r (10).png').convert_alpha())
+        return archer_attack_right
+
+    def animation_archer_attack_uright(self):
+        archer_attack_uright = []
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (1).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (2).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (3).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (4).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (5).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (6).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (7).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (8).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (9).png').convert_alpha())
+        archer_attack_uright.append(pygame.image.load('assets/archer/Archerattack040r (10).png').convert_alpha())
+        return archer_attack_uright
+
+    def animation_archer_attack_rdown(self):
+        archer_attack_rdown = []
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (1).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (2).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (3).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (4).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (5).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (6).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (7).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (8).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (9).png').convert_alpha())
+        archer_attack_rdown.append(pygame.image.load('assets/archer/Archerattack020r (10).png').convert_alpha())
+        return archer_attack_rdown
+
+
+    def animation_archer_attack_up(self):
+        archer_attack_up = []
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack041.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack042.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack043.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack044.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack045.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack046.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack047.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack048.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack049.png').convert_alpha())
+        archer_attack_up.append(pygame.image.load('assets/archer/Archerattack050.png').convert_alpha())
+        return archer_attack_up
+
+
+    def animation_archer_attack_ldown(self):
+        archer_attack_ldown = []
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack011.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack012.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack013.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack014.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack015.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack016.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack017.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack018.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack019.png').convert_alpha())
+        archer_attack_ldown.append(pygame.image.load('assets/archer/Archerattack020.png').convert_alpha())
+        return archer_attack_ldown
+
+
+    def animation_archer_attack_uleft(self):
+        archer_attack_uleft = []
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack031.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack032.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack033.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack034.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack035.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack036.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack037.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack038.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack039.png').convert_alpha())
+        archer_attack_uleft.append(pygame.image.load('assets/archer/Archerattack040.png').convert_alpha())
+        return archer_attack_uleft
+
+    def animation_archer_attack_left(self):
+        archer_attack_left = []
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack021.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack022.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack023.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack024.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack025.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack026.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack027.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack028.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack029.png').convert_alpha())
+        archer_attack_left.append(pygame.image.load('assets/archer/Archerattack030.png').convert_alpha())
+        return archer_attack_left
+
+
+    def animation_soldier_attack_uright(self):
+        soldier_attack_uright = []
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (1).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (2).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (3).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (4).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (5).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (6).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (7).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (8).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (9).png').convert_alpha())
+        soldier_attack_uright.append(pygame.image.load('assets/soldier/Halbadierattack040r (10).png').convert_alpha())
+        return soldier_attack_uright
+
+
+    def animation_soldier_attack_right(self):
+        soldier_attack_right = []
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (1).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (2).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (3).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (4).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (5).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (6).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (7).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (8).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (9).png').convert_alpha())
+        soldier_attack_right.append(pygame.image.load('assets/soldier/Halbadierattack030r (10).png').convert_alpha())
+        return soldier_attack_right
+
+
+    def animation_soldier_attack_rdown(self):
+        soldier_attack_rdown = []
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (1).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (2).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (3).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (4).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (5).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (6).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (7).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (8).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (9).png').convert_alpha())
+        soldier_attack_rdown.append(pygame.image.load('assets/soldier/Halbadierattack020r (10).png').convert_alpha())
+        return soldier_attack_rdown
+
+
+    def animation_soldier_attack_up(self):
+        soldier_attack_up = []
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack041.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack042.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack043.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack044.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack045.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack046.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack047.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack048.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack049.png').convert_alpha())
+        soldier_attack_up.append(pygame.image.load('assets/soldier/Halbadierattack050.png').convert_alpha())
+        return soldier_attack_up
+
+
+    def animation_soldier_attack_uleft(self):
+        soldier_attack_uleft = []
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack031.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack032.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack033.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack034.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack035.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack036.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack037.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack038.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack039.png').convert_alpha())
+        soldier_attack_uleft.append(pygame.image.load('assets/soldier/Halbadierattack040.png').convert_alpha())
+        return soldier_attack_uleft
+
+    def animation_soldier_attack_left(self):
+        soldier_attack_left = []
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack021.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack022.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack023.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack024.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack025.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack026.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack027.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack028.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack029.png').convert_alpha())
+        soldier_attack_left.append(pygame.image.load('assets/soldier/Halbadierattack030.png').convert_alpha())
+        return soldier_attack_left
+
+
+    def animation_soldier_attack_ldown(self):
+        soldier_attack_ldown = []
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack011.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack012.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack013.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack014.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack015.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack016.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack017.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack018.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack019.png').convert_alpha())
+        soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack020.png').convert_alpha())
+        return soldier_attack_ldown
+
+    def animation_villager_mort(self):
+        villager_mort = []
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie001.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie002.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie003.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie004.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie005.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie006.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie007.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie008.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie009.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie010.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie011.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie012.png').convert_alpha())
+        return villager_mort
+

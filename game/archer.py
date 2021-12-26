@@ -11,13 +11,20 @@ from .workers import Worker
 
 class Archer(Worker):
 
-    def __init__(self, tile, world, camera, pv=2000):
-        super().__init__(tile, world, camera, pv)
+    def __init__(self, tile, world, camera, pv=2000, team=1):
+        super().__init__(tile, world, camera, pv,team)
 
         # Visual and audio effects
         self.name = "Archer"
         self.animation = self.world.animation.archer_walk
         self.animation_attack = self.world.animation.archer_attack
+        self.animation_attack_up = self.world.animation.archer_attack_up
+        self.animation_attack_ldown = self.world.animation.archer_attack_ldown
+        self.animation_attack_left = self.world.animation.archer_attack_left
+        self.animation_attack_uleft = self.world.animation.archer_attack_uleft
+        self.animation_attack_right = self.world.animation.archer_attack_right
+        self.animation_attack_uright = self.world.animation.archer_attack_uright
+        self.animation_attack_rdown = self.world.animation.archer_attack_rdown
         self.image = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
 
         # pathfinding
@@ -77,6 +84,11 @@ class Archer(Worker):
                 self.progression = 0
                 searching_for_path = False
 
+                if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
+                        self.temp_tile = None
+
             else:
                 break
 
@@ -86,7 +98,11 @@ class Archer(Worker):
         self.world.unites[new_tile[0]][new_tile[1]] = self
         self.world.archer[self.tile["grid"][0]][self.tile["grid"][1]] = None
         self.world.archer[new_tile[0]][new_tile[1]] = self
+
         self.tile = self.world.world[new_tile[0]][new_tile[1]]
+
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
     # #Override
     def update_sprite(self):
@@ -95,14 +111,28 @@ class Archer(Worker):
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
                 self.temp = 0
-        elif self.attack == True:
+        elif self.attack_ani == True and self.attack == True:
             self.temp += 0.2
-            self.image = self.animation_attack[int(self.temp)]
+            if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_up[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack[int(self.temp)]
+            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack_ldown[int(self.temp)]
+            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack_left[int(self.temp)]
+            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                self.image = self.animation_attack_uleft[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_right[int(self.temp)]
+            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_uright[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                self.image = self.animation_attack_rdown[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
         else:
             self.image = self.world.animation.archer_standby
-
         # Override
 
     def delete(self):

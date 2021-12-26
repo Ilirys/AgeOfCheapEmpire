@@ -7,8 +7,8 @@ UNITS_SPAWN_TIME = 10
 SAVED_GAME_FOLDER = "data/"
 
 #Speed
-DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "potato_pc": 8}
-CURRENT_SPEED = "fast"
+DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "veryfast": 5, "potato_pc": 8}
+CURRENT_SPEED = "veryfast"
 
 #Screen
 BENCHMARK = 0
@@ -30,7 +30,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 0, 0], "House" : ["assets/house.png", 1, 0, 0], "Barrack" : ["assets/barrack.png", 2, 175, 128], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable41.png", 1, 600], None : ["", 1] }
 
 
 #Colors

@@ -192,13 +192,15 @@ class Hud:
         house = pygame.image.load("assets/house.png").convert_alpha()
         hudVillagois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         barrack = pygame.image.load("assets/barrack.png").convert_alpha()
+        storage = pygame.image.load("assets/Stable41.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
         images = {
             "Towncenter": towncenter,
             "House": house,
-            "Barrack": barrack
+            "Barrack": barrack,
+            "Storage" : storage
         }
         return images
 
@@ -209,13 +211,15 @@ class Hud:
         house = pygame.image.load("assets/house.png").convert_alpha()
         hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         barrack = pygame.image.load("assets/barrack.png").convert_alpha()
+        storage = pygame.image.load("assets/Stable41.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
         images = {
             "Towncenter": towncenter,
             "House": house,
-            "Barrack": barrack
+            "Barrack": barrack,
+            "Storage" : storage
         }
         return images
 
