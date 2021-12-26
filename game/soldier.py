@@ -10,8 +10,8 @@ from .workers import Worker
 
 class Soldier(Worker):
 
-    def __init__(self, tile, world, camera, team, pv=2000):
-        super().__init__(tile, world, camera, team, pv)
+    def __init__(self, tile, world, camera, pv=2000,  team=1):
+        super().__init__(tile, world, camera, pv, team)
         
         # Visual and audio effects
         self.name = "Soldier"
@@ -72,7 +72,7 @@ class Soldier(Worker):
                 self.image = self.animation_attack_uright[int(self.temp)]
             elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
                 self.image = self.animation_attack_rdown[int(self.temp)]
-            if self.temp + 0.2 >= len(self.animation_attack):
+            if self.temp + 0.2 >= 10:
                 self.temp = 0
         else: self.image = self.world.animation.soldier_standby             
 

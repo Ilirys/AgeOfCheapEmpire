@@ -14,7 +14,7 @@ from .Tile import Tile
 from .definitions import *
 from .bouquet import Bouquet
 from .batiment import *
-from .animation import Animation
+from .animation import *
 import pickle
 
 class World:
@@ -28,7 +28,7 @@ class World:
         self.width = width  #Taille écran
         self.height = height
         self.camera = camera
-        
+        self.temp = 0
         self.Bou = Bouquet() #Génération forets, ressources
 
         self.grass_tiles = pygame.Surface((grid_length_x * TILE_SIZE * 2, grid_length_y * TILE_SIZE + 2 * TILE_SIZE)).convert_alpha()
@@ -212,29 +212,29 @@ class World:
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
-                    if unites.pv > 0:
+                    #if unites.pv > 0:
                                 
-                        if unites.name == "horseman":
-                            if unites.selected:
-                                self.hud.blit_hud("hudCavalier", str(unites.pv), screen)
-                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
-                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
-                            
-                        else:
-                            if unites.selected:
-                                self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
-                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-
-                                if unites.name == "Villageois":
-                                    self.hud.display_building_icons = True
-
-                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                    if unites.name == "horseman":
+                        if unites.selected:
+                            self.hud.blit_hud("hudCavalier", str(unites.pv), screen)
+                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
+                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
                             
                     else:
-                        unites.delete()    
-                        self.hud.select_surface_empty = True    
+                        if unites.selected:
+                            self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
+                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+
+                            if unites.name == "Villageois":
+                                self.hud.display_building_icons = True
+
+                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+                            
+                    if unites.pv <= 0:
+                        unites.delete()
+                        self.hud.select_surface_empty = True
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
@@ -446,7 +446,7 @@ class World:
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
             if unit_name == "horseman":
-                Horseman(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+                Horseman(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
         

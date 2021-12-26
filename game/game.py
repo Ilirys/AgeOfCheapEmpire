@@ -25,6 +25,10 @@ from .horseman import Horseman
 from.archer import Archer
 from .ecranSave import Save
 from .IA import IA
+from .soldierIA import SoldierIA
+from .archerIA import ArcherIA
+from .villagerIA import VillagerIA
+from .horsemanIA import HorsemanIA
 
 class Game:
 
@@ -38,6 +42,7 @@ class Game:
         
         # resource manager
         self.resource_manager = Ressource()
+        self.ressource_manager_IA = Ressource()
         self.resource_manager.restore_save()
         # hud
         self.hud = Hud(self.resource_manager, self.width, self.height)
@@ -63,8 +68,8 @@ class Game:
         #Unité
         # Worker(self.world.world[1][1], self.world,self.camera)
         # Horseman(self.world.world[0][1], self.world,self.camera)
-        # Soldier(self.world.world[1][0], self.world,self.camera)
-        Villager(self.world.world[1][0], self.world,self.camera)
+        SoldierIA(self.world.world[1][0], self.world,self.camera)
+        #Villager(self.world.world[1][0], self.world,self.camera)
         # Archer(self.world.world[2][2], self.world,self.camera)
         
         #Save

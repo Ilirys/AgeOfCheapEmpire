@@ -38,6 +38,7 @@ class Animation:
         self.soldier_attack_right = self.animation_soldier_attack_right()
         self.soldier_attack_uright = self.animation_soldier_attack_uright()
         self.soldier_attack_rdown = self.animation_soldier_attack_rdown()
+        self.villager_mort = self.animation_villager_mort()
 
 
 
@@ -509,4 +510,20 @@ class Animation:
         soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack019.png').convert_alpha())
         soldier_attack_ldown.append(pygame.image.load('assets/soldier/Halbadierattack020.png').convert_alpha())
         return soldier_attack_ldown
+
+    def animation_villager_mort(self):
+        villager_mort = []
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie001.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie002.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie003.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie004.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie005.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie006.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie007.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie008.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie009.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie010.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie011.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie012.png').convert_alpha())
+        return villager_mort
 

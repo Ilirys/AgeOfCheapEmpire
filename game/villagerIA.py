@@ -10,8 +10,8 @@ from .villager import Villager
 
 
 class VillagerIA(Villager):
-    def __init__(self,tile, world, camera, team, pv=2000):
-        super().__init__(tile, world, camera, team, pv)
+    def __init__(self,tile, world, camera, pv=2000, team=2):
+        super().__init__(tile, world, camera, pv, team)
 
 
 

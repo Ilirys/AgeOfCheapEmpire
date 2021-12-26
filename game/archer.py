@@ -11,8 +11,8 @@ from .workers import Worker
 
 class Archer(Worker):
 
-    def __init__(self, tile, world, camera,team, pv=2000):
-        super().__init__(tile, world, camera,team, pv)
+    def __init__(self, tile, world, camera, pv=2000, team=1):
+        super().__init__(tile, world, camera, pv,team)
 
         # Visual and audio effects
         self.name = "Archer"

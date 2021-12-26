@@ -8,10 +8,10 @@ from math import *
 from game.deplacement import lerp
 from .archer import Archer
 
-class archerIA(Archer):
+class ArcherIA(Archer):
 
-    def __init__(self,tile,world,camera,team,pv):
-        super().__init__(tile,world,camera,team,pv)
+    def __init__(self,tile,world,camera,pv=2000,team=2):
+        super().__init__(tile,world,camera,pv,team)
 
     # override
 

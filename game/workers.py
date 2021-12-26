@@ -11,7 +11,7 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera,team,pv=2000):
+    def __init__(self,tile,world,camera,pv=2000, team=1):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
@@ -25,6 +25,7 @@ class Worker:
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
         self.temp = 0
         self.animation = self.world.animation.villager_walk
+        self.animation_mort = self.world.animation.villager_mort
         self.movestraight_animation = False
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
         self.attack_ani = False
@@ -46,7 +47,7 @@ class Worker:
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
         self.cible = self
-        self.dest_tile = 0
+        self.dest_tile = self.tile
         
         #Attaque
         self.attack = False
@@ -190,6 +191,8 @@ class Worker:
 
         if self.dest_tile == self.tile:
             if self.attack:
+                self.cible.attacked = True
+                self.cible.attacker = self
                 self.attack_ani = True
                 self.cible.pv -= self.dmg
                 #self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
@@ -251,13 +254,18 @@ class Worker:
             self.image = self.world.animation.villager_standby
 
     def delete(self):
-        self.world.entities.remove(self)
+        self.temp += 0.2
+        self.image = self.world.animation.animation_mort[int(self.temp)]
+        if self.temp >= 11:
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+            self.world.entities.remove(self)
 
-        self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None   
-        self.selected = False     
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+            self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.selected = False
+            self.temp = 0
 
 

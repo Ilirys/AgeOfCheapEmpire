@@ -1,6 +1,7 @@
 import json
 import pygame
 import random
+from math import *
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
@@ -12,14 +13,39 @@ from .soldier import Soldier
 
 
 class SoldierIA(Soldier):
-    def __init__(self,tile,world,camera, team, pv=2000):
-        super().__init__(tile,world,camera,team, pv)
-
-
+    def __init__(self,tile,world,camera, pv=2000,team=2):
+        super().__init__(tile,world,camera, pv, team)
+        self.image_standby = pygame.image.load('assets/soldierIA/Halbadierattack011V2.png').convert_alpha()
+        self.attacker = 0
+        self.attacked = False
 
     #override
 
     def update(self):
+
+        if self.dest_tile == self.tile:
+            if self.attacked == True :
+                self.create_path(self.attacker.tile["grid"][0], self.attacker.tile["grid"][1])
+                if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
+                    if self.cible.dest_tile == self.cible.tile:
+                        self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
+                        self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
+                        self.create_path(self.cible.tile["grid"][0],self.cible.tile["grid"][1])
+            #self.create_path(15,15)
+
+
+
+        #Updating mouse position and action and the grid_pos
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_action = pygame.mouse.get_pressed()
+        grid_pos = self.mouse_to_grid(mouse_pos[0],mouse_pos[1],self.camera.scroll)
+
+        #Hitbox
+        self.hitbox.update(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
+
+        #Selection polygon
+        pos_poly = [self.pos_x + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50]
+        self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] +44), (pos_poly[0] + 15, pos_poly[1] + 29), (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15 , pos_poly[1] + 59)]
 
         # collision matrix (for pathfinding and buildings)
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
@@ -27,6 +53,12 @@ class SoldierIA(Soldier):
 
         # Animation update
         self.update_sprite()
+
+        if self.selected:
+            if mouse_action[0]:
+                self.selected = False
+                self.world.hud.select_surface_empty = True
+                self.world.hud.display_building_icons = False
 
 
         if self.dest_tile == self.tile:
@@ -45,6 +77,11 @@ class SoldierIA(Soldier):
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+
+        if self.hitbox.collidepoint(mouse_pos):
+            if mouse_action[0]:
+                self.selected = True
+                self.sound.play()
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
@@ -72,3 +109,34 @@ class SoldierIA(Soldier):
         else:
             self.movestraight_animation = False
 
+    def distance_tile(self,tile):
+        return sqrt((self.tile["grid"][0] - tile["grid"][0])**2 + (self.tile["grid"][1] - tile["grid"][1])**2)
+
+
+    def update_sprite(self):
+        if self.movestraight_animation == True:
+            self.temp += 0.2
+            self.image = self.animation[int(self.temp)]
+            if self.temp + 0.2 >= len(self.animation):
+                self.temp = 0
+        elif self.attack_ani == True and self.attack == True:
+            self.temp += 0.2
+            if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_up[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack[int(self.temp)]
+            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack_ldown[int(self.temp)]
+            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                self.image = self.animation_attack_left[int(self.temp)]
+            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                self.image = self.animation_attack_uleft[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_right[int(self.temp)]
+            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                self.image = self.animation_attack_uright[int(self.temp)]
+            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                self.image = self.animation_attack_rdown[int(self.temp)]
+            if self.temp + 0.2 >= 10:
+                self.temp = 0
+        else: self.image = self.image_standby
