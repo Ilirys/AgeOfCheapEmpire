@@ -12,6 +12,7 @@ from .bouquet import Bouquet
 from .batiment import *
 from .animation import Animation
 import pickle
+#from functools import * #ex : @lru_cache (128) mémorise les derniers 128 états d'une fonction
 
 class World:
 
@@ -64,7 +65,7 @@ class World:
         #init
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
-   
+
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -213,24 +214,23 @@ class World:
                             pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
                         screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
                         unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
-
+                
                 # minimap hud
+                self.minimap.tab_minimap[x][y] = GreenLight
                 if nomElement == "tree":
-                        self.minimap.tab_minimap[x][y] = Green
+                    self.minimap.tab_minimap[x][y] = Green
                 elif nomElement == "stone":
                     self.minimap.tab_minimap[x][y] = Grey
                 elif nomElement == "gold":
                     self.minimap.tab_minimap[x][y] = Gold
                 elif nomElement == "food":
-                     self.minimap.tab_minimap[x][y] = Brown
+                    self.minimap.tab_minimap[x][y] = Brown
                 elif self.world[x][y]["collision"]:
                     self.minimap.tab_minimap[x][y] = Red
-                else:
-                    self.minimap.tab_minimap[x][y] = GreenLight
-
+                    
                 if self.minimap.tab_minimap[x][y] != GreenLight:
                     pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
-            
+                
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

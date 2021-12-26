@@ -49,8 +49,3 @@ class Minimap:
     #                 self.tab_minimap[i][j] = Red
     #             else:
     #                 self.tab_minimap[i][j] = GreenLight
-
-    def cart_to_iso(self, x, y): # Coordonées rectangulaires en isométriques
-        iso_x = x - y 
-        iso_y = (x + y)/2
-        return iso_x, iso_y
