@@ -119,14 +119,6 @@ class World:
                 
                 if mouse_action[0] and not collision:
 
-                    for villager_x in self.villager:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
-                        for villager in villager_x:
-                            if (villager != None and villager.selected):
-                                villager.batiment_pv = dicoBatiment[self.hud.selected_tile["name"]][2]
-                                villager.batiment_tile = self.world[grid_pos[0]][grid_pos[1]]  #Case ou se trouve le batiment
-                                villager.create_path(villager.batiment_tile["grid"][0], villager.batiment_tile["grid"][1] - 1, True) #On va construire 1 case a droite
-                                villager.construire = True
-                                break
                     
                     if dicoBatiment[self.hud.selected_tile["name"]][1] == 1:
                         ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
@@ -135,6 +127,7 @@ class World:
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0 
+                        self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
                     elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
@@ -145,8 +138,11 @@ class World:
                             for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
                                 self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
+                        self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
             
+                    
+
         elif self.hud.selected_unit_icon:  #Si les icones unités sont selectionées, le clic gauche fais spawn autour de la caserne
                 now = pygame.time.get_ticks()
                 if mouse_action[0]:
@@ -448,6 +444,16 @@ class World:
         self.world[x][y]["tile"].ressource.typeRessource = ""
         self.world[x][y]["collision"] = False
         self.collision_matrix[y][x] = 1
+
+    def ordre_de_construction_villageois(self, grid_pos):
+        for villager_x in self.villager:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
+            for villager in villager_x:
+                if (villager != None and villager.selected):
+                    villager.batiment_pv = dicoBatiment[self.hud.selected_tile["name"]][2]
+                    villager.batiment_tile = self.world[grid_pos[0]][grid_pos[1]]  #Case ou se trouve le batiment
+                    villager.create_path(villager.batiment_tile["grid"][0], villager.batiment_tile["grid"][1] , True)
+                    villager.construire = True
+                    break    
 
     def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
         if not self.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]:

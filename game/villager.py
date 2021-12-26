@@ -48,6 +48,8 @@ class Villager(Worker):
                     self.progression = 0
                     
                     self.attack = False
+
+                    self.construire = False
                     if farmReset: self.farm = False
 
                     searching_for_path = False
@@ -76,10 +78,13 @@ class Villager(Worker):
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.farm = False
+                        self.construire = False
                     elif self.dest_tile["tile"].ressource.getNbRessources() != 0:  # Condition de farm
                         self.cible = self.dest_tile
                         self.farm = True
+                        self.construire = False
                     elif self.world.batiment[x][y]:
+                        self.cible = self.dest_tile
                         self.farm = False
                         self.transfer_resources()
 
@@ -146,10 +151,7 @@ class Villager(Worker):
                     if not self.world.hud.selected_tile : # Déselectionner seulement si on ne va pas poser de batiment
                         self.selected = False
                         self.world.hud.select_surface_empty = True
-                        self.world.hud.display_building_icons = False
-
-        if self.construire:
-            self.construire_batiment(self.batiment_tile, self.batiment_pv)             
+                        self.world.hud.display_building_icons = False             
 
         if self.dest_tile == self.tile:
             if self.attack:
@@ -167,6 +169,9 @@ class Villager(Worker):
 
             elif self.farm:
                 self.farmer_cases_autour()
+
+            elif self.construire:
+                self.construire_batiment(self.batiment_tile, self.batiment_pv)     
    
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -283,10 +288,10 @@ class Villager(Worker):
             self.ressource_Transp = "" 
 
     def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
-        if self.dest_tile == self.tile:
-            if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
-               self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1 
-            else:
-                self.construire = False
-                self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].current_image = 2  
+        
+        if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
+           self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1 
+        else:
+            self.construire = False
+            self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].current_image = 2  
 
