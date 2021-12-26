@@ -1,4 +1,5 @@
 import pygame as pg
+import game.definitions as definitions
 
 from game.BIGDADDY import Bigdaddy
 
@@ -62,6 +63,10 @@ class Chat:
                         print("training, building, farming are instantaneous for every players")
 
 
+                    elif self.text == "minimap":
+                        if definitions.afficher_minimap == "oui" :
+                            definitions.afficher_minimap = "non"
+                        else : definitions.afficher_minimap = "oui"
                     self.text = ''
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]

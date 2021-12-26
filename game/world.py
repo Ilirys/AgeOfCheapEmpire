@@ -1,6 +1,7 @@
 import pygame
 import random
-import noise
+import game.definitions as definitions
+
 from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
 from game.horseman import Horseman
 from game.soldier import Soldier
@@ -16,10 +17,12 @@ from .bouquet import Bouquet
 from .batiment import *
 from .animation import Animation
 import pickle
+#from functools import * #ex : @lru_cache (128) mémorise les derniers 128 états d'une fonction
 
 class World:
 
-    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height, camera):
+    def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height, camera, minimap):
+        
         self.resource_manager = resource_manager
         self.entities = entities
         self.hud = hud
@@ -28,6 +31,7 @@ class World:
         self.width = width  #Taille écran
         self.height = height
         self.camera = camera
+        self.minimap = minimap
         
         self.Bou = Bouquet() #Génération forets, ressources
 
@@ -81,7 +85,7 @@ class World:
         #init
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
-   
+
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -173,6 +177,7 @@ class World:
 
     def draw(self, screen, camera):
         screen.blit(self.grass_tiles,(camera.scroll.x, camera.scroll.y)) #Au lieu d'iterer pour tout les block de fond, ici herbe, on le fait une fois
+        pygame.draw.rect(self.minimap.minimap_surface, GreenLight, (2, 2, 450, 450))
         for x in range(self.grid_length_x):
             for y in range(self.grid_length_y):
                 render_pos = self.world[x][y]["render_pos"]
@@ -235,6 +240,23 @@ class World:
                     else:
                         unites.delete()    
                         self.hud.select_surface_empty = True    
+                # minimap hud
+                if definitions.afficher_minimap == "oui":
+                    self.minimap.tab_minimap[x][y] = GreenLight
+                    if nomElement == "tree":
+                        self.minimap.tab_minimap[x][y] = Green
+                    elif nomElement == "stone":
+                        self.minimap.tab_minimap[x][y] = Grey
+                    elif nomElement == "gold":
+                        self.minimap.tab_minimap[x][y] = Gold
+                    elif nomElement == "food":
+                        self.minimap.tab_minimap[x][y] = Brown
+                    elif self.world[x][y]["collision"]:
+                        self.minimap.tab_minimap[x][y] = Red
+                        
+                    if self.minimap.tab_minimap[x][y] != GreenLight:
+                        pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
+                    
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

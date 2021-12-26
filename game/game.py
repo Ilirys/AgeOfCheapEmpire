@@ -13,6 +13,7 @@ from .world import World
 from .utils import draw_text
 from .camera import Camera
 from .hud import Hud
+from .minimap import Minimap
 from .units import *
 from .villager import *
 from pygame import *
@@ -38,8 +39,12 @@ class Game:
         # resource manager
         self.resource_manager = Ressource()
         self.resource_manager.restore_save()
+
         # hud
         self.hud = Hud(self.resource_manager, self.width, self.height)
+
+        # Minimap
+        self.minimap = Minimap(self.width, self.height)
 
         # entities
         self.entities = []
@@ -48,7 +53,7 @@ class Game:
         self.camera = Camera(self.width, self.height)
         
         #World
-        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera)
+        self.world = World(self.resource_manager, self.entities, self.hud, MAP_SIZE,MAP_SIZE,self.width,self.width, self.camera, self.minimap)
 
         #Benchmark
         #self.benchmark = Benchmark(self.clock)
@@ -85,10 +90,11 @@ class Game:
             self.chat.handle_event(event)
 
 
-    def update(self): 
+    def update(self):
         self.camera.update()
         for e in self.entities: e.update()
         self.hud.update()
+        # self.minimap.update(self.world)
         self.world.update(self.camera)
         if BENCHMARK == 1: self.benchmark.update()
 
@@ -101,7 +107,7 @@ class Game:
         draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
-
+        self.minimap.draw(self.screen) #Affichage de la minimap
         self.chat.draw(self.screen) #Affichage du chat
         
         if BENCHMARK == 1: self.benchmark.draw(self.screen)
