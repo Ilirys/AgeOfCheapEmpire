@@ -3,7 +3,7 @@ import random
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE
+from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE, dicoBatiment
 from math import *
 from game.deplacement import lerp
 from .workers import Worker
@@ -116,8 +116,6 @@ class Villager(Worker):
     #override
     def update(self):
 
-        # print(self.farm)
-
         # Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -136,11 +134,6 @@ class Villager(Worker):
         # Animation update
         self.update_sprite()
 
-        if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
-            self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-            self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
-            self.temp_tile = None
-
         if self.selected:
             if self.world.can_place_tile(grid_pos):
                 if mouse_action[2]: #Clic droit
@@ -150,9 +143,13 @@ class Villager(Worker):
                     self.world.hud.display_building_icons = False   
             
                 if mouse_action[0]:
-                    self.selected = False
-                    self.world.hud.select_surface_empty = True
-                    self.world.hud.display_building_icons = False
+                    if not self.world.hud.selected_tile : # Déselectionner seulement si on ne va pas poser de batiment
+                        self.selected = False
+                        self.world.hud.select_surface_empty = True
+                        self.world.hud.display_building_icons = False
+
+        if self.construire:
+            self.construire_batiment(self.batiment_tile, self.batiment_pv)             
 
         if self.dest_tile == self.tile:
             if self.attack:
@@ -170,9 +167,7 @@ class Villager(Worker):
 
             elif self.farm:
                 self.farmer_cases_autour()
-
-            # print(self.nb_ressource_Transp, self.ressource_Transp)
-
+   
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
                 self.selected = True
@@ -286,4 +281,12 @@ class Villager(Worker):
             self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
             self.nb_ressource_Transp = 0
             self.ressource_Transp = "" 
+
+    def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
+        if self.dest_tile == self.tile:
+            if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
+               self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1 
+            else:
+                self.construire = False
+                self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].current_image = 2  
 

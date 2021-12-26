@@ -118,10 +118,20 @@ class World:
                 }
                 
                 if mouse_action[0] and not collision:
+
+                    for villager_x in self.villager:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
+                        for villager in villager_x:
+                            if (villager != None and villager.selected):
+                                villager.batiment_pv = dicoBatiment[self.hud.selected_tile["name"]][2]
+                                villager.batiment_tile = self.world[grid_pos[0]][grid_pos[1]]  #Case ou se trouve le batiment
+                                villager.create_path(villager.batiment_tile["grid"][0], villager.batiment_tile["grid"][1] - 1, True) #On va construire 1 case a droite
+                                villager.construire = True
+                                break
                     
                     if dicoBatiment[self.hud.selected_tile["name"]][1] == 1:
                         ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
                         self.entities.append(ent)
+                        ent.current_image = 1   #Petite image ruine pour construction
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0 
@@ -182,14 +192,14 @@ class World:
                 #draw bâtiments    
                 batiment = self.batiment[x][y]
                 if batiment is not None:
-                    screen.blit(batiment.image,
-                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/4,
+                    screen.blit(batiment.images[batiment.current_image],
+                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/3,
                                      render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y))
                     if self.examine_tile is not None:
                         if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
                             mask = pygame.mask.from_surface(batiment.image.convert_alpha()).outline()
                             # affiche le rectangle blanc autour du batiment
-                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/4, y + render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
+                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/3, y + render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.name=="Towncenter"):
@@ -373,7 +383,8 @@ class World:
 
 
         render_pos = self.world[a][b]["render_pos"]
-        ent = Batiment(render_pos, "Towncenter", self.resource_manager) # (Towncenter(render_pos, self.resource_manager)
+        ent = Batiment(render_pos, "Towncenter", self.resource_manager, dicoBatiment["Towncenter"][2]) # (Towncenter(render_pos, self.resource_manager)
+        ent.current_image = 2
         self.entities.append(ent)
 
         self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
@@ -597,7 +608,7 @@ class World:
             for y in range(self.grid_length_y):
                 if self.batimentDTO[x][y] != None:
                     entDTO = self.batimentDTO[x][y]
-                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager)
+                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager, entDTO.pv, entDTO.current_image)
                     for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
                         self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)
@@ -621,13 +632,13 @@ class World:
                 if self.batiment[x][y] != None:
                     ent = self.batiment[x][y]
                     if ent.name == "Towncenter":
-                        entDTO = TowncenterDTO(ent.pos)
+                        entDTO = TowncenterDTO(ent.pos, ent.pv, ent.current_image)
                     if ent.name == "House":
-                        entDTO = HouseDTO(ent.pos)
+                        entDTO = HouseDTO(ent.pos, ent.pv, ent.current_image )
                     if ent.name == "Barrack":
-                        entDTO = BarrackDTO(ent.pos)
+                        entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image   )
                     if ent.name == "Storage":
-                        entDTO = StorageDTO(ent.pos)
+                        entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image   )
                     self.batimentDTO[x][y] = entDTO
 
         try:   

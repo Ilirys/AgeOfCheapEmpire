@@ -58,6 +58,11 @@ class Worker:
         self.nb_ressource_Transp = 0
         self.cibleFarm = 0
         self.efficiency = 3
+
+        #Construction
+        self.construire = False #Pour savoir si il doit faire un chemin vers le batiment a construire
+        self.batiment_tile = None   #Case où aller construire
+        self.batiment_pv = 0
         
         #init
         self.world.resource_manager.apply_cost_to_resource(self.name)
