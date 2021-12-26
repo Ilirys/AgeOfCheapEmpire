@@ -1,4 +1,6 @@
 import pygame
+import game.definitions as definitions
+
 from .definitions import * 
 from .utils import *
 
@@ -21,7 +23,7 @@ class Minimap:
         #     for j in range (MAP_SIZE):
         #         if self.tab_minimap[i][j] != GreenLight:
         #             pygame.draw.rect(self.minimap_surface, self.tab_minimap[i][j], (2+9*i, 2+9*j, 9, 9))
-        screen.blit(pygame.transform.scale(pygame.transform.rotate(self.minimap_surface, -45), (454, 220)) , (600, self.height-222))
+        if definitions.afficher_minimap == "oui": screen.blit(pygame.transform.scale(pygame.transform.rotate(self.minimap_surface, -45), (454, 220)) , (600, self.height-222))
     
     def create_minimap_hud(self):
         self.minimap_surface = pygame.Surface((454, 454), pygame.SRCALPHA)

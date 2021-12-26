@@ -29,6 +29,7 @@ DEFAUT_POLICE='assets/font/arialbd.ttf'
 #Batiments
 dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 0, 0], "House" : ["assets/house.png", 1, 0, 0], "Barrack" : ["assets/barrack.png", 2, 175, 128], None : ["", 1] }
 
+
 #Colors
 GREEN = (0,255,0)
 BLACK = (0,0,0)
@@ -40,3 +41,8 @@ Gold=(200,200,128)
 Brown=(70,33, 0)
 Red=(175,0,0)
 Blue=(0,128,255)
+
+
+def init():
+    global afficher_minimap
+    afficher_minimap = "non"

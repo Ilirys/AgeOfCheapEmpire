@@ -86,7 +86,7 @@ class Game:
             self.chat.handle_event(event)
 
 
-    def update(self): 
+    def update(self):
         self.camera.update()
         for e in self.entities: e.update()
         self.hud.update()

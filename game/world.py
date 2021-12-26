@@ -1,6 +1,7 @@
 import pygame
 import random
-import noise
+import game.definitions as definitions
+
 from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
 from game.workers import Worker
 from .utils import *
@@ -17,6 +18,7 @@ import pickle
 class World:
 
     def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height, camera, minimap):
+        
         self.resource_manager = resource_manager
         self.entities = entities
         self.hud = hud
@@ -216,21 +218,22 @@ class World:
                         unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
                 
                 # minimap hud
-                self.minimap.tab_minimap[x][y] = GreenLight
-                if nomElement == "tree":
-                    self.minimap.tab_minimap[x][y] = Green
-                elif nomElement == "stone":
-                    self.minimap.tab_minimap[x][y] = Grey
-                elif nomElement == "gold":
-                    self.minimap.tab_minimap[x][y] = Gold
-                elif nomElement == "food":
-                    self.minimap.tab_minimap[x][y] = Brown
-                elif self.world[x][y]["collision"]:
-                    self.minimap.tab_minimap[x][y] = Red
+                if definitions.afficher_minimap == "oui":
+                    self.minimap.tab_minimap[x][y] = GreenLight
+                    if nomElement == "tree":
+                        self.minimap.tab_minimap[x][y] = Green
+                    elif nomElement == "stone":
+                        self.minimap.tab_minimap[x][y] = Grey
+                    elif nomElement == "gold":
+                        self.minimap.tab_minimap[x][y] = Gold
+                    elif nomElement == "food":
+                        self.minimap.tab_minimap[x][y] = Brown
+                    elif self.world[x][y]["collision"]:
+                        self.minimap.tab_minimap[x][y] = Red
+                        
+                    if self.minimap.tab_minimap[x][y] != GreenLight:
+                        pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
                     
-                if self.minimap.tab_minimap[x][y] != GreenLight:
-                    pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
-                
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]

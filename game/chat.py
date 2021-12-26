@@ -1,5 +1,5 @@
 import pygame as pg
-
+import game.definitions as definitions
 
 pg.init()
 pg.font.init()
@@ -36,7 +36,10 @@ class Chat:
                     if self.text == "NINJALUI":
                         self.resource_manager.resources["wood"] += 10000
                         self.resource_manager.resources["stone"] += 10000
-
+                    elif self.text == "minimap":
+                        if definitions.afficher_minimap == "oui" :
+                            definitions.afficher_minimap = "non"
+                        else : definitions.afficher_minimap = "oui"
                     self.text = ''
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]

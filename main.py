@@ -9,7 +9,7 @@ from pygame.locals import *
 from game.ecranDemarrage import StartScreen
 from game.bouquet import Bouquet
 from game.ecranSave import Save
-
+import game.definitions as definitions
 
 def main():
     
@@ -25,7 +25,8 @@ def main():
     pygame.display.set_icon(pygame.image.load("assets/Icone.jpg").convert_alpha())
     clock = pygame.time.Clock()
 
-    #implement menus
+    #implémenter variables globales
+    definitions.init()
 
     #implement game
     game = Game(SCREEN,clock)
