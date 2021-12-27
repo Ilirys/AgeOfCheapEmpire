@@ -87,7 +87,8 @@ class Villager(Worker):
                     elif self.world.batiment[x][y]:
                         self.cible = self.dest_tile
                         self.farm = False
-                        self.transfer_resources()
+                        if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
+                            self.transfer_resources()
 
                     if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
@@ -194,7 +195,7 @@ class Villager(Worker):
             self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression), 3)
 
             if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]:  # now - self.move_timer > 1000:  # update position in the world
-                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0  # Free the last tile from collision
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
                 self.path_index += 1

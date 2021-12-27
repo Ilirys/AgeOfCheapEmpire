@@ -220,7 +220,6 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_horseman_dto[x][y] != None:
                             currenthorsemanDTO = restore_horseman_dto[x][y]
-                            print(currenthorsemanDTO.pv)
                             Horseman(currenthorsemanDTO.tile,self.world,self.camera, currenthorsemanDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("horseman", -1)
         except: 
@@ -236,8 +235,8 @@ class Game:
                             currentvillagerDTO = restore_villager_dto[x][y]
                             Villager(currentvillagerDTO.tile,self.world,self.camera, currentvillagerDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("Villageois", -1)
-        except: 
-            print("Created villager file")  
+        except Exception as e: print(e)
+            # print("Created villager file")  
         
         
         try:    

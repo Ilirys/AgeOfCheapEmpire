@@ -19,7 +19,6 @@ class Worker:
         self.pv = pv
         self.team = team
 
-
         #Visual and audio effects
         self.name = "Villageois"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
@@ -39,7 +38,6 @@ class Worker:
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
         self.temp_tile = None       #Utilisé pour enlever et remettre la collision de la case d'une unite lors du pathfinding de l'attaque
-
 
         #selection
         self.selected = False
@@ -66,14 +64,15 @@ class Worker:
         self.construire = False #Pour savoir si il doit faire un chemin vers le batiment a construire
         self.batiment_tile = None   #Case où aller construire
         self.batiment_pv = 0
-        
+
         #init
         self.world.resource_manager.apply_cost_to_resource(self.name)
         self.path_index = 0
         self.path = []
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(self.tile["grid"][0], self.tile["grid"][1])
-
+        
     def create_path(self, x, y):
         searching_for_path = True
         self.attack = False
