@@ -87,13 +87,13 @@ class Game:
             self.events()
             self.update()
             self.draw()
-            self.ecran_options.ecran_options()
 
 
 
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
             self.chat.handle_event(event)
+            self.ecran_options.ecran_options(event)
 
 
     def update(self):
