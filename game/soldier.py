@@ -24,6 +24,7 @@ class Soldier(Worker):
         self.animation_attack_right = self.world.animation.soldier_attack_right
         self.animation_attack_uright = self.world.animation.soldier_attack_uright
         self.animation_attack_rdown = self.world.animation.soldier_attack_rdown
+        self.animation_mort = self.world.animation.soldier_mort
 
         self.image = pygame.image.load('assets\soldier\Halbadierwalk001.png').convert_alpha()
         self.dmg = 5
@@ -76,17 +77,22 @@ class Soldier(Worker):
                 self.image = self.animation_attack_uright[int(self.temp)]
             elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
                 self.image = self.animation_attack_rdown[int(self.temp)]
-            if self.temp + 0.2 >= 10:
+            if self.temp + 0.2 >= 9:
                 self.temp = 0
-        else: self.image = self.world.animation.soldier_standby             
+        elif self.pv > 0: self.image = self.world.animation.soldier_standby
 
     #Override
     def delete(self):
-        self.world.entities.remove(self)
+        self.temp += 0.1
+        self.image = self.animation_mort[int(self.temp)]
+        if self.temp >= 9:
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+            self.world.entities.remove(self)
 
-        self.world.soldier[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None 
-        self.selected = False             
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+            self.world.soldier[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.selected = False
+            self.temp = 0

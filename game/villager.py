@@ -228,7 +228,7 @@ class Villager(Worker):
 
     #override
     def delete(self):
-        self.temp += 0.2
+        self.temp += 0.1
         self.image = self.animation_mort[int(self.temp)]
         if self.temp >= 11:
 
@@ -240,6 +240,7 @@ class Villager(Worker):
             self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
             self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
             self.selected = False
+            self.temp = 0
 
 
     #override

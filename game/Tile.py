@@ -17,6 +17,7 @@ class Tile:
             self.ressource = Ressource.__init__()
             self.idElem = -1
             self.nomElement = ""
+            self.tile_batiment = 0
         elif(len(args)==5):
             self.xTile = args[0]
             self.yTile = args[1]

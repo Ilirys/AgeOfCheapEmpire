@@ -257,12 +257,12 @@ class Worker:
             self.image = self.animation_attack[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
-        else:
+        elif self.pv > 0:
             self.image = self.world.animation.villager_standby
 
     def delete(self):
-        self.temp += 0.2
-        self.image = self.world.animation.animation_mort[int(self.temp)]
+        self.temp += 0.1
+        self.image = self.animation_mort[int(self.temp)]
         if self.temp >= 11:
 
             self.world.entities.remove(self)

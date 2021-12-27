@@ -140,6 +140,7 @@ class World:
                         for i in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                             for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
+                                self.world[grid_pos[0] + i][grid_pos[1] + j]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
                                 self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
@@ -471,7 +472,7 @@ class World:
             for villager in villager_x:
                 if (villager != None and villager.selected):
                     villager.batiment_pv = dicoBatiment[self.hud.selected_tile["name"]][2]
-                    villager.batiment_tile = self.world[grid_pos[0]][grid_pos[1]]  #Case ou se trouve le batiment
+                    villager.batiment_tile = self.world[grid_pos[0]][grid_pos[1]]   #Case ou se trouve le batiment
                     villager.create_path(villager.batiment_tile["grid"][0], villager.batiment_tile["grid"][1] , True)
                     villager.construire = True
                     break    
