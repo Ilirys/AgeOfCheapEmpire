@@ -53,7 +53,7 @@ class Villager(Worker):
                     if farmReset: self.farm = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0:
+                elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0 or self.world.world[x][y]["tile"].tile_batiment != 0:
                     # Reinitialise la cible
                     self.cible = None
 
@@ -88,6 +88,10 @@ class Villager(Worker):
                         self.cible = self.dest_tile
                         self.farm = False
                         self.transfer_resources()
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                        self.cible = self.world.world[x][y]["tile"].tile_batiment
+                        self.attack_bati = True
+
 
                     if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
@@ -167,7 +171,13 @@ class Villager(Worker):
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
-
+            elif self.attack_bati:
+                self.movestraight_animation = False
+                #self.attack_ani = True
+                self.cible.pv -= self.dmg
+                if self.cible.pv <= 0:
+                    self.attack = False
+                    self.attack_ani = False
             elif self.farm:
                 self.farmer_cases_autour()
 

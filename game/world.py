@@ -66,6 +66,8 @@ class World:
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.buildings = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         self.temp_tile = None
         self.examine_tile = None
         self.caserne_tile = None # Used to spawn units on the right tile
@@ -140,14 +142,15 @@ class World:
                         for i in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                             for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
-                                self.world[grid_pos[0] + i][grid_pos[1] + j]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
-                                self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
+                                self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0
+                                self.world[grid_pos[0] + i][grid_pos[1] + j]["tile"].tile_batiment = self.batiment[grid_pos[0]][grid_pos[1]]
+
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
             
                     
 
-        elif self.hud.selected_unit_icon:  #Si les icones unités sont selectionées, le clic gauche fais spawn autour de la caserne
+            elif self.hud.selected_unit_icon:  #Si les icones unités sont selectionées, le clic gauche fais spawn autour de la caserne
                 now = pygame.time.get_ticks()
                 if mouse_action[0]:
                     if now - self.move_timer > UNITS_SPAWN_TIME:
@@ -217,9 +220,13 @@ class World:
                                 self.hud.display_unit_icons = True
                                 self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
                                 self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
+
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
 
+                    if batiment.pv < 0:
+                        self.delete_batiment(x,y)
+                        self.hud.select_surface_empty = True
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
@@ -679,3 +686,13 @@ class World:
 
 
 
+    def delete_batiment(self,x,y):
+
+
+        self.collision_matrix[y][x] = 1  # Free the last tile from collision
+        self.world[x][y]["collision"] = False
+
+        self.batiment[x][y] = None
+
+        self.selected = False
+        self.temp = 0

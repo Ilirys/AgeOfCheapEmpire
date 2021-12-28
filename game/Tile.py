@@ -17,7 +17,8 @@ class Tile:
             self.ressource = Ressource.__init__()
             self.idElem = -1
             self.nomElement = ""
-            self.tile_batiment = 0
+            self.tile_batiment
+            self.batiment_pv
         elif(len(args)==5):
             self.xTile = args[0]
             self.yTile = args[1]
@@ -25,6 +26,8 @@ class Tile:
             self.ressource = args[3]
             self.idElem = args[4]
             self.nomElement = ""
+            self.tile_batiment = 0
+            self.batiment_pv = None
 
     def isEmpty(self):
         return self.empty

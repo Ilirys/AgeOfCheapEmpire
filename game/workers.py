@@ -51,6 +51,7 @@ class Worker:
         
         #Attaque
         self.attack = False
+        self.attack_bati = False
         self.dmg = 1
         self.range = 2
         self.temp_tile_a = self.tile
