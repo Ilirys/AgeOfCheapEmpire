@@ -94,7 +94,7 @@ class Worker:
                     self.attack = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.dest_tile["tile"].ressource.getNbRessources != 0:
+                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0 :
                     # Reinitialise la derniere case de destination et la cible
                     self.cible = None
 
@@ -119,6 +119,11 @@ class Worker:
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
+
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                        self.cible = self.world.world[x][y]["tile"].tile_batiment
+                        self.attack_bati = True
+
 
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
 
@@ -209,6 +214,13 @@ class Worker:
                         self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
                         self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
                         self.create_path(self.cible.tile["grid"][0],self.cible.tile["grid"][1])
+                if self.cible.pv <= 0:
+                    self.attack = False
+                    self.attack_ani = False
+            elif self.attack_bati:
+                self.movestraight_animation = False
+                #self.attack_ani = True
+                self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False

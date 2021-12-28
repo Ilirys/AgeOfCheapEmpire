@@ -57,7 +57,7 @@ class Archer(Worker):
                 self.progression = 0
                 self.attack = False
                 searching_for_path = False
-            elif (self.world.unites[x][y] != None):  # Si la case contient une unitées, pathfinding attaque
+            elif (self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0):  # Si la case contient une unitées, pathfinding attaque
                 # On enleve la collision de la case du soldat (Or else can't get find_path to work)
 
                 self.temp_tile = self.world.world[x][y]
@@ -72,19 +72,30 @@ class Archer(Worker):
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                 # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
-
-                self.cible = self.world.unites[x][y]
-                if self.dest_tile != self.tile:
-                    for i in range(2):
-                        if self.path:
-                            self.path.pop()
+                if self.world.unites[x][y] != None:
+                    self.cible = self.world.unites[x][y]
+                    if self.dest_tile != self.tile:
+                        for i in range(2):
                             if self.path:
-                                self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
-                self.temp_tile_a = self.cible.tile
-                self.attack = True
+                                self.path.pop()
+                                if self.path:
+                                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                    self.temp_tile_a = self.cible.tile
+                    self.attack = True
+
+                elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                    self.cible = self.world.world[x][y]["tile"].tile_batiment
+
+                    if self.dest_tile != self.tile:
+                        for i in range(2):
+                            if self.path:
+                                self.path.pop()
+                                if self.path:
+                                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                    self.temp_tile_a = self.cible.tile
+                    self.attack_bati = True
                 self.progression = 0
                 searching_for_path = False
-
                 if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
                         self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
