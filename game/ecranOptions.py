@@ -27,6 +27,10 @@ class Options:
                 afficher_image(self.screen, 'assets/ecran_options2.png', -100)
                 image = pygame.image.load('assets/ecran_options2.png').convert_alpha()
                 self.screen.blit(image, (0, 0))
+            elif definitions.case_coche == 3:
+                afficher_image(self.screen, 'assets/ecran_options3.png', -100)
+                image = pygame.image.load('assets/ecran_options3.png').convert_alpha()
+                self.screen.blit(image, (0, 0))
 
 
  
@@ -35,7 +39,8 @@ class Options:
 
             button_ok = pygame.Rect(600, 900, 280, 40)  # les boutons (ici, invisibles) -> bouton ok
             button_normal = pygame.Rect(170, 250, 15, 15)
-            button_fast = pygame.Rect(170, 350, 15, 15)
+            button_fast = pygame.Rect(170, 300, 15, 15)
+            button_veryfast = pygame.Rect(170, 350, 15, 15)
             button_charg = pygame.Rect(900,900,280,40)
 
             if button_ok.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
@@ -46,10 +51,18 @@ class Options:
             if button_normal.collidepoint((mx, my)):
                 if click:
                     definitions.case_coche = 1
+                    definitions.CURRENT_SPEED = "normal"
+
 
             if button_fast.collidepoint((mx, my)):
                 if click:
+                    definitions.case_coche = 3
+                    definitions.CURRENT_SPEED = "fast"
+
+            if button_veryfast.collidepoint((mx, my)):
+                if click:
                     definitions.case_coche = 2
+                    definitions.CURRENT_SPEED = "veryfast"
 
             if button_charg.collidepoint((mx, my)):
                 pygame.draw.rect(self.screen, (255, 255, 255), (894, 902, 277, 40), 3)
@@ -62,7 +75,7 @@ class Options:
             # dessin des boutons pour s'assurer de leur bonne position
             # commentez les 3 lignes pour enlever les rectangles jaunes
             # pygame.draw.rect(self.screen, (255, 215, 50), button_ok)
-            # pygame.draw.rect(self.screen, (255, 215, 50), button_fast)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_veryfast)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_normal)
 
             click = False

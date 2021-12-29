@@ -1,11 +1,12 @@
 import json
 import pygame
 import random
+import game.definitions as definitions
 from math import *
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, SAVED_GAME_FOLDER, TILE_SIZE
+from .definitions import *
 from game.deplacement import lerp
 import pickle
 import DTO.soldierDTO

@@ -1,4 +1,4 @@
-
+import game.definitions as definitions
 from .definitions import *
 import pickle
 class Ressource:
@@ -32,7 +32,7 @@ class Ressource:
         }
 
         #Save
-        self.save_file_path = SAVED_GAME_FOLDER + "ressourceManager"
+        self.save_file_path = definitions.SAVED_GAME_FOLDER + "ressourceManager"
 
     def getTypeRessource(self):
         return self.typeRessource

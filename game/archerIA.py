@@ -3,7 +3,7 @@ import random
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE
+from game.definitions import *
 from math import *
 from game.deplacement import lerp
 from .archer import Archer

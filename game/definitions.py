@@ -7,7 +7,7 @@ UNITS_SPAWN_TIME = 10
 
 #Speed
 DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "veryfast": 5, "potato_pc": 8}
-CURRENT_SPEED = "veryfast"
+
 
 #Screen
 BENCHMARK = 0
@@ -54,3 +54,7 @@ def init():
     # Saves
     global SAVED_GAME_FOLDER
     SAVED_GAME_FOLDER = "rien/"
+
+    #SPEED
+    global CURRENT_SPEED
+    CURRENT_SPEED = "veryfast"
