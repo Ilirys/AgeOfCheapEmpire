@@ -87,7 +87,8 @@ class Villager(Worker):
                     elif self.world.batiment[x][y]:
                         self.cible = self.dest_tile
                         self.farm = False
-                        self.transfer_resources()
+                        if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
+                            self.transfer_resources()
                     elif self.world.world[x][y]["tile"].tile_batiment != 0:
                         self.cible = self.world.world[x][y]["tile"].tile_batiment
                         self.attack_bati = True
@@ -112,16 +113,24 @@ class Villager(Worker):
 
     #override
     def change_tile(self, new_tile):
-        self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.villager[new_tile[0]][new_tile[1]] = self
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.villager[new_tile[0]][new_tile[1]] = self
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
 
-        # collision matrix (for pathfinding and buildings)
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            # collision matrix (for pathfinding and buildings)
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y
+
 
     #override
     def update(self):
@@ -200,11 +209,11 @@ class Villager(Worker):
                 self.progression = round(self.progression, 4)
             else:
                 self.progression = 1
-            self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression), 3)
-            self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression), 3)
+            self.pos_x = round(lerp(self.render_pos_x, new_real_pos[0], self.progression), 3)
+            self.pos_y = round(lerp(self.render_pos_y, new_real_pos[1], self.progression), 3)
 
             if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]:  # now - self.move_timer > 1000:  # update position in the world
-                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0  # Free the last tile from collision
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
                 self.path_index += 1

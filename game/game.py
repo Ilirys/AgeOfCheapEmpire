@@ -87,13 +87,13 @@ class Game:
             self.events()
             self.update()
             self.draw()
-            self.ecran_options.ecran_options()
 
 
 
     def events(self):
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
             self.chat.handle_event(event)
+            self.ecran_options.ecran_options(event)
 
 
     def update(self):
@@ -140,7 +140,6 @@ class Game:
                     currenthorseman = self.world.horseman[x][y]
                     self.world.collision_matrix[currenthorseman.tile["grid"][1]][currenthorseman.tile["grid"][0]] = 1
                     self.world.world[currenthorseman.tile["grid"][0]][currenthorseman.tile["grid"][1]]["collision"] = False
-                    print("save", currenthorseman.pv)
                     self.world.horsemanDTO[x][y] = horsemanDTO(currenthorseman.name,currenthorseman.pv,currenthorseman.range,currenthorseman.dmg,currenthorseman.tile)
                 
                 if self.world.villager[x][y] != None:
@@ -196,8 +195,9 @@ class Game:
                             currentworkerDTO = restore_workers_dto[x][y]
                             Worker(currentworkerDTO.tile,self.world,self.camera,currentworkerDTO.health_points)
                             self.world.resource_manager.apply_cost_to_resource("Villageois", -1) #Rembourser le cout du spawn en bouffe 
-        except: 
-            print("Created worker file")     
+        
+        except Exception as e: print("An error occured while loading worker save:", e)
+    
 
         try:    
             with open(self.world.soldiers_save_file_path, "rb") as input:
@@ -209,8 +209,9 @@ class Game:
                             currentsoldierDTO = restore_soldiers_dto[x][y]
                             Soldier(currentsoldierDTO.tile,self.world,self.camera, currentsoldierDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("Soldier", -1)
-        except: 
-            print("Created soldier file") 
+        
+        except Exception as e: print("An error occured while loading soldier save:", e)
+
 
         try:    
             with open(self.world.horseman_save_file_path, "rb") as input:
@@ -220,11 +221,11 @@ class Game:
                     for y in range(self.world.grid_length_y):
                         if restore_horseman_dto[x][y] != None:
                             currenthorsemanDTO = restore_horseman_dto[x][y]
-                            print(currenthorsemanDTO.pv)
                             Horseman(currenthorsemanDTO.tile,self.world,self.camera, currenthorsemanDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("horseman", -1)
-        except: 
-            print("Created horseman file")      
+                
+        except Exception as e: print("An error occured while loading horseman save:", e)
+    
         
         try:    
             with open(self.world.villager_save_file_path, "rb") as input:
@@ -236,8 +237,8 @@ class Game:
                             currentvillagerDTO = restore_villager_dto[x][y]
                             Villager(currentvillagerDTO.tile,self.world,self.camera, currentvillagerDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("Villageois", -1)
-        except: 
-            print("Created villager file")  
+        
+        except Exception as e: print("An error occured while loading villager save:", e)
         
         
         try:    
@@ -250,7 +251,8 @@ class Game:
                             currentarcherDTO = restore_archer_dto[x][y]
                             Archer(currentarcherDTO.tile,self.world,self.camera, currentarcherDTO.pv)
                             self.world.resource_manager.apply_cost_to_resource("Archer", -1)
-        except: 
-            print("Created archer file")     
+
+        except Exception as e: print("An error occured while loading archer save:", e)
+     
 
 

@@ -19,7 +19,6 @@ class Worker:
         self.pv = pv
         self.team = team
 
-
         #Visual and audio effects
         self.name = "Villageois"
         self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
@@ -38,8 +37,9 @@ class Worker:
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
+        self.render_pos_x = self.tile["render_pos"][0]
+        self.render_pos_y = self.tile["render_pos"][1]
         self.temp_tile = None       #Utilisé pour enlever et remettre la collision de la case d'une unite lors du pathfinding de l'attaque
-
 
         #selection
         self.selected = False
@@ -67,14 +67,15 @@ class Worker:
         self.construire = False #Pour savoir si il doit faire un chemin vers le batiment a construire
         self.batiment_tile = None   #Case où aller construire
         self.batiment_pv = 0
-        
+
         #init
         self.world.resource_manager.apply_cost_to_resource(self.name)
         self.path_index = 0
         self.path = []
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(self.tile["grid"][0], self.tile["grid"][1])
-
+        
     def create_path(self, x, y):
         searching_for_path = True
         self.attack = False
@@ -140,17 +141,24 @@ class Worker:
 
 
     def change_tile(self,new_tile):
-        #Updates worker and unit matrices
-        self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.workers[new_tile[0]][new_tile[1]] = self
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            #Updates worker and unit matrices
+            self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.workers[new_tile[0]][new_tile[1]] = self
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]  #Change tile
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]  #Change tile
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
 
-        #collision matrix (for pathfinding and buildings): Active collision for the current tile 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            #collision matrix (for pathfinding and buildings): Active collision for the current tile 
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y    
 
     def mouse_to_grid(self, x, y, scroll):
         # transform to world position (removing camera scroll and offset)
@@ -242,8 +250,8 @@ class Worker:
                 self.progression = round(self.progression,4)
             else:
                 self.progression = 1    
-            self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression),3)
-            self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression),3)
+            self.pos_x = round(lerp(self.render_pos_x, new_real_pos[0], self.progression),3)
+            self.pos_y = round(lerp(self.render_pos_y, new_real_pos[1], self.progression),3)
             
 
             if  self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]: #now - self.move_timer > 1000:  # update position in the world          

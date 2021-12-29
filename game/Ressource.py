@@ -67,8 +67,8 @@ class Ressource:
                 self.nbRessources = res_manager.nbRessources
                 self.typeRessource = res_manager.typeRessource
                 input.close()
-        except: 
-            print("Created resource save file")
+        except Exception as e: print("An error occured while loading resource save:", e)
+
         
 
     def save(self):

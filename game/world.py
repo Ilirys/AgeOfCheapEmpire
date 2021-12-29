@@ -626,8 +626,8 @@ class World:
                 self.collision_matrix = restore_world_dto.collision_matrix
                 self.storage_tile = restore_world_dto.storage_tile
                 input.close()
-        except: 
-            print("Created map save file")
+        except Exception as e: print("An error occured while loading Map save:", e)
+
 
         #Buildings restore
         try:    
@@ -636,8 +636,8 @@ class World:
                 self.batimentDTO = restore_building_dto
                 input.close()
 
-        except: 
-            print("Created building save file")  
+        except Exception as e: print("An error occured while loading Buildings save:", e)
+
 
         for x in range(self.grid_length_x):
             for y in range(self.grid_length_y):
