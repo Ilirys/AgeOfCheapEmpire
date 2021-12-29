@@ -16,7 +16,6 @@ class Options:
         self.width, self.height = self.screen.get_size()
 
     def options(self): #accès à la page d'options
-        aff=1
         self.playing = True
         while self.playing:
 
@@ -47,25 +46,13 @@ class Options:
             if button_normal.collidepoint((mx, my)):
                 if click:
                     aff = 1
-                    with open('game/definitions.txt', 'r') as file:
-                        data = file.readlines()
 
-                        data[1] = "CURRENT_SPEED = \"normal\"\n"
-
-                        with open('game/definitions.txt', 'w') as file:
-                            file.writelines(data)
 
 
             if button_fast.collidepoint((mx, my)):
                 if click:
                     aff = 2
-                    with open('game/definitions.txt', 'r') as file:
-                        data = file.readlines()
 
-                        data[1] = "CURRENT_SPEED = \"fast\"\n"
-
-                        with open('game/definitions.txt', 'w') as file:
-                            file.writelines(data)
 
             # dessin des boutons pour s'assurer de leur bonne position
             # commentez les 3 lignes pour enlever les rectangles jaunes
