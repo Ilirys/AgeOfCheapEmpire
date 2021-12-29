@@ -125,7 +125,7 @@ class World:
                 if mouse_action[0] and not collision:
 
                     
-                    if dicoBatiment[self.hud.selected_tile["name"]][1] == 1:
+                    if dicoBatiment[self.hud.selected_tile["name"]][1] == 1: #Pour taille de batiment 1x1
                         ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
                         self.entities.append(ent)
                         ent.current_image = 1   #Petite image ruine pour construction
@@ -411,11 +411,16 @@ class World:
         ent = Batiment(render_pos, "Towncenter", self.resource_manager, dicoBatiment["Towncenter"][2]) # (Towncenter(render_pos, self.resource_manager)
         ent.current_image = 2
         self.entities.append(ent)
+        
 
         self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
         self.spawn_unit_autour_caserne("Villageois",self.storage_tile)    #Spawn villageois initial
 
         self.batiment[a][b] = ent
+        for i in range (2):
+            for j in range (2):
+              self.world[a + i][b + j]["tile"].tile_batiment = self.batiment[a][b]
+
         for i in range (3):
             for j in range (3):
                 self.world[a+j][b+i]["collision"] = False

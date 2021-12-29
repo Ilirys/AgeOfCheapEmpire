@@ -50,6 +50,9 @@ class Villager(Worker):
                     self.attack = False
 
                     self.construire = False
+
+                    self.attack_bati = False
+
                     if farmReset: self.farm = False
 
                     searching_for_path = False
@@ -80,11 +83,13 @@ class Villager(Worker):
                         self.farm = False
                         self.temp_tile_a = self.cible.tile
                         self.construire = False
+                        self.attack_bati = False
                     elif self.dest_tile["tile"].ressource.getNbRessources() != 0:  # Condition de farm
                         self.cible = self.dest_tile
                         self.farm = True
                         self.construire = False
-                    elif self.world.batiment[x][y]:
+                        self.attack_bati = False
+                    elif self.world.batiment[x][y]: #and self.team == self.world.batiment[x][y].team
                         self.cible = self.dest_tile
                         self.farm = False
                         if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
