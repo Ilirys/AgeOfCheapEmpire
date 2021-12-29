@@ -202,20 +202,21 @@ class World:
                             mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25 - (batiment.image.get_width()*(dicoBatiment[batiment.name][1]-1))/3, y + render_pos[1] - (batiment.image.get_height()/dicoBatiment[batiment.name][1] - TILE_SIZE +15) + camera.scroll.y) for x, y in mask]
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
-                            if (batiment.name=="Towncenter"):
-                                self.hud.display_unit_icons = False 
-                                self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
-                            if (batiment.name=="Storage"):
-                                self.hud.display_unit_icons = False
-                                self.hud.blit_hud("hudGrenier", str(batiment.pv), screen)
-                                self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
-                            elif (batiment.name=="House"):
-                                self.hud.display_unit_icons = False 
-                                self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
-                            elif (batiment.name=="Barrack"):
-                                self.hud.display_unit_icons = True
-                                self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
-                                self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
+                            if (batiment.team=="blue"):
+                                if (batiment.name=="Towncenter"):
+                                    self.hud.display_unit_icons = False 
+                                    self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
+                                elif (batiment.name=="Storage"):
+                                    self.hud.display_unit_icons = False
+                                    self.hud.blit_hud("hudGrenier", str(batiment.pv), screen)
+                                    self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
+                                elif (batiment.name=="House"):
+                                    self.hud.display_unit_icons = False 
+                                    self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
+                                elif (batiment.name=="Barrack"):
+                                    self.hud.display_unit_icons = True
+                                    self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
+                                    self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
 
@@ -257,7 +258,7 @@ class World:
                     elif nomElement == "food":
                         self.minimap.tab_minimap[x][y] = Brown
                     elif self.world[x][y]["collision"]:
-                        self.minimap.tab_minimap[x][y] = Red
+                        self.minimap.tab_minimap[x][y] = Blue
                         
                     if self.minimap.tab_minimap[x][y] != GreenLight:
                         pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
@@ -371,12 +372,11 @@ class World:
 
         return grid_x, grid_y
 
-    def générer_camp(self,team="blue"):
+    def générer_camp(self):
         générateur = random.random()
         x = 7
         y = random.randint(-4,4)
         z = random.randint(-4,4)
-        #print(générateur, "\t", y, "\t", z, "\n")
         if générateur<0.25:
             a = x+y
             b = x+z
@@ -389,7 +389,10 @@ class World:
         else:
             a = self.grid_length_x-x+y
             b = self.grid_length_y-x+z
-        M2=self.Bou.creation_camp(a, b)
+        a2 = MAP_SIZE - a   # position towncenter ennemi
+        b2 = MAP_SIZE - b
+        M2=self.Bou.creation_camp(a, b) # enlève les ressources aléatoirement autour du towncenter
+        M3=self.Bou.creation_camp(a2, b2) # pareil pour le towncenter ennemi
         for grid_x in range(self.grid_length_x): #On itère pour la taille de la map
             for grid_y in range(self.grid_length_y):
                 if M2[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
@@ -397,28 +400,54 @@ class World:
                     self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
                     self.world[grid_x][grid_y]["collision"] = False
                     self.collision_matrix[grid_y][grid_x] = 1
-
+                if M3[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
+                    self.world[grid_x][grid_y]["tile"].nomElement = ""
+                    self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
+                    self.world[grid_x][grid_y]["collision"] = False
+                    self.collision_matrix[grid_y][grid_x] = 1
 
         render_pos = self.world[a][b]["render_pos"]
         ent = Batiment(render_pos, "Towncenter", self.resource_manager, dicoBatiment["Towncenter"][2]) # (Towncenter(render_pos, self.resource_manager)
         ent.current_image = 2
         self.entities.append(ent)
 
+        render_pos2 = self.world[a2][b2]["render_pos"]
+        ent2 = Batiment(render_pos2, "Towncenter", self.resource_manager, dicoBatiment["Towncenter"][2], team="red") # (Towncenter(render_pos, self.resource_manager)
+        ent2.current_image = 2
+        self.entities.append(ent2) # A CHANGER SI DEFFERENT EN FONCTION DES TEAMS
+
         self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
         self.spawn_unit_autour_caserne("Villageois",self.storage_tile)    #Spawn villageois initial
+        
+        #self.storage_tile_IA = self.world[a2][b2]
+        #self.spawn_unit_autour_caserne("Villageois",self.storage_tile, team="red")    #Spawn villageois initial
+
+        self.towncenter_posx=a
+        self.towncenter_posy=b
+        self.towncenter_IA_posx=a2
+        self.towncenter_IA_posy=b2
 
         self.batiment[a][b] = ent
+        self.batiment[a2][b2] = ent2
+
         for i in range (3):
             for j in range (3):
                 self.world[a+j][b+i]["collision"] = False
                 self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
                 self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
                 self.collision_matrix[b+i][a+j] = 1
+                self.world[a2+j][b2+i]["collision"] = False
+                self.world[a2+j][b2+i]["tile"].ressource.typeRessource = ""
+                self.world[a2+j][b2+i]["tile"].ressource.nbRessource = 0
+                self.collision_matrix[b2+i][a2+j] = 1
         for i in range (2):
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
                 self.world[a+j][b+i]["tile"].setRessource(Ressource(0, ""))
                 self.collision_matrix[b+i][a+j] = 0
+                self.world[a2+j][b2+i]["collision"] = True
+                self.world[a2+j][b2+i]["tile"].setRessource(Ressource(0, ""))
+                self.collision_matrix[b2+i][a2+j] = 0
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 

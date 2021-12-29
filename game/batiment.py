@@ -3,7 +3,7 @@ from .definitions import *
 
 class Batiment:
     
-    def __init__(self, pos, name, resource_manager, pv=0, current_image=0):
+    def __init__(self, pos, name, resource_manager, pv=0, current_image=0, team="blue"):
         #Images
         self.image = pygame.image.load(dicoBatiment[name][0]).convert_alpha()
         self.ruin_image = pygame.image.load("assets/Rubble1.png").convert_alpha()
@@ -15,6 +15,7 @@ class Batiment:
         self.pos = pos 
         self.taille = dicoBatiment[name][1]
         self.pv = pv
+        self.team = team
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_cooldown = pygame.time.get_ticks()
         self.resource_manager = resource_manager

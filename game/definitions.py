@@ -48,4 +48,4 @@ Blue=(0,128,255)
 
 def init():
     global afficher_minimap
-    afficher_minimap = "non"
+    afficher_minimap = "oui"
