@@ -664,7 +664,7 @@ class World:
                 worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile)
                 pickle.dump(worker_dto,output)
                 output.close()
-        except: print("Couldnt dump map save in file")
+        except Exception as e: print("Couldnt dump map save in file", e)
 
         #Buildings save 
         for x in range(self.grid_length_x):
