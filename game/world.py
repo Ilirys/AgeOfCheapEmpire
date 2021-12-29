@@ -1,7 +1,7 @@
 import pygame
 import random
 import game.definitions as definitions
-from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO, StorageDTO
+from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO, StorageDTO, FarmDTO
 from game.horseman import Horseman
 from game.soldier import Soldier
 from game.workers import Worker
@@ -666,6 +666,8 @@ class World:
                         entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image   )
                     if ent.name == "Storage":
                         entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image   )
+                    if ent.name == "farm":
+                        entDTO = FarmDTO(ent.pos, ent.pv, ent.current_image   )
                     self.batimentDTO[x][y] = entDTO
 
         try:   
