@@ -41,15 +41,22 @@ class Soldier(Worker):
 
     #Override
     def change_tile(self, new_tile):
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
-        self.world.soldier[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.soldier[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:        
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
+            self.world.soldier[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.soldier[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y    
 
     # #Override
     def update_sprite(self):
