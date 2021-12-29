@@ -7,7 +7,7 @@ class Batiment:
         #Images
         self.image = pygame.image.load(dicoBatiment[name][0]).convert_alpha()
         self.ruin_image = pygame.image.load("assets/Rubble1.png").convert_alpha()
-        self.small_ruin_image = pygame.image.load("assets/RubbleSmall1.png").convert_alpha()
+        self.small_ruin_image = pygame.image.load("assets/RubbleSmall.png").convert_alpha()
         self.current_image = current_image
         self.images = [self.ruin_image, self.small_ruin_image, self.image]
         
