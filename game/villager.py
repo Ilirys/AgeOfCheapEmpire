@@ -109,16 +109,18 @@ class Villager(Worker):
 
     #override
     def change_tile(self, new_tile):
-        self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.villager[new_tile[0]][new_tile[1]] = self
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.villager[new_tile[0]][new_tile[1]] = self
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
 
-        # collision matrix (for pathfinding and buildings)
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            # collision matrix (for pathfinding and buildings)
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])    
 
     #override
     def update(self):
