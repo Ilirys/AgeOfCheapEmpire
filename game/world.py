@@ -1,6 +1,5 @@
 import pygame
 import random
-import noise
 from DTO.batimentDTO import BarrackDTO, HouseDTO, TowncenterDTO
 from game.horseman import Horseman
 from game.soldier import Soldier

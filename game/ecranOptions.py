@@ -47,12 +47,25 @@ class Options:
             if button_normal.collidepoint((mx, my)):
                 if click:
                     aff = 1
-                    CURRENT_SPEED = "normal"
+                    with open('game/definitions.txt', 'r') as file:
+                        data = file.readlines()
+
+                        data[1] = "CURRENT_SPEED = \"normal\"\n"
+
+                        with open('game/definitions.txt', 'w') as file:
+                            file.writelines(data)
+
+
             if button_fast.collidepoint((mx, my)):
                 if click:
                     aff = 2
-                    CURRENT_SPEED = "fast"
+                    with open('game/definitions.txt', 'r') as file:
+                        data = file.readlines()
 
+                        data[1] = "CURRENT_SPEED = \"fast\"\n"
+
+                        with open('game/definitions.txt', 'w') as file:
+                            file.writelines(data)
 
             # dessin des boutons pour s'assurer de leur bonne position
             # commentez les 3 lignes pour enlever les rectangles jaunes
