@@ -3,7 +3,9 @@ from .definitions import *
 import pickle
 class Ressource:
 
-    def __init__(self, *args):
+    def __init__(self, *args, team="blue"):
+
+        self.team=team
         if(len(args)==0):
             self.nbRessources = 0
             self.typeRessource = ""
