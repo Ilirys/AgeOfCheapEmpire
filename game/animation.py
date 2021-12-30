@@ -39,8 +39,9 @@ class Animation:
         self.soldier_attack_uright = self.animation_soldier_attack_uright()
         self.soldier_attack_rdown = self.animation_soldier_attack_rdown()
         self.villager_mort = self.animation_villager_mort()
-
-
+        self.horseman_mort = self.animation_horseman_mort()
+        self.archer_mort = self.animation_archer_mort()
+        self.soldier_mort = self.animation_soldier_mort()
 
     def animation_villager_attack(self):
         villager_attack = []
@@ -526,4 +527,67 @@ class Animation:
         villager_mort.append(pygame.image.load('assets/villager/Villagerdie011.png').convert_alpha())
         villager_mort.append(pygame.image.load('assets/villager/Villagerdie012.png').convert_alpha())
         return villager_mort
+
+    def animation_villager_mort(self):
+        villager_mort = []
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie001.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie002.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie003.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie004.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie005.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie006.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie007.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie008.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie009.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie010.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie011.png').convert_alpha())
+        villager_mort.append(pygame.image.load('assets/villager/Villagerdie012.png').convert_alpha())
+        return villager_mort
+
+
+    def animation_horseman_mort(self):
+        horseman_mort = []
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie001.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie002.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie003.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie004.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie005.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie006.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie007.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie008.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie009.png').convert_alpha())
+        horseman_mort.append(pygame.image.load('assets/horseman/Cavalierdie010.png').convert_alpha())
+        return horseman_mort
+
+    def animation_archer_mort(self):
+        archer_mort = []
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie001.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie002.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie003.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie004.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie005.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie006.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie007.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie008.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie009.png').convert_alpha())
+        archer_mort.append(pygame.image.load('assets/archer/Archerdie010.png').convert_alpha())
+        return archer_mort
+
+    def animation_soldier_mort(self):
+        soldier_mort = []
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie001.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie002.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie003.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie004.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie005.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie006.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie007.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie008.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie009.png').convert_alpha())
+        soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie010.png').convert_alpha())
+        return soldier_mort
+
+
+
+
 

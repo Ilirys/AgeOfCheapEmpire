@@ -11,7 +11,7 @@ from .workers import Worker
 
 class Villager(Worker):
 
-    def __init__(self, tile, world, camera, pv=2000, team=1):
+    def __init__(self, tile, world, camera, pv=2000, team="blue"):
         super().__init__(tile, world, camera, pv, team)
 
         #saves
@@ -50,10 +50,13 @@ class Villager(Worker):
                     self.attack = False
 
                     self.construire = False
+
+                    self.attack_bati = False
+
                     if farmReset: self.farm = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0:
+                elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0 or self.world.world[x][y]["tile"].tile_batiment != 0:
                     # Reinitialise la cible
                     self.cible = None
 
@@ -80,14 +83,22 @@ class Villager(Worker):
                         self.farm = False
                         self.temp_tile_a = self.cible.tile
                         self.construire = False
+                        self.attack_bati = False
                     elif self.dest_tile["tile"].ressource.getNbRessources() != 0:  # Condition de farm
                         self.cible = self.dest_tile
                         self.farm = True
                         self.construire = False
-                    elif self.world.batiment[x][y]:
+                        self.attack_bati = False
+                    elif self.world.batiment[x][y]: #and self.team == self.world.batiment[x][y].team
                         self.cible = self.dest_tile
                         self.farm = False
-                        self.transfer_resources()
+                        if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
+                            self.transfer_resources()
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                        self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]#self.world.world[x][y]["tile"].tile_batiment
+
+                        self.attack_bati = True
+
 
                     if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
@@ -108,16 +119,24 @@ class Villager(Worker):
 
     #override
     def change_tile(self, new_tile):
-        self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.villager[new_tile[0]][new_tile[1]] = self
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.villager[new_tile[0]][new_tile[1]] = self
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
 
-        # collision matrix (for pathfinding and buildings)
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            # collision matrix (for pathfinding and buildings)
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y
+
 
     #override
     def update(self):
@@ -157,6 +176,8 @@ class Villager(Worker):
         if self.dest_tile == self.tile:
             if self.attack:
                 self.movestraight_animation = False
+                self.cible.attacked = True
+                self.cible.attacker = self
                 #self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
@@ -167,7 +188,13 @@ class Villager(Worker):
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
-
+            elif self.attack_bati:
+                self.movestraight_animation = False
+                #self.attack_ani = True
+                self.cible.pv -= self.dmg
+                if self.cible.pv <= 0:
+                    self.attack = False
+                    self.attack_ani = False
             elif self.farm:
                 self.farmer_cases_autour()
 
@@ -190,11 +217,11 @@ class Villager(Worker):
                 self.progression = round(self.progression, 4)
             else:
                 self.progression = 1
-            self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression), 3)
-            self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression), 3)
+            self.pos_x = round(lerp(self.render_pos_x, new_real_pos[0], self.progression), 3)
+            self.pos_y = round(lerp(self.render_pos_y, new_real_pos[1], self.progression), 3)
 
             if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]:  # now - self.move_timer > 1000:  # update position in the world
-                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0  # Free the last tile from collision
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
                 self.path_index += 1
@@ -228,7 +255,7 @@ class Villager(Worker):
 
     #override
     def delete(self):
-        self.temp += 0.2
+        self.temp += 0.1
         self.image = self.animation_mort[int(self.temp)]
         if self.temp >= 11:
 
@@ -240,6 +267,7 @@ class Villager(Worker):
             self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
             self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
             self.selected = False
+            self.temp = 0
 
 
     #override

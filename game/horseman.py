@@ -11,7 +11,7 @@ from .workers import Worker
 
 class Horseman(Worker):
 
-    def __init__(self, tile, world, camera, pv=2000, team=1):
+    def __init__(self, tile, world, camera, pv=2000, team="blue"):
         super().__init__(tile, world, camera, pv, team)
 
         # Visual and audio effects
@@ -25,6 +25,7 @@ class Horseman(Worker):
         self.animation_attack_right = self.world.animation.horseman_attack_right
         self.animation_attack_uright = self.world.animation.horseman_attack_uright
         self.animation_attack_rdown = self.world.animation.horseman_attack_rdown
+        self.animation_mort = self.world.animation.horseman_mort
 
         self.image = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
         self.dmg = 5
@@ -40,15 +41,22 @@ class Horseman(Worker):
 
     #Override
     def change_tile(self, new_tile):
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
-        self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.horseman[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
+            self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.horseman[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y    
 
 
 
@@ -80,15 +88,19 @@ class Horseman(Worker):
 
            if self.temp + 0.2 >= len(self.animation_attack):
                self.temp= 0
-       else: self.image = self.world.animation.horseman_standby 
+       elif self.pv > 0: self.image = self.world.animation.horseman_standby
        
     #Override
     def delete(self):
-        self.world.entities.remove(self)
+        self.temp += 0.1
+        self.image = self.animation_mort[int(self.temp)]
+        if self.temp >= 9:
+            self.world.entities.remove(self)
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
-        self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None  
-        self.selected = False               
+            self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.selected = False
+            self.temp = 0

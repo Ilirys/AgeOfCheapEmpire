@@ -9,14 +9,29 @@ from .world import World
 
 class IA:
 
-    def __init__(self,team):
+    def __init__(self,world,team="red"):
         self.team = team
-        self.player_towncenter = 0
+        self.world = world
+        #self.towncenter =
+        # self.player_towncenter =
         self.warriors = []
         self.villagers = []
+        self.attacking = False
 
 
 
     def update(self):
+        #self.attack_villagers()
         pass
-    
+
+    def attack_villagers(self):
+        if self.attacking == False:
+            for villager_x in self.world.villager:
+                for villager in villager_x:
+                    for w in self.warriors:
+                        if villager is not None and w is not None:
+                            if villager.team != w.team:
+                                w.create_path(villager.tile["grid"][0],villager.tile["grid"][1])
+                                self.attacking = True          # pour attaquer unités une par une sans appeller create path en boucle
+                                if villager.pv < 0 or w.dest_tile == w.tile:
+                                    self.attacking = False

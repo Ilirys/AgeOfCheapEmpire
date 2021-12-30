@@ -10,7 +10,7 @@ from .villager import Villager
 
 
 class VillagerIA(Villager):
-    def __init__(self,tile, world, camera, pv=2000, team=2):
+    def __init__(self,tile, world, camera, pv=2000, team="red"):
         super().__init__(tile, world, camera, pv, team)
 
 
@@ -69,8 +69,7 @@ class VillagerIA(Villager):
             self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression), 3)
             self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression), 3)
 
-            if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[
-                1]:  # now - self.move_timer > 1000:  # update position in the world
+            if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]:  # now - self.move_timer > 1000:  # update position in the world
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)

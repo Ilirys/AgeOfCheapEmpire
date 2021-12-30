@@ -10,7 +10,7 @@ from .archer import Archer
 
 class ArcherIA(Archer):
 
-    def __init__(self,tile,world,camera,pv=2000,team=2):
+    def __init__(self,tile,world,camera,pv=2000,team="red"):
         super().__init__(tile,world,camera,pv,team)
 
     # override

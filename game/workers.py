@@ -11,14 +11,13 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera,pv=2000, team=1):
+    def __init__(self,tile,world,camera,pv=2000, team="blue"):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
         self.tile = tile
         self.pv = pv
         self.team = team
-
 
         #Visual and audio effects
         self.name = "Villageois"
@@ -38,8 +37,9 @@ class Worker:
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.pos_x = tile["render_pos"][0]
         self.pos_y = tile["render_pos"][1]
+        self.render_pos_x = self.tile["render_pos"][0]
+        self.render_pos_y = self.tile["render_pos"][1]
         self.temp_tile = None       #Utilisé pour enlever et remettre la collision de la case d'une unite lors du pathfinding de l'attaque
-
 
         #selection
         self.selected = False
@@ -51,9 +51,11 @@ class Worker:
         
         #Attaque
         self.attack = False
+        self.attack_bati = False
         self.dmg = 1
         self.range = 2
         self.temp_tile_a = self.tile
+
 
         #Farm
         self.farm = False
@@ -66,14 +68,15 @@ class Worker:
         self.construire = False #Pour savoir si il doit faire un chemin vers le batiment a construire
         self.batiment_tile = None   #Case où aller construire
         self.batiment_pv = 0
-        
+
         #init
         self.world.resource_manager.apply_cost_to_resource(self.name)
         self.path_index = 0
         self.path = []
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(self.tile["grid"][0], self.tile["grid"][1])
-
+        
     def create_path(self, x, y):
         searching_for_path = True
         self.attack = False
@@ -93,7 +96,7 @@ class Worker:
                     self.attack = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.dest_tile["tile"].ressource.getNbRessources != 0:
+                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0 :
                     # Reinitialise la derniere case de destination et la cible
                     self.cible = None
 
@@ -119,6 +122,11 @@ class Worker:
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                        self.cible =   self.world.batiment[[self.world.world[x][y]["tile"].tile_batiment][0]][[self.world.world[x][y]["tile"].tile_batiment][1]]  #self.world.world[x][y]["tile"].tile_batiment
+                        self.attack_bati = True
+
+
                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
 
                     if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
@@ -134,17 +142,24 @@ class Worker:
 
 
     def change_tile(self,new_tile):
-        #Updates worker and unit matrices
-        self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.workers[new_tile[0]][new_tile[1]] = self
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            #Updates worker and unit matrices
+            self.world.workers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.workers[new_tile[0]][new_tile[1]] = self
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]  #Change tile
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]  #Change tile
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
 
-        #collision matrix (for pathfinding and buildings): Active collision for the current tile 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            #collision matrix (for pathfinding and buildings): Active collision for the current tile 
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y    
 
     def mouse_to_grid(self, x, y, scroll):
         # transform to world position (removing camera scroll and offset)
@@ -211,6 +226,13 @@ class Worker:
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+            elif self.attack_bati:
+                self.movestraight_animation = False
+                #self.attack_ani = True
+                self.cible.pv -= self.dmg
+                if self.cible.pv <= 0:
+                    self.attack = False
+                    self.attack_ani = False
 
 
         if self.hitbox.collidepoint(mouse_pos):
@@ -229,8 +251,8 @@ class Worker:
                 self.progression = round(self.progression,4)
             else:
                 self.progression = 1    
-            self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression),3)
-            self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression),3)
+            self.pos_x = round(lerp(self.render_pos_x, new_real_pos[0], self.progression),3)
+            self.pos_y = round(lerp(self.render_pos_y, new_real_pos[1], self.progression),3)
             
 
             if  self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]: #now - self.move_timer > 1000:  # update position in the world          
@@ -257,12 +279,12 @@ class Worker:
             self.image = self.animation_attack[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
-        else:
+        elif self.pv > 0:
             self.image = self.world.animation.villager_standby
 
     def delete(self):
-        self.temp += 0.2
-        self.image = self.world.animation.animation_mort[int(self.temp)]
+        self.temp += 0.1
+        self.image = self.animation_mort[int(self.temp)]
         if self.temp >= 11:
 
             self.world.entities.remove(self)

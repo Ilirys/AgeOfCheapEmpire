@@ -66,6 +66,8 @@ class World:
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.buildings = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         self.temp_tile = None
         self.examine_tile = None
         self.caserne_tile = None # Used to spawn units on the right tile
@@ -123,13 +125,14 @@ class World:
                 if mouse_action[0] and not collision:
 
                     
-                    if dicoBatiment[self.hud.selected_tile["name"]][1] == 1:
+                    if dicoBatiment[self.hud.selected_tile["name"]][1] == 1: #Pour taille de batiment 1x1
                         ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
                         self.entities.append(ent)
                         ent.current_image = 1   #Petite image ruine pour construction
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
-                        self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0 
+                        self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
+                        self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
@@ -140,7 +143,9 @@ class World:
                         for i in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                             for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
-                                self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0 
+                                self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0
+                                self.world[grid_pos[0] + i][grid_pos[1] + j]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
+
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
             
@@ -216,9 +221,13 @@ class World:
                                 self.hud.display_unit_icons = True
                                 self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
                                 self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
+
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
 
+                    if batiment.pv < 0:
+                        self.delete_batiment(x,y)
+                        self.hud.select_surface_empty = True
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
@@ -402,11 +411,16 @@ class World:
         ent = Batiment(render_pos, "Towncenter", self.resource_manager, dicoBatiment["Towncenter"][2]) # (Towncenter(render_pos, self.resource_manager)
         ent.current_image = 2
         self.entities.append(ent)
+        
 
         self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
         self.spawn_unit_autour_caserne("Villageois",self.storage_tile)    #Spawn villageois initial
 
         self.batiment[a][b] = ent
+        for i in range (2):
+            for j in range (2):
+              self.world[a + i][b + j]["tile"].tile_batiment = self.world[a][b]
+
         for i in range (3):
             for j in range (3):
                 self.world[a+j][b+i]["collision"] = False
@@ -470,7 +484,7 @@ class World:
             for villager in villager_x:
                 if (villager != None and villager.selected):
                     villager.batiment_pv = dicoBatiment[self.hud.selected_tile["name"]][2]
-                    villager.batiment_tile = self.world[grid_pos[0]][grid_pos[1]]  #Case ou se trouve le batiment
+                    villager.batiment_tile = self.world[grid_pos[0]][grid_pos[1]]   #Case ou se trouve le batiment
                     villager.create_path(villager.batiment_tile["grid"][0], villager.batiment_tile["grid"][1] , True)
                     villager.construire = True
                     break    
@@ -617,8 +631,8 @@ class World:
                 self.collision_matrix = restore_world_dto.collision_matrix
                 self.storage_tile = restore_world_dto.storage_tile
                 input.close()
-        except: 
-            print("Created map save file")
+        except Exception as e: print("An error occured while loading Map save:", e)
+
 
         #Buildings restore
         try:    
@@ -627,8 +641,8 @@ class World:
                 self.batimentDTO = restore_building_dto
                 input.close()
 
-        except: 
-            print("Created building save file")  
+        except Exception as e: print("An error occured while loading Buildings save:", e)
+
 
         for x in range(self.grid_length_x):
             for y in range(self.grid_length_y):
@@ -650,7 +664,7 @@ class World:
                 worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile)
                 pickle.dump(worker_dto,output)
                 output.close()
-        except: print("Couldnt dump map save in file")
+        except Exception as e: print("Couldnt dump map save in file", e)
 
         #Buildings save 
         for x in range(self.grid_length_x):
@@ -677,3 +691,13 @@ class World:
 
 
 
+    def delete_batiment(self,x,y):
+
+
+        self.collision_matrix[y][x] = 1  # Free the last tile from collision
+        self.world[x][y]["collision"] = False
+
+        self.batiment[x][y] = None
+
+        self.selected = False
+        self.temp = 0

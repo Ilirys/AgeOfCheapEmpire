@@ -9,7 +9,7 @@ from game.deplacement import lerp
 from .horseman import Horseman
 
 class HorsemanIA(Horseman):
-    def __init__(self,tile,world,camera,pv=2000,team=2):
+    def __init__(self,tile,world,camera,pv=2000,team="red"):
         super().__init__(tile,world,camera,pv,team)
 
     # override

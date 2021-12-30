@@ -11,7 +11,7 @@ from .workers import Worker
 
 class Archer(Worker):
 
-    def __init__(self, tile, world, camera, pv=2000, team=1):
+    def __init__(self, tile, world, camera, pv=2000, team="blue"):
         super().__init__(tile, world, camera, pv,team)
 
         # Visual and audio effects
@@ -25,6 +25,7 @@ class Archer(Worker):
         self.animation_attack_right = self.world.animation.archer_attack_right
         self.animation_attack_uright = self.world.animation.archer_attack_uright
         self.animation_attack_rdown = self.world.animation.archer_attack_rdown
+        self.animation_mort = self.world.animation.archer_mort
         self.image = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
 
         # pathfinding
@@ -56,7 +57,7 @@ class Archer(Worker):
                 self.progression = 0
                 self.attack = False
                 searching_for_path = False
-            elif (self.world.unites[x][y] != None):  # Si la case contient une unitées, pathfinding attaque
+            elif (self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0):  # Si la case contient une unitées, pathfinding attaque
                 # On enleve la collision de la case du soldat (Or else can't get find_path to work)
 
                 self.temp_tile = self.world.world[x][y]
@@ -71,19 +72,30 @@ class Archer(Worker):
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                 # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
-
-                self.cible = self.world.unites[x][y]
-                if self.dest_tile != self.tile:
-                    for i in range(2):
-                        if self.path:
-                            self.path.pop()
+                if self.world.unites[x][y] != None:
+                    self.cible = self.world.unites[x][y]
+                    if self.dest_tile != self.tile:
+                        for i in range(2):
                             if self.path:
-                                self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
-                self.temp_tile_a = self.cible.tile
-                self.attack = True
+                                self.path.pop()
+                                if self.path:
+                                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                    self.temp_tile_a = self.cible.tile
+                    self.attack = True
+
+                elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                    self.cible = self.world.batiment[[self.world.world[x][y]["tile"].tile_batiment][0]][[self.world.world[x][y]["tile"].tile_batiment][1]]  #self.world.world[x][y]["tile"].tile_batiment
+
+                    if self.dest_tile != self.tile:
+                        for i in range(2):
+                            if self.path:
+                                self.path.pop()
+                                if self.path:
+                                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                    self.temp_tile_a = self.cible.tile
+                    self.attack_bati = True
                 self.progression = 0
                 searching_for_path = False
-
                 if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
                         self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
@@ -94,15 +106,22 @@ class Archer(Worker):
 
     # Override
     def change_tile(self, new_tile):
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[new_tile[0]][new_tile[1]] = self
-        self.world.archer[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.archer[new_tile[0]][new_tile[1]] = self
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
+            self.world.archer[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.archer[new_tile[0]][new_tile[1]] = self
 
-        self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y    
 
     # #Override
     def update_sprite(self):
@@ -131,16 +150,21 @@ class Archer(Worker):
                 self.image = self.animation_attack_rdown[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
-        else:
+        elif self.pv > 0:
             self.image = self.world.animation.archer_standby
         # Override
 
     def delete(self):
-        self.world.entities.remove(self)
+        self.temp += 0.1
+        self.image = self.animation_mort[int(self.temp)]
+        if self.temp >= 9:
 
-        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
-        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+            self.world.entities.remove(self)
 
-        self.world.archer[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-        self.selected = False
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+            self.world.archer[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.selected = False
+            self.temp = 0
