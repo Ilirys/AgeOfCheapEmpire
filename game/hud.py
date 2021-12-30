@@ -193,6 +193,7 @@ class Hud:
         hudVillagois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         barrack = pygame.image.load("assets/barrack.png").convert_alpha()
         storage = pygame.image.load("assets/Stable128-64.png").convert_alpha()
+        farm = pygame.image.load("assets/stable_tool.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
@@ -200,7 +201,8 @@ class Hud:
             "Towncenter": towncenter,
             "House": house,
             "Barrack": barrack,
-            "Storage" : storage
+            "Storage" : storage,
+            "Farm" : farm
         }
         return images
 
@@ -212,6 +214,7 @@ class Hud:
         hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         barrack = pygame.image.load("assets/barrack.png").convert_alpha()
         storage = pygame.image.load("assets/Stable128-64.png").convert_alpha()
+        farm = pygame.image.load("assets/stable_tool.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
@@ -219,7 +222,8 @@ class Hud:
             "Towncenter": towncenter,
             "House": house,
             "Barrack": barrack,
-            "Storage" : storage
+            "Storage" : storage,
+            "Farm" : farm
         }
         return images
 

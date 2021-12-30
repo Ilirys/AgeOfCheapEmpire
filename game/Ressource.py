@@ -3,7 +3,9 @@ from .definitions import *
 import pickle
 class Ressource:
 
-    def __init__(self, *args):
+    def __init__(self, *args, team="blue"):
+
+        self.team=team
         if(len(args)==0):
             self.nbRessources = 0
             self.typeRessource = ""
@@ -25,6 +27,7 @@ class Ressource:
             "House": {"wood": 25},
             "Barrack": {"wood": 175},
             "Storage": {"wood": 100},
+            "Farm": {"wood": 200},
             "Villageois": {"food": 17},
             "Soldier": {"food": 17},
             "horseman": {"food": 17},

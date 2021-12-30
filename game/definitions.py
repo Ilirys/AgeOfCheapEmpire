@@ -30,7 +30,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable128-64.png", 1, 600], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable41.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], None : ["", 1] }
 
 
 #Colors
@@ -48,4 +48,4 @@ Blue=(0,128,255)
 
 def init():
     global afficher_minimap
-    afficher_minimap = "non"
+    afficher_minimap = "oui"
