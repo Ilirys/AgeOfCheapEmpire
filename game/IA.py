@@ -28,8 +28,9 @@ class IA:
             for villager_x in self.world.villager:
                 for villager in villager_x:
                     for w in self.warriors:
-                        if villager.team != w.team:
-                            w.create_path(villager.tile["grid"][0],villager.tile["grid"][1])
-                            self.attacking = True          # pour attaquer unités une par une sans appeller create path en boucle
-                            if self.world.villager[x][y].pv < 0 or w.dest_tile == w.tile:
-                                self.attacking = False
+                        if villager is not None and w is not None:
+                            if villager.team != w.team:
+                                w.create_path(villager.tile["grid"][0],villager.tile["grid"][1])
+                                self.attacking = True          # pour attaquer unités une par une sans appeller create path en boucle
+                                if villager.pv < 0 or w.dest_tile == w.tile:
+                                    self.attacking = False

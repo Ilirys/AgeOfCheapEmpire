@@ -123,22 +123,23 @@ class SoldierIA(Soldier):
                 self.temp = 0
         elif self.attack_ani == True and self.attack == True:
             self.temp += 0.2
-            if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
-                self.image = self.animation_attack_up[int(self.temp)]
-            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
-                self.image = self.animation_attack[int(self.temp)]
-            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
-                self.image = self.animation_attack_ldown[int(self.temp)]
-            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
-                self.image = self.animation_attack_left[int(self.temp)]
-            elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
-                self.image = self.animation_attack_uleft[int(self.temp)]
-            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
-                self.image = self.animation_attack_right[int(self.temp)]
-            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
-                self.image = self.animation_attack_uright[int(self.temp)]
-            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
-                self.image = self.animation_attack_rdown[int(self.temp)]
-            if self.temp + 0.2 >= 10:
+            if self.temp + 0.2 < 10:
+                if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                    self.image = self.animation_attack_up[int(self.temp)]
+                elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                    self.image = self.animation_attack[int(self.temp)]
+                elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                    self.image = self.animation_attack_ldown[int(self.temp)]
+                elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
+                    self.image = self.animation_attack_left[int(self.temp)]
+                elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                    self.image = self.animation_attack_uleft[int(self.temp)]
+                elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                    self.image = self.animation_attack_right[int(self.temp)]
+                elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
+                    self.image = self.animation_attack_uright[int(self.temp)]
+                elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
+                    self.image = self.animation_attack_rdown[int(self.temp)]
+            if self.temp + 0.2 >= 9:
                 self.temp = 0
         else: self.image = self.image_standby

@@ -107,6 +107,9 @@ class Game:
         self.hud.update()
         # self.minimap.update(self.world)
         self.world.update(self.camera)
+
+        self.IA.update()
+
         if BENCHMARK == 1: self.benchmark.update()
 
         self.chat.update()
