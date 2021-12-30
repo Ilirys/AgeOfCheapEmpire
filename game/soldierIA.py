@@ -13,7 +13,7 @@ from .soldier import Soldier
 
 
 class SoldierIA(Soldier):
-    def __init__(self,tile,world,camera, pv=2000,team=2):
+    def __init__(self,tile,world,camera, pv=2000,team="red"):
         super().__init__(tile,world,camera, pv, team)
         self.image_standby = pygame.image.load('assets/soldierIA/Halbadierattack011V2.png').convert_alpha()
         self.attacker = 0

@@ -11,7 +11,7 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera,pv=2000, team=1):
+    def __init__(self,tile,world,camera,pv=2000, team="blue"):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
@@ -55,6 +55,7 @@ class Worker:
         self.dmg = 1
         self.range = 2
         self.temp_tile_a = self.tile
+
 
         #Farm
         self.farm = False

@@ -131,7 +131,8 @@ class World:
                         ent.current_image = 1   #Petite image ruine pour construction
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
-                        self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0 
+                        self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
+                        self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.batiment[grid_pos[0]][grid_pos[1]]
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
