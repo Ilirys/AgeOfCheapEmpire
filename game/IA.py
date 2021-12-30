@@ -21,8 +21,8 @@ class IA:
 
 
     def update(self):
-        #self.attack_villagers()
-        pass
+        self.attack_villagers()
+        #pass
 
     def attack_villagers(self):
         if self.attacking == False:
