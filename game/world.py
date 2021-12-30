@@ -151,7 +151,7 @@ class World:
             
                     
 
-            elif self.hud.selected_unit_icon:  #Si les icones unités sont selectionées, le clic gauche fais spawn autour de la caserne
+        elif self.hud.selected_unit_icon:  #Si les icones unités sont selectionées, le clic gauche fais spawn autour de la caserne
                 now = pygame.time.get_ticks()
                 if mouse_action[0]:
                     if now - self.move_timer > UNITS_SPAWN_TIME:

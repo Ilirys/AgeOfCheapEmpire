@@ -20,7 +20,7 @@ class IA:
 
 
     def update(self):
-        pass
+        self.attack_villagers()
 
 
     def attack_villagers(self):
