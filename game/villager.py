@@ -95,7 +95,8 @@ class Villager(Worker):
                         if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
                             self.transfer_resources()
                     elif self.world.world[x][y]["tile"].tile_batiment != 0:
-                        self.cible = self.world.world[x][y]["tile"].tile_batiment
+                        self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]#self.world.world[x][y]["tile"].tile_batiment
+
                         self.attack_bati = True
 
 
@@ -175,6 +176,8 @@ class Villager(Worker):
         if self.dest_tile == self.tile:
             if self.attack:
                 self.movestraight_animation = False
+                self.cible.attacked = True
+                self.cible.attacker = self
                 #self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:

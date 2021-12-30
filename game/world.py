@@ -132,7 +132,7 @@ class World:
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
-                        self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.batiment[grid_pos[0]][grid_pos[1]]
+                        self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
@@ -144,7 +144,7 @@ class World:
                             for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
                                 self.collision_matrix[grid_pos[1]+j][grid_pos[0]+i] = 0
-                                self.world[grid_pos[0] + i][grid_pos[1] + j]["tile"].tile_batiment = self.batiment[grid_pos[0]][grid_pos[1]]
+                                self.world[grid_pos[0] + i][grid_pos[1] + j]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
 
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
@@ -420,7 +420,7 @@ class World:
         self.batiment[a][b] = ent
         for i in range (2):
             for j in range (2):
-              self.world[a + i][b + j]["tile"].tile_batiment = self.batiment[a][b]
+              self.world[a + i][b + j]["tile"].tile_batiment = self.world[a][b]
 
         for i in range (3):
             for j in range (3):

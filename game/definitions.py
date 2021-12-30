@@ -8,7 +8,7 @@ SAVED_GAME_FOLDER = "data/"
 
 #Speed
 DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "veryfast": 5, "potato_pc": 8}
-CURRENT_SPEED = "normal"
+CURRENT_SPEED = "veryfast"
 
 #Screen
 BENCHMARK = 0

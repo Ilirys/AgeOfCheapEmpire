@@ -84,7 +84,7 @@ class Archer(Worker):
                     self.attack = True
 
                 elif self.world.world[x][y]["tile"].tile_batiment != 0:
-                    self.cible = self.world.world[x][y]["tile"].tile_batiment
+                    self.cible = self.world.batiment[[self.world.world[x][y]["tile"].tile_batiment][0]][[self.world.world[x][y]["tile"].tile_batiment][1]]  #self.world.world[x][y]["tile"].tile_batiment
 
                     if self.dest_tile != self.tile:
                         for i in range(2):

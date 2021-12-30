@@ -38,6 +38,8 @@ class Game:
         self.clock = clock
         self.width, self.height = self.screen.get_size()
 
+
+
         #entities 
         self.entities = []
         
@@ -70,10 +72,13 @@ class Game:
         #Menu
         self.ecran_options = Save(self.screen, self.clock, self)
 
+        # IA
+        self.IA = IA(self.world)
+
         #Unité
         # Worker(self.world.world[1][1], self.world,self.camera)
         # Horseman(self.world.world[0][1], self.world,self.camera)
-        # Soldier(self.world.world[1][0], self.world,self.camera)
+        SoldierIA(self.world.world[1][0], self.world,self.camera, self.IA)
         # Villager(self.world.world[1][0], self.world,self.camera)
         # Archer(self.world.world[2][2], self.world,self.camera)
         

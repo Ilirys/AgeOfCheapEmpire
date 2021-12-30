@@ -13,11 +13,13 @@ from .soldier import Soldier
 
 
 class SoldierIA(Soldier):
-    def __init__(self,tile,world,camera, pv=2000,team="red"):
+    def __init__(self,tile,world,camera, IA,pv=2000,team="red"):
         super().__init__(tile,world,camera, pv, team)
         self.image_standby = pygame.image.load('assets/soldierIA/Halbadierattack011V2.png').convert_alpha()
         self.attacker = 0
         self.attacked = False
+        self.IA = IA
+        self.IA.warriors.append(self)
 
     #override
 
