@@ -37,7 +37,6 @@ class Chat:
         if event.type == pg.KEYDOWN:
             if self.active:
                 if event.key == pg.K_RETURN:
-                    print(self.text)
                     if self.text == "NINJALUI":
                         if self.resource_manager.resources["wood"] + 10000 <= 99999 :
                             self.resource_manager.resources["wood"] += 10000
@@ -54,10 +53,14 @@ class Chat:
                         else :
                             self.resource_manager.resources["food"] = 99999
 
+                        if self.resource_manager.resources["gold"] + 10000 <= 99999 :
+                            self.resource_manager.resources["gold"] += 10000
+                        else :
+                            self.resource_manager.resources["gold"] = 99999
+
                     elif self.text == "BIGDADDY":
-                        print("SPAWN POWERFUL UNITS at town center")
-                        if not(self.world.world[0][0]["collision"]) : 
-                            Bigdaddy(self.world.world[0][0], self.world, self.camera)
+                        self.world.spawn_unit_autour_caserne(self.world.hud.selected_unit_icon["name"], self.world.caserne_tile)
+
                     
                     elif self.text == "STEROIDS":
                         print("training, building, farming are instantaneous for every players")

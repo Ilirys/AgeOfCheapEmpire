@@ -486,7 +486,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
+                Archer(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
         
         elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2]["collision"]:
             if unit_name == "Villageois":
@@ -497,7 +499,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
+                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)
         
         elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ]["collision"]:
             if unit_name == "Villageois":
@@ -508,7 +512,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
+                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)
         
         elif not self.world[tile["grid"][0] -1 ][tile["grid"][1] ]["collision"]:
             if unit_name == "Villageois":
@@ -519,7 +525,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
+                Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)
         
         elif not self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1]["collision"]:
             if unit_name == "Villageois":
@@ -530,7 +538,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
+                Archer(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)
         
         elif not self.world[tile["grid"][0] ][tile["grid"][1] - 1]["collision"]:
             if unit_name == "Villageois":
@@ -541,7 +551,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
+                Archer(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)
         
         elif not self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1]["collision"]:
             if unit_name == "Villageois":
@@ -552,7 +564,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
+                Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)
         
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ]["collision"]:
             if unit_name == "Villageois":
@@ -563,7 +577,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)
         
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] ]["collision"]:
             if unit_name == "Villageois":
@@ -574,7 +590,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)
         
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ]["collision"]:
             if unit_name == "Villageois":
@@ -585,7 +603,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdady(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
         
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ]["collision"]:
             if unit_name == "Villageois":
@@ -596,7 +616,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
+                Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)
         
         elif not self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ]["collision"]:
             if unit_name == "Villageois":
@@ -607,7 +629,9 @@ class World:
             if unit_name == "horseman":
                 Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Archer":
-                Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
+                Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)
+            if unit_name == "Bigdaddy":
+                Bigdaddy(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)
 
     def restore_save(self):
         #Map restore
