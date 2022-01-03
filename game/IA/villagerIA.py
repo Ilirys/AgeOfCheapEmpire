@@ -1,5 +1,6 @@
 import pygame
 import random
+import game.definitions as definitions
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
@@ -10,9 +11,10 @@ from ..villager import Villager
 
 
 class VillagerIA(Villager):
-    def __init__(self,tile, world, camera, pv=2000, team="red"):
+    def __init__(self,tile, world, camera, IA, pv=2000, team="red"):
         super().__init__(tile, world, camera, pv, team)
-
+        self.IA = IA
+        self.IA.villagers.append(self)
 
 
     #override
@@ -62,7 +64,7 @@ class VillagerIA(Villager):
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
             if self.progression < 1:
-                self.progression += (1 / 135) * DISPLACEMENT_SPEED[CURRENT_SPEED]
+                self.progression += (1 / 135) * definitions.DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]
                 self.progression = round(self.progression, 4)
             else:
                 self.progression = 1

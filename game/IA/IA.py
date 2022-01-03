@@ -6,6 +6,8 @@ from .horsemanIA import HorsemanIA
 from.archerIA import ArcherIA
 from .villagerIA import VillagerIA
 from ..world import World
+from ..definitions import IA_DECISION_TIME
+
 
 class IA:
 
@@ -18,13 +20,14 @@ class IA:
         self.villagers = []
         self.attacking = False
 
+        #Events
+        self.take_decision_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
 
-
-    def update(self):
-        # self.attack_villagers()
-        # pygame.time.wait(2000)
-        # print("Test")
-        pass
+    def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
+        if e.type == self.take_decision_event:
+            self.attack_villagers()
+            
 
     def attack_villagers(self):
         if self.attacking == False:

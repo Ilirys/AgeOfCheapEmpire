@@ -93,7 +93,7 @@ class SoldierIA(Soldier):
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
             if self.progression < 1:
-                self.progression += (1 / 135) * DISPLACEMENT_SPEED[CURRENT_SPEED]
+                self.progression += (1 / 135) * definitions.DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]
                 self.progression = round(self.progression, 4)
             else:
                 self.progression = 1
@@ -102,8 +102,7 @@ class SoldierIA(Soldier):
 
             if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[
                 1]:  # now - self.move_timer > 1000:  # update position in the world
-                self.world.collision_matrix[self.tile["grid"][1]][
-                    self.tile["grid"][0]] = 1  # Free the last tile from collision
+                self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
                 self.path_index += 1

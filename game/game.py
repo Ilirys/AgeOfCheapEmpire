@@ -82,9 +82,9 @@ class Game:
         #Unité
         # Worker(self.world.world[1][1], self.world,self.camera)
         # Horseman(self.world.world[0][1], self.world,self.camera)
-        SoldierIA(self.world.world[1][0], self.world,self.camera, self.IA)
+        # SoldierIA(self.world.world[1][0], self.world,self.camera, self.IA)
         # Villager(self.world.world[1][0], self.world,self.camera)
-        # Archer(self.world.world[2][2], self.world,self.camera)
+        ArcherIA(self.world.world[2][2], self.world,self.camera, self.IA)
         
         #Save
         self.restore()
@@ -103,6 +103,7 @@ class Game:
         for event in pygame.event.get(): # Si on clique sur la croix pour quitter, on arrete le jeu
             self.chat.handle_event(event)
             self.ecran_options.ecran_options(event)
+            self.IA.events(event)
 
 
     def update(self):
@@ -110,10 +111,6 @@ class Game:
         for e in self.entities: e.update()
         self.hud.update()
         self.world.update(self.camera)
-
-        self.IA.update()
-
-        if BENCHMARK == 1: self.benchmark.update()
 
         self.chat.update()
 
