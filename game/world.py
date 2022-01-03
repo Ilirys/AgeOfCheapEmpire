@@ -218,6 +218,9 @@ class World:
                                 elif (batiment.name=="House"):
                                     self.hud.display_unit_icons = False 
                                     self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
+                                elif (batiment.name=="Farm"):
+                                    self.hud.display_unit_icons = False 
+                                    self.hud.blit_hud("hudFarm", str(batiment.pv), screen)
                                 elif (batiment.name=="Barrack"):
                                     self.hud.display_unit_icons = True
                                     self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
