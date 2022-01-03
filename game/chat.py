@@ -59,7 +59,7 @@ class Chat:
                             self.resource_manager.resources["gold"] = 99999
 
                     elif self.text == "BIGDADDY":
-                        self.world.spawn_unit_autour_caserne(self.world.hud.selected_unit_icon["name"], self.world.caserne_tile)
+                        self.world.spawn_unit_autour_caserne("Bigdaddy", self.world.caserne_tile)
 
                     
                     elif self.text == "STEROIDS":
