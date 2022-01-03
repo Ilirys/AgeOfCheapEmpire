@@ -20,7 +20,11 @@ class SoldierIA(Soldier):
         self.attacker = 0
         self.attacked = False
         self.IA = IA
+        self.busy = False 
+
+        #Lists
         self.IA.warriors.append(self)
+        self.IA.soldiers[tile["grid"][0]][tile["grid"][1]] = self
 
     #override
 
@@ -143,3 +147,22 @@ class SoldierIA(Soldier):
             if self.temp + 0.2 >= 9:
                 self.temp = 0
         else: self.image = self.image_standby
+
+    #Override
+    def change_tile(self, new_tile):
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:        
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
+            self.IA.soldiers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.IA.soldiers[new_tile[0]][new_tile[1]] = self
+
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
+
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y        

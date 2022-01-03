@@ -17,8 +17,9 @@ class Villager(Worker):
 
         #saves
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
-        self.world.villager[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
+        if self.team == "blue":
+            self.world.villager[tile["grid"][0]][tile["grid"][1]] = self
 
         # Farm
         self.farm = False

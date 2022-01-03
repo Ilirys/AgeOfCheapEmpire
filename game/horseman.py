@@ -31,8 +31,9 @@ class Horseman(Worker):
         self.dmg = 5
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
-        self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
+        if self.team == "blue":
+            self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
 
         # selection
         self.hitbox = pygame.Rect(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
