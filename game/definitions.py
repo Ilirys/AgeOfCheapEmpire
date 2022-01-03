@@ -3,12 +3,11 @@ import pygame
 #Time-based settings
 UNITS_SPAWN_TIME = 10
 
-#Saves
-SAVED_GAME_FOLDER = "data/"
+
 
 #Speed
 DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "veryfast": 5, "potato_pc": 8}
-CURRENT_SPEED = "veryfast"
+
 
 #Screen
 BENCHMARK = 0
@@ -48,4 +47,14 @@ Blue=(0,128,255)
 
 def init():
     global afficher_minimap
-    afficher_minimap = "oui"
+    afficher_minimap = "non"
+    global case_coche
+    case_coche = 1
+
+    # Saves
+    global SAVED_GAME_FOLDER
+    SAVED_GAME_FOLDER = "rien/"
+
+    #SPEED
+    global CURRENT_SPEED
+    CURRENT_SPEED = "veryfast"
