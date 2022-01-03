@@ -53,7 +53,7 @@ def init():
 
     # Saves
     global SAVED_GAME_FOLDER
-    SAVED_GAME_FOLDER = "rien/"
+    SAVED_GAME_FOLDER = "data/"
 
     #SPEED
     global CURRENT_SPEED
