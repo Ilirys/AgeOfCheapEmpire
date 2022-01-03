@@ -6,10 +6,9 @@ from pathfinding.finder.a_star import AStarFinder
 from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE
 from math import *
 from game.deplacement import lerp
-from .archer import Archer
+from ..horseman import Horseman
 
-class ArcherIA(Archer):
-
+class HorsemanIA(Horseman):
     def __init__(self,tile,world,camera,pv=2000,team="red"):
         super().__init__(tile,world,camera,pv,team)
 
@@ -66,4 +65,3 @@ class ArcherIA(Archer):
 
         else:
             self.movestraight_animation = False
-

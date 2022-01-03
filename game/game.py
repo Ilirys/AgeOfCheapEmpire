@@ -8,6 +8,7 @@ from DTO.villagerDTO import villagerDTO
 from DTO.workerDTO import workerDTO
 from DTO.soldierDTO import soldierDTO
 from DTO.horsemanDTO import horsemanDTO
+from game.IA.horsemanIA import HorsemanIA
 from .definitions import *
 from .world import World
 from .utils import draw_text
@@ -25,11 +26,14 @@ from .soldier import Soldier
 from .horseman import Horseman
 from.archer import Archer
 from .ecranSave import Save
-from .IA import IA
-from .soldierIA import SoldierIA
-from .archerIA import ArcherIA
-from .villagerIA import VillagerIA
-from .horsemanIA import HorsemanIA
+from game.IA.IA import IA
+from game.IA.soldierIA import SoldierIA
+from game.IA.villagerIA import VillagerIA
+from game.IA.archerIA import ArcherIA
+from game.IA.horsemanIA import HorsemanIA
+# from .archerIA import ArcherIA
+# from .villagerIA import VillagerIA
+# from .horsemanIA import HorsemanIA
 
 class Game:
 

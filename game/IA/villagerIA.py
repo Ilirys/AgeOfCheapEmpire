@@ -6,7 +6,7 @@ from pathfinding.finder.a_star import AStarFinder
 from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, TILE_SIZE
 from math import *
 from game.deplacement import lerp
-from .villager import Villager
+from ..villager import Villager
 
 
 class VillagerIA(Villager):

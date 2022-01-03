@@ -9,7 +9,7 @@ from game.definitions import CURRENT_SPEED, DISPLACEMENT_SPEED, SAVED_GAME_FOLDE
 from game.deplacement import lerp
 import pickle
 import DTO.soldierDTO
-from .soldier import Soldier
+from ..soldier import Soldier
 
 
 class SoldierIA(Soldier):

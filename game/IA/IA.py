@@ -1,11 +1,11 @@
 from pygame import *
-from .Ressource import Ressource
+import pygame
+from ..Ressource import *
 from .soldierIA import SoldierIA
 from .horsemanIA import HorsemanIA
 from.archerIA import ArcherIA
 from .villagerIA import VillagerIA
-from .world import World
-
+from ..world import World
 
 class IA:
 
@@ -21,8 +21,10 @@ class IA:
 
 
     def update(self):
-        self.attack_villagers()
-        #pass
+        # self.attack_villagers()
+        # pygame.time.wait(2000)
+        # print("Test")
+        pass
 
     def attack_villagers(self):
         if self.attacking == False:
