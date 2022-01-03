@@ -109,7 +109,6 @@ class Game:
         self.camera.update()
         for e in self.entities: e.update()
         self.hud.update()
-        # self.minimap.update(self.world)
         self.world.update(self.camera)
 
         self.IA.update()

@@ -84,89 +84,6 @@ class World:
         self.archer_save_file_path = definitions.SAVED_GAME_FOLDER + "archer"
 
         #init
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
 
@@ -790,7 +707,7 @@ class World:
                         entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image   )
                     if ent.name == "Storage":
                         entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image   )
-                    if ent.name == "farm":
+                    if ent.name == "Farm":
                         entDTO = FarmDTO(ent.pos, ent.pv, ent.current_image   )
                     self.batimentDTO[x][y] = entDTO
 

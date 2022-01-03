@@ -22,12 +22,19 @@ class Batiment:
         self.resource_manager.apply_cost_to_resource(self.name)
 
     def update(self):
+        '''
+        if self.name == "Farm":
+            now = pygame.time.get_ticks()
+            if now - self.resource_cooldown > 2000:
+                self.resource_manager["food"] += 1
+                self.resource_cooldown = now
+        else:
+            pass
+        '''
         pass
 
 class Towncenter ( Batiment ):
  
-    #Batiment.__init__(self, pos, "Towncenter", 2, resource_manager)
-
     def update(self): 
         pass
 
@@ -61,11 +68,7 @@ class Storage ( Batiment ):
 class Farm ( Batiment ):
  
     def update(self): 
-        now = pygame.time.get_ticks()
-        print("lezgo")
-        if now - self.resource_cooldown > 2000:
-            self.resource_manager["food"] += 1
-            self.resource_cooldown = now
+        pass
 
     def save(self):
         pass 
