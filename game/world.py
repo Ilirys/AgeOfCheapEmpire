@@ -7,6 +7,7 @@ from game.soldier import Soldier
 from game.workers import Worker
 from game.villager import Villager
 from game.archer import Archer
+from game.BIGDADDY import Bigdaddy
 from .utils import *
 from DTO.worldDTO import WorldDTO
 from game.Ressource import Ressource
@@ -605,7 +606,7 @@ class World:
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
             if unit_name == "Bigdaddy":
-                Bigdady(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
+                Bigdaddy(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
         
         elif not self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ]["collision"]:
             if unit_name == "Villageois":
