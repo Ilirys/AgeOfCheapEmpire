@@ -21,7 +21,7 @@ class IA:
 
 
     def update(self):
-        self.attack_villagers()
+        self.attack_player_warriors()
         pass
 
     def attack_villagers(self):
@@ -39,16 +39,15 @@ class IA:
 
     def attack_player_warriors(self):
         if self.attacking == False:
-            for unit_x in self.world.units:
+            for unit_x in self.world.unites_combat:
                 for unit in unit_x:
-                    if unit not in self.world.villager:
-                        for w in self.warriors:
-                            if unit is not None and w is not None:
-                                if unit.team != w.team:
-                                    w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
-                                    self.attacking = True  # pour attaquer unités une par une sans appeller create path en boucle
-                                    if unit.pv < 0 or w.dest_tile == w.tile:
-                                        self.attacking = False
+                    for w in self.warriors:
+                        if unit is not None and w is not None:
+                            if unit.team != w.team:
+                                w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
+                                self.attacking = True  # pour attaquer unités une par une sans appeller create path en boucle
+                                if unit.pv < 0 or w.dest_tile == w.tile:
+                                    self.attacking = False
 
     def attack_town_center(self):
         for w in self.warriors:

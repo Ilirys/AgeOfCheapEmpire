@@ -62,6 +62,9 @@ class World:
         self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.unites_combat = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.batimentDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]

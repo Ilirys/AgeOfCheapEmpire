@@ -31,6 +31,7 @@ class Soldier(Worker):
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.world.soldier[tile["grid"][0]][tile["grid"][1]] = self
+        self.world.unites_combat[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
 
         # selection
