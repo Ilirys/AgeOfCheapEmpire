@@ -37,7 +37,7 @@ class VillagerIA(Villager):
 
         if self.dest_tile == self.tile:
             if self.attack:
-                self.movestraight_animation = False
+                self.walkdown_animation = False
                 # self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
@@ -57,7 +57,7 @@ class VillagerIA(Villager):
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -77,4 +77,4 @@ class VillagerIA(Villager):
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False

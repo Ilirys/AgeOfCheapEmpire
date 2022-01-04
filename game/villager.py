@@ -175,7 +175,7 @@ class Villager(Worker):
 
         if self.dest_tile == self.tile:
             if self.attack:
-                self.movestraight_animation = False
+                self.walkdown_animation = False
                 self.cible.attacked = True
                 self.cible.attacker = self
                 #self.attack_ani = True
@@ -189,7 +189,7 @@ class Villager(Worker):
                     self.attack = False
                     self.attack_ani = False
             elif self.attack_bati:
-                self.movestraight_animation = False
+                self.walkdown_animation = False
                 #self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
@@ -208,7 +208,7 @@ class Villager(Worker):
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -228,11 +228,11 @@ class Villager(Worker):
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
 
     #override
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
