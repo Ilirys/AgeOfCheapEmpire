@@ -31,9 +31,15 @@ class IA:
         self.attacking = False
 
         #Build
-        self.switch_iterator = cycle([-1,1])
+        self.switch_iterator = cycle([1,1,-1,-1])
+        self.switch_iterator_2 = cycle([-1,1])
+        self.odd_even = cycle([4,5])
+        self.a = 4
+        self.next_val = next(self.switch_iterator)
+        self.next_val_2 = -1
         self.build_position_x = self.towncenter["grid"][0]
         self.build_position_y = self.towncenter["grid"][1]
+        self.count = 0
         self.count_x = 0
         self.count_y = 0
 
@@ -44,7 +50,7 @@ class IA:
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
             # self.attack_villagers()
-            self.find_and_place_building("House")
+            self.find_and_place_building("Barrack")
             
 
     def attack_villagers(self):
@@ -60,22 +66,32 @@ class IA:
                                     self.attacking = False
 
     def find_and_place_building(self, name_of_building):  #Cherche ou poser autour du Towncenter, le batiment en parametre
-        next_val = next(self.switch_iterator)
-        print(self.count_x, self.count_y, next_val)
         
-        if  (self.build_position_x + self.count_x * next_val) in range(self.world.grid_length_x) and  (self.build_position_y + self.count_y * next_val) in range(self.world.grid_length_y)  and  not self.world.world[self.build_position_x + self.count_x * next_val ][self.build_position_y + self.count_y * next_val]["collision"]:
-            self.build_position_x += self.count_x * next_val 
-            self.build_position_y += self.count_y * next_val 
+        if self.count == self.a:
+            self.count_x += 1
+            self.count = 0
+            self.a = next(self.odd_even)
+
+        if  (self.build_position_x + self.count_x * self.next_val) in range(self.world.grid_length_x) and  (self.build_position_y + self.count_y * self.next_val * self.next_val_2) in range(self.world.grid_length_y)  and  not self.world.world[self.build_position_x + self.count_x * self.next_val ][self.build_position_y + self.count_y * self.next_val * self.next_val_2]["collision"]:
+            
+            build_save = [self.build_position_x, self.build_position_y]
+            self.build_position_x += self.count_x * self.next_val 
+            self.build_position_y += self.count_y * self.next_val * self.next_val_2 
             self.build(name_of_building)
-        elif self.count_x < self.count_y:
-            self.count_x += 1   
-        elif self.count_y < self.count_x:
-            self.count_y += 1
-        else:
-            self.count_x += 1     
+            self.build_position_x, self.build_position_y = build_save[0], build_save[1]
+
+        print(self.count_x, self.count_y, self.next_val)
+        self.count_x, self.count_y = self.count_y, self.count_x  #Switch
+        self.next_val = next(self.switch_iterator)
+        self.next_val_2 = next(self.switch_iterator_2)
+
+        self.count += 1   
 
 
     def build(self, name_of_building):  #Placer le batiment
+        collision2 = self.world.world[self.build_position_x + 1][self.build_position_y]["collision"]
+        collision3 = self.world.world[self.build_position_x + 1][self.build_position_y + 1]["collision"]
+        collision4 = self.world.world[self.build_position_x ][self.build_position_y - 1]["collision"]
 
         if dicoBatiment[name_of_building][1] == 1: #Pour taille de batiment 1x1
             ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager)
@@ -85,6 +101,19 @@ class IA:
             self.world.world[self.build_position_x][self.build_position_y]["collision"] = True
             self.world.collision_matrix[self.build_position_y][self.build_position_x] = 0
             self.world.world[self.build_position_x][self.build_position_y]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
+            self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y)
+            print(name_of_building, " has been built successfuly")
+
+        elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
+            ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager)
+            self.world.entities.append(ent)
+            self.world.batiment[self.build_position_x][self.build_position_y] = ent
+            for i in range (dicoBatiment[name_of_building][1]):
+                for j in range (dicoBatiment[name_of_building][1]):
+                    self.world.world[self.build_position_x+i][self.build_position_y+j]["collision"] = True
+                    self.world.collision_matrix[self.build_position_y+j][self.build_position_x+i] = 0
+                    self.world.world[self.build_position_x + i][self.build_position_y + j]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
+
             self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y)
             print(name_of_building, " has been built successfuly")
             
