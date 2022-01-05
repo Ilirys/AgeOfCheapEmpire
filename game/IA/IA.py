@@ -13,13 +13,15 @@ from ..definitions import IA_DECISION_TIME
 
 class IA:
 
-    def __init__(self,world, ressource_manager, camera, team="red"):
+    def __init__(self,world, ressource_manager, camera, team="red", strategy="defensive"):
         self.team = team
         self.world = world
         self.camera = camera
         self.towncenter = self.world.towncenterIA_tile
         self.player_towncenter = self.world.towncenter_tile
         self.ressource_manager = ressource_manager
+        self.strategy=strategy
+        self.evolution = 0
 
         #Units
         self.warriors = []
@@ -51,9 +53,22 @@ class IA:
         pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
+
         if e.type == self.take_decision_event:
+            print(self.evolution, self.strategy)
+            if self.strategy == "defensive":  
+                match self.evolution:
+                    case 0:
+                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
+                            self.find_and_place_building("Farm", 1)
+                            self.evolution = 1
+                    case 1:
+                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]:
+                            self.find_and_place_building("Barrack", 1)
+                            self.evolution = 2
+            self.ressource_manager.resources["wood"]+=20
+            print(self.ressource_manager.resources["wood"])
             # self.attack_villagers()
-            self.find_and_place_building("House", 3)
             
 
     def attack_villagers(self):
