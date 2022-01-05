@@ -46,9 +46,9 @@ class IA:
                                 if w.attack == False: # pour attaquer unités une par une sans appeller create path en boucle
                                     if w.cible == 0:
                                         w.create_path(unit.tile["grid"][0], unit.tile["grid"][1]) # attaquer la premiere unités sachant que
-                                    elif w.cible.isDead and self.world.unites_combat:
+                                    elif w.cible.isDead and unit.tile != w.tile and unit.team != w.team:
                                         w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
-                                        #print(1)
+                                        print(1)
 
 
     def attack_town_center(self):
