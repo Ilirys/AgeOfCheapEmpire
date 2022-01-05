@@ -53,7 +53,7 @@ class IA:
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
             # self.attack_villagers()
-            self.find_and_place_building("Barrack", 3)
+            self.find_and_place_building("House", 3)
             
 
     def attack_villagers(self):
@@ -101,7 +101,7 @@ class IA:
                 self.world.world[self.build_position_x][self.build_position_y]["collision"] = True
                 self.world.collision_matrix[self.build_position_y][self.build_position_x] = 0
                 self.world.world[self.build_position_x][self.build_position_y]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
-                self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y)
+                self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y, name_of_building)
                 
                 self.number_of_buildings += 1
                 print(name_of_building, " has been built successfuly")
