@@ -12,8 +12,8 @@ class IA:
     def __init__(self,world,team="red"):
         self.team = team
         self.world = world
-        self.towncenter = None
-        self.player_towncenter = None
+        self.towncenter = self.world.world[self.world.a2][self.world.b2]
+        self.player_towncenter = self.world.world[self.world.a][self.world.b]
         self.warriors = []
         self.villagers = []
         self.attacking = False
@@ -54,11 +54,12 @@ class IA:
     def attack_town_center(self):
         for w in self.warriors:
             if self.player_towncenter is not None and w is not None:
-                if self.player_towncenter.team != w.team:
-                    w.create_path(self.player_towncenter.tile["grid"][0], self.player_towncenter.tile["grid"][1])
-                    self.attacking = True  # pour attaquer unités une par une sans appeller create path en boucle
-                    if self.player_towncenter.pv < 0 or w.dest_tile == w.tile:
-                        self.attacking = False
+                if self.player_towncenter.pv > 0:
+                    if self.world.batiment[self.world.a][self.world.b].team != w.team and w.attack == False:
+                        w.create_path(self.player_towncenter["grid"][0], self.player_towncenter["grid"][1])
+
+
+
         pass
 
     def defend_town_center(self):
