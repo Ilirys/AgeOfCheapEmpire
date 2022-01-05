@@ -90,10 +90,6 @@ class IA:
 
     def build(self, name_of_building):  #Placer le batiment
         if self.build_position_x != self.towncenter["grid"][0] and self.build_position_y != self.towncenter["grid"][1]:    
-            if self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y):
-                collision2 = self.world.world[self.build_position_x + 1][self.build_position_y]["collision"]
-                collision3 = self.world.world[self.build_position_x + 1][self.build_position_y + 1]["collision"]
-                collision4 = self.world.world[self.build_position_x ][self.build_position_y - 1]["collision"]
             
             if dicoBatiment[name_of_building][1] == 1: #Pour taille de batiment 1x1
                 ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager)
@@ -106,18 +102,22 @@ class IA:
                 self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y)
                 print(name_of_building, " has been built successfuly")
 
-            elif (self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y) and (not collision2) and (not collision3) and (not collision4) ):  # les 3 autres cases sont dispos
-                ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager)
-                self.world.entities.append(ent)
-                self.world.batiment[self.build_position_x][self.build_position_y] = ent
-                for i in range (dicoBatiment[name_of_building][1]):
-                    for j in range (dicoBatiment[name_of_building][1]):
-                        self.world.world[self.build_position_x+i][self.build_position_y+j]["collision"] = True
-                        self.world.collision_matrix[self.build_position_y+j][self.build_position_x+i] = 0
-                        self.world.world[self.build_position_x + i][self.build_position_y + j]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
+            elif self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y):
+                collision2 = self.world.world[self.build_position_x + 1][self.build_position_y]["collision"]
+                collision3 = self.world.world[self.build_position_x + 1][self.build_position_y + 1]["collision"]
+                collision4 = self.world.world[self.build_position_x ][self.build_position_y + 1]["collision"]
+                if (self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y) and (not collision2) and (not collision3) and (not collision4) ):  # les 3 autres cases sont dispos
+                    ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager)
+                    self.world.entities.append(ent)
+                    self.world.batiment[self.build_position_x][self.build_position_y] = ent
+                    for i in range (dicoBatiment[name_of_building][1]):
+                        for j in range (dicoBatiment[name_of_building][1]):
+                            self.world.world[self.build_position_x+i][self.build_position_y+j]["collision"] = True
+                            self.world.collision_matrix[self.build_position_y+j][self.build_position_x+i] = 0
+                            self.world.world[self.build_position_x + i][self.build_position_y + j]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
 
-                self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y)
-                print(name_of_building, " has been built successfuly")
+                    self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y)
+                    print(name_of_building, " has been built successfuly")
     def ordre_de_construction_villageois(self, grid_pos_x, grid_pos_y): #Ordonner a un villageois de construire
        for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
            for villager in villager_x:
