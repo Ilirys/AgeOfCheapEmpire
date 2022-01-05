@@ -255,10 +255,10 @@ class Villager(Worker):
 
     #override
     def delete(self):
-        if self.temp + 0.1 < 11 :  
+        if self.temp + 0.1 < 11 :
             self.temp += 0.1
         self.image = self.animation_mort[int(self.temp)]
-        if self.temp >= 11:
+        if self.temp >= 10.9:
 
             self.world.entities.remove(self)
 
