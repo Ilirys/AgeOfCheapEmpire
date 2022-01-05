@@ -39,17 +39,19 @@ class IA:
 
 
     def attack_player_warriors(self):
-        if self.attacking == False:
+        if self.world.unites_combat :
             for unit_x in self.world.unites_combat:
                 for unit in unit_x:
                     for w in self.warriors:
                         if unit is not None and w is not None:
                             if unit.team != w.team:
-                                if self.attacking == False:
-                                    w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
-                                self.attacking = True  # pour attaquer unités une par une sans appeller create path en boucle
-                                if unit.pv < 0 or w.dest_tile == w.tile:
-                                    self.attacking = False
+                                if w.attack == False: # pour attaquer unités une par une sans appeller create path en boucle
+                                    if w.cible == 0:
+                                        w.create_path(unit.tile["grid"][0], unit.tile["grid"][1]) # attaquer la premiere unités sachant que
+                                    elif w.cible.isDead and unit is not w:
+                                        w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
+                                        print(1)
+
 
     def attack_town_center(self):
         for w in self.warriors:

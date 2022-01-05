@@ -255,7 +255,9 @@ class World:
                         unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
                             
                     if unites.pv <= 0:
+                        unites.isDead = True
                         unites.delete()
+
                         self.hud.select_surface_empty = True
                 # minimap hud
                 if definitions.afficher_minimap == "oui":

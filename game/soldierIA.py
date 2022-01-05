@@ -20,7 +20,7 @@ class SoldierIA(Soldier):
         self.attacked = False
         self.IA = IA
         self.IA.warriors.append(self)
-
+        self.world.unites_combat[self.tile["grid"][0]][self.tile["grid"][1]] = None
     #override
 
     def update(self):

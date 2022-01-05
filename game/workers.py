@@ -46,7 +46,7 @@ class Worker:
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
-        self.cible = self
+        self.cible = 0
         self.dest_tile = self.tile
         
         #Attaque
@@ -55,7 +55,7 @@ class Worker:
         self.dmg = 1
         self.range = 2
         self.temp_tile_a = self.tile
-
+        self.isDead = False
 
         #Farm
         self.farm = False
@@ -226,6 +226,7 @@ class Worker:
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+                    self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
                 #self.attack_ani = True

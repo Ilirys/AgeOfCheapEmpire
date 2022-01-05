@@ -93,9 +93,9 @@ class Soldier(Worker):
 
     #Override
     def delete(self):
-        self.temp += 0.1
-        self.image = self.animation_mort[int(self.temp)]
-        if self.temp >= 9:
+        #self.temp += 0.1
+        #self.image = self.animation_mort[int(self.temp)]
+        #if self.temp >= 9:
 
             self.world.entities.remove(self)
 
