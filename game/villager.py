@@ -17,8 +17,9 @@ class Villager(Worker):
 
         #saves
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
-        self.world.villager[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
+        if self.team == "blue":
+            self.world.villager[tile["grid"][0]][tile["grid"][1]] = self
 
         # Farm
         self.farm = False
@@ -326,6 +327,7 @@ class Villager(Worker):
             self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
             self.nb_ressource_Transp = 0
             self.ressource_Transp = "" 
+            self.busy = False
 
     def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
         
@@ -333,5 +335,6 @@ class Villager(Worker):
            self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1 
         else:
             self.construire = False
+            self.busy = False
             self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].current_image = 2  
 

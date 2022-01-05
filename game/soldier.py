@@ -30,8 +30,11 @@ class Soldier(Worker):
         self.dmg = 5
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
-        self.world.soldier[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
+        if self.team == "blue":
+            self.world.soldier[tile["grid"][0]][tile["grid"][1]] = self
+        else:
+            self.world.soldier[tile["grid"][0]][tile["grid"][1]] = None    
 
         # selection
         self.hitbox = pygame.Rect(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,

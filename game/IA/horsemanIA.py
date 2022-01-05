@@ -13,6 +13,7 @@ class HorsemanIA(Horseman):
     def __init__(self,tile,world,camera, IA, pv=2000,team="red"):
         super().__init__(tile,world,camera,pv,team)
         self.IA = IA
+        self.busy = False 
         self.IA.warriors.append(self)
 
     # override
@@ -68,3 +69,24 @@ class HorsemanIA(Horseman):
 
         else:
             self.movestraight_animation = False
+
+    #override
+    def change_tile(self, new_tile):
+        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
+            self.IA.horsemen[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.IA.horsemen[new_tile[0]][new_tile[1]] = self
+            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.unites[new_tile[0]][new_tile[1]] = self
+
+            self.tile = self.world.world[new_tile[0]][new_tile[1]]
+            self.render_pos_x = self.tile["render_pos"][0]
+            self.render_pos_y = self.tile["render_pos"][1]
+
+            # collision matrix (for pathfinding and buildings)
+            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        else: 
+            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            self.render_pos_x = self.pos_x
+            self.render_pos_y = self.pos_y
+        

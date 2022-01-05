@@ -436,8 +436,11 @@ class World:
 
         self.towncenter_posx=a
         self.towncenter_posy=b
+        self.towncenter_tile = self.world[a][b]
+
         self.towncenter_IA_posx=a2
         self.towncenter_IA_posy=b2
+        self.towncenterIA_tile = self.world[a2][b2]
 
         self.batiment[a][b] = ent
         self.batiment[a2][b2] = ent2
