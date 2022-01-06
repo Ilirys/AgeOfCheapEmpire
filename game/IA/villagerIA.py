@@ -18,6 +18,9 @@ class VillagerIA(Villager):
         self.busy = False 
         # self.IA.farmers.append(self)
 
+        #Farm
+        self.storage_tile = self.IA.towncenter
+
 
     #Override
     def update(self):
@@ -56,7 +59,17 @@ class VillagerIA(Villager):
                 self.farmer_cases_autour()
 
             elif self.construire:
-                self.construire_batiment(self.batiment_tile, self.batiment_pv)     
+                self.construire_batiment(self.batiment_tile, self.batiment_pv)
+
+            elif self.transfer_resources_bool:
+                self.transfer_resources()  
+
+            else: 
+                self.busy = False
+                try:
+                    self.IA.farmers.remove(self)
+                except: pass    
+
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
@@ -111,7 +124,10 @@ class VillagerIA(Villager):
             self.nb_ressource_Transp = 0
             self.ressource_Transp = "" 
             self.busy = False 
-            # self.IA.farmers.remove(self)
+            self.IA.farmers.remove(self)
+            self.transfer_resources_bool = False
+            
+            
 
     #Override
     def farmer_cases_autour(self): 

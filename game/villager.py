@@ -26,9 +26,10 @@ class Villager(Worker):
         self.ressource_Transp = ""
         self.nb_ressource_Transp = 0
         self.max_ressources = 1000
-
+        self.transfer_resources_bool = False
         self.cibleFarm = 0
         self.efficiency = 5
+        self.storage_tile = self.world.storage_tile
 
 
 
@@ -94,8 +95,8 @@ class Villager(Worker):
                     elif self.world.batiment[x][y]: #and self.team == self.world.batiment[x][y].team
                         self.cible = self.dest_tile
                         self.farm = False
-                        if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
-                            self.transfer_resources()
+                        if x == self.storage_tile["grid"][0] and y == self.storage_tile["grid"][1]:
+                            self.transfer_resources_bool = True
                     elif self.world.world[x][y]["tile"].tile_batiment != 0:
                         self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]#self.world.world[x][y]["tile"].tile_batiment
 
@@ -201,7 +202,12 @@ class Villager(Worker):
                 self.farmer_cases_autour()
 
             elif self.construire:
-                self.construire_batiment(self.batiment_tile, self.batiment_pv)     
+                self.construire_batiment(self.batiment_tile, self.batiment_pv) 
+
+            elif self.transfer_resources_bool:
+                self.transfer_resources() 
+                
+                       
    
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -281,7 +287,8 @@ class Villager(Worker):
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
 
         if self.nb_ressource_Transp >= self.max_ressources:
-            self.create_path(self.world.storage_tile["grid"][0], self.world.storage_tile["grid"][1], True)    
+            if self.team ==  "red": self.world.reset_tile(self.cible["grid"][0], self.cible["grid"][1])
+            self.create_path(self.storage_tile["grid"][0], self.storage_tile["grid"][1], True)    
 
     #override
     def farmer_cases_autour(self):  # Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée

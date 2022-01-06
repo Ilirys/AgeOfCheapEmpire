@@ -58,4 +58,4 @@ def init():
 
     #SPEED
     global CURRENT_SPEED
-    CURRENT_SPEED = "veryfast"
+    CURRENT_SPEED = "potato_pc"

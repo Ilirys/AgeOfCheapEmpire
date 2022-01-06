@@ -172,19 +172,23 @@ class IA:
         self.y = self.build_position_y + 1
         self.directions =cycle(["x_forwards", "y_backwards", "x_backwards", "y_forwards"])
         self.current_direction = next(self.directions)
-        while self.cant_turn_anywhere < 60:
+        while self.cant_turn_anywhere < 600:
             if self.x > 50: 
                 self.x = 49
-                self.current_direction = next(self.directions)  
+                self.current_direction = next(self.directions)
+                #   self.cant_turn_anywhere += 0.2  
             if self.y > 50: 
                 self.y = 49
                 self.current_direction = next(self.directions)
+                # self.cant_turn_anywhere += 0.2
             if self.y < 0 : 
                 self.y = 0
                 self.current_direction = next(self.directions)
+                # self.cant_turn_anywhere += 0.2
             if self.x < 0 : 
                 self.x = 0
-                self.current_direction = next(self.directions) 
+                self.current_direction = next(self.directions)
+                # self.cant_turn_anywhere += 0.2 
 
             if self.current_direction == "x_forwards":
                 if self.x + 1 in range(0,50) and self.y -1 in range(0,50) and not self.world.world[self.x][self.y -1]["visited"]:
@@ -233,7 +237,7 @@ class IA:
     def reset_world_visted_tiles(self):
         for x in range(self.world.grid_length_x):
             for y in range(self.world.grid_length_y):
-                self.world.world[self.x][self.y]["visited"] = False
+                self.world.world[x][y]["visited"] = False
 
 
     def init_list_ressource(self):
@@ -252,8 +256,9 @@ class IA:
                     tile = next(ressource_to_farm_iterator, -1)
                     if tile != -1:
                         print("here",tile["grid"][0], tile["grid"][1] )
-                        villager.create_path(tile["grid"][0], tile["grid"][1])
+                        villager.create_path(tile["grid"][0], tile["grid"][1], True)
                         villager.busy = True
                         self.farmers.append(villager)
+                        
                     
          
