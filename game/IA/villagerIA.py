@@ -118,7 +118,7 @@ class VillagerIA(Villager):
     #Override
     def transfer_resources(self): #Si la capacité a atteint son max, on transfere les ressources du villageois, au compteur de ressources
         if self.nb_ressource_Transp >= self.max_ressources:
-            self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
+            self.IA.ressource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
             self.nb_ressource_Transp = 0
             self.ressource_Transp = "" 
             self.busy = False 

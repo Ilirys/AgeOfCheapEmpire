@@ -691,6 +691,8 @@ class World:
                 self.world = restore_world_dto.world
                 self.collision_matrix = restore_world_dto.collision_matrix
                 self.storage_tile = restore_world_dto.storage_tile
+                self.towncenterIA_tile = restore_world_dto.towncenterIA_tile
+                self.towncenter_tile = restore_world_dto.towncenter_tile
                 input.close()
         except Exception as e: print("An error occured while loading Map save:", e)
 
@@ -722,7 +724,7 @@ class World:
     def save(self):
         try:   #Map save
             with open(self.map_save_file_path, "wb") as output:
-                worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile)
+                worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile, self.towncenterIA_tile, self.towncenter_tile)
                 pickle.dump(worker_dto,output)
                 output.close()
         except Exception as e: print("Couldnt dump map save in file", e)

@@ -75,9 +75,10 @@ class IA:
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
             # self.attack_villagers()
-            # self.find_and_place_building("House", 3)
+            self.find_and_place_building("House", 3)
             # self.farm(self.food_list_iterator, 1)
             self.farm(self.wood_list_iterator, 3)
+            print(self.ressource_manager.resources)
             # pass
             
 
