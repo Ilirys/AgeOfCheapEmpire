@@ -46,6 +46,22 @@ class IA:
         self.count_y = 0
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
 
+        #Farm
+        # self.searching_for_ressource = False
+        self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
+        self.x = self.build_position_x
+        self.y = self.build_position_y + 1
+        self.directions =cycle(["x_forwards", "y_backwards", "x_backwards", "y_forwards"])
+        self.current_direction = next(self.directions)
+
+        self.wood_list = [] #La liste des cases arbres les plus proches du towncenter IA, trié. (Premier element c'est la case de world qui contient l'arbre le plus proche)
+        self.food_list = []
+        self.stone_list = []
+        self.gold_list = []
+        self.init_list_ressource()
+        for e in self.wood_list:
+            print (e["grid"][0], e["grid"][1])
+
         #Events
         self.take_decision_event = pygame.USEREVENT + 1
         pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
@@ -53,7 +69,9 @@ class IA:
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
             # self.attack_villagers()
-            self.find_and_place_building("House", 3)
+            # self.find_and_place_building("House", 3)
+            # self.farm("gold")
+            pass
             
 
     def attack_villagers(self):
@@ -141,4 +159,59 @@ class IA:
         for unit_x in unit_list:
             for unit in unit_x:
                 if unit != None and not unit.busy: count += 1
-        return count        
+        return count   
+
+
+    def farm(self, ressource, ressource_list):      #Trouve en faisant le contour en spirale du towcenter les cases contenant les ressources spécifiées et les mets dans leur liste 
+        self.cant_turn_anywhere = 0
+        while self.cant_turn_anywhere < 20:
+            if self.x > 50 or self.x < 0 or self.y > 50 or self.y < 0 :
+                self.cant_turn_anywhere += 1
+
+            if self.current_direction == "x_forwards":
+                if self.x + 1 in range(0,50) and self.y -1 in range(0,50) and not self.world.world[self.x][self.y -1]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.y -= 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.x += 1
+                    self.cant_turn_anywhere += 1		
+
+            elif self.current_direction == "y_backwards":
+                if self.x - 1 in range(0,50) and self.y - 1 in range(0,50) and not self.world.world[self.x - 1][self.y ]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.x -= 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.y -= 1
+                    self.cant_turn_anywhere += 1
+
+            elif self.current_direction == "x_backwards":
+                if self.x - 1 in range(0,50) and self.y + 1 in range(0,50) and not self.world.world[self.x ][self.y + 1 ]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.y += 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.x -= 1
+                    self.cant_turn_anywhere += 1
+
+            elif self.current_direction == "y_forwards":
+                if self.x + 1 in range(0,50) and self.y + 1 in range(0,50) and not self.world.world[self.x + 1][self.y ]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.x += 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.y += 1
+                    self.cant_turn_anywhere += 1
+
+            if self.x in range(0,50) and self.y in range(0,50):
+                self.world.world[self.x][self.y]["visited"] = True
+
+                if self.world.world[self.x][self.y ]["tile"].ressource.typeRessource == ressource:
+                    # self.searching_for_ressource = False
+                    ressource_list.append(self.world.world[self.x][self.y])
+            # print("Tile: ", self.x, self.y, "visted:", self.world.world[self.x][self.y]["visited"], self.world.world[self.x][self.y ]["tile"].ressource.typeRessource )     
+
+    def init_list_ressource(self):
+        self.farm("wood", self.wood_list) 
+

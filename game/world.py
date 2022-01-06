@@ -292,10 +292,10 @@ class World:
                 )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
         
-        # mouse_pos = pygame.mouse.get_pos()
-        # grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-        # txt = str(grid_pos)
-        # draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        mouse_pos = pygame.mouse.get_pos()
+        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        txt = str(grid_pos)
+        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
         
 
 
