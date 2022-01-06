@@ -47,17 +47,21 @@ class IA:
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
 
         #Farm
-        # self.searching_for_ressource = False
         self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
         self.x = self.build_position_x
         self.y = self.build_position_y + 1
         self.directions =cycle(["x_forwards", "y_backwards", "x_backwards", "y_forwards"])
         self.current_direction = next(self.directions)
+        self.number_of_villagers_farming = 0
 
         self.wood_list = [] #La liste des cases arbres les plus proches du towncenter IA, trié. (Premier element c'est la case de world qui contient l'arbre le plus proche)
         self.food_list = []
         self.stone_list = []
         self.gold_list = []
+        self.wood_list_iterator = iter(self.wood_list)  #Pour parcourir les cases où envoyer les villageois farm
+        self.food_list_iterator = iter(self.food_list)
+        self.stone_list_iterator = iter(self.stone_list)
+        self.gold_list_iterator = iter(self.gold_list)
         self.init_list_ressource()
         for e in self.wood_list:
             print (e["grid"][0], e["grid"][1])
@@ -70,8 +74,8 @@ class IA:
         if e.type == self.take_decision_event:
             # self.attack_villagers()
             # self.find_and_place_building("House", 3)
-            # self.farm("gold")
-            pass
+            self.farm(self.wood_list_iterator, 1)
+            # pass
             
 
     def attack_villagers(self):
@@ -162,11 +166,25 @@ class IA:
         return count   
 
 
-    def farm(self, ressource, ressource_list):      #Trouve en faisant le contour en spirale du towcenter les cases contenant les ressources spécifiées et les mets dans leur liste 
+    def load_farm_list(self, ressource, ressource_list):      #Trouve en faisant le contour en spirale du towcenter les cases contenant les ressources spécifiées et les mets dans leur liste 
         self.cant_turn_anywhere = 0
-        while self.cant_turn_anywhere < 20:
-            if self.x > 50 or self.x < 0 or self.y > 50 or self.y < 0 :
-                self.cant_turn_anywhere += 1
+        self.x = self.build_position_x
+        self.y = self.build_position_y + 1
+        self.directions =cycle(["x_forwards", "y_backwards", "x_backwards", "y_forwards"])
+        self.current_direction = next(self.directions)
+        while self.cant_turn_anywhere < 60:
+            if self.x > 50: 
+                self.x = 49
+                self.current_direction = next(self.directions)  
+            if self.y > 50: 
+                self.y = 49
+                self.current_direction = next(self.directions)
+            if self.y < 0 : 
+                self.y = 0
+                self.current_direction = next(self.directions)
+            if self.x < 0 : 
+                self.x = 0
+                self.current_direction = next(self.directions) 
 
             if self.current_direction == "x_forwards":
                 if self.x + 1 in range(0,50) and self.y -1 in range(0,50) and not self.world.world[self.x][self.y -1]["visited"]:
@@ -212,6 +230,30 @@ class IA:
                     ressource_list.append(self.world.world[self.x][self.y])
             # print("Tile: ", self.x, self.y, "visted:", self.world.world[self.x][self.y]["visited"], self.world.world[self.x][self.y ]["tile"].ressource.typeRessource )     
 
-    def init_list_ressource(self):
-        self.farm("wood", self.wood_list) 
+    def reset_world_visted_tiles(self):
+        for x in range(self.world.grid_length_x):
+            for y in range(self.world.grid_length_y):
+                self.world.world[self.x][self.y]["visited"] = False
 
+
+    def init_list_ressource(self):
+        # self.load_farm_list("food", self.food_list) 
+        # self.reset_world_visted_tiles()
+        self.load_farm_list("wood", self.wood_list)
+        self.reset_world_visted_tiles()
+        self.load_farm_list("stone", self.stone_list)
+        self.reset_world_visted_tiles()
+        # self.load_farm_list("gold", self.gold_list)
+
+    def farm(self, ressource_to_farm_iterator, number_of_villagers):  #Si on veut envoyer deux villageois farm du bois --> self.farm(self.wood_list_iterator, 2)    
+        for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
+           for villager in villager_x:
+               if (villager != None and not villager.busy and len(self.farmers) < number_of_villagers):
+                    tile = next(ressource_to_farm_iterator, -1)
+                    if tile != -1:
+                        print("here",tile["grid"][0], tile["grid"][1] )
+                        villager.create_path(tile["grid"][0], tile["grid"][1])
+                        villager.busy = True
+                        self.farmers.append(villager)
+                    
+         

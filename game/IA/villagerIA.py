@@ -14,9 +14,9 @@ class VillagerIA(Villager):
     def __init__(self,tile, world, camera, IA, pv=2000, team="red"):
         super().__init__(tile, world, camera, pv, team)
         self.IA = IA
-        self.IA.farmers.append(self)
         self.IA.villagers[self.tile["grid"][0]][self.tile["grid"][1]] = self
         self.busy = False 
+        # self.IA.farmers.append(self)
 
 
     #Override
@@ -103,4 +103,22 @@ class VillagerIA(Villager):
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y
+
+    #Override
+    def transfer_resources(self): #Si la capacité a atteint son max, on transfere les ressources du villageois, au compteur de ressources
+        if self.nb_ressource_Transp >= self.max_ressources:
+            self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
+            self.nb_ressource_Transp = 0
+            self.ressource_Transp = "" 
+            self.busy = False 
+            # self.IA.farmers.remove(self)
+
+    #Override
+    def farmer_cases_autour(self): 
+        if (self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources > 0):
+            self.farmer_cases(self.cible)  
+        else: 
+            self.IA.farmers.remove(self)          
+            self.farm = False    
+            self.busy = False   
         
