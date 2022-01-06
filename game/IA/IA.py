@@ -58,14 +58,15 @@ class IA:
             print(self.evolution, self.strategy)
             if self.strategy == "defensive":  
                 match self.evolution:
-                    case 0:
+                    case 2:
                         if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
                             self.find_and_place_building("Farm", 1)
-                            self.evolution = 1
-                    case 1:
+                    case 0:
                         if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]:
                             self.find_and_place_building("Barrack", 1)
-                            self.evolution = 2
+                    case 1:
+                        self.spawn_unit_autour_caserne("Workers", self.caserne_tile)
+
             self.ressource_manager.resources["wood"]+=20
             print(self.ressource_manager.resources["wood"])
             # self.attack_villagers()
@@ -138,6 +139,8 @@ class IA:
                     self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y, name_of_building)
                     self.number_of_buildings += 1
                     print(name_of_building, " has been built successfuly")
+
+            self.evolution += 1 # on change la stratégie
 
     def ordre_de_construction_villageois(self, grid_pos_x, grid_pos_y, nom_du_batiment): #Ordonner a un villageois de construire
         for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
