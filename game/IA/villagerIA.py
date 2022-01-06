@@ -24,12 +24,10 @@ class VillagerIA(Villager):
 
     #Override
     def update(self):
-
         # Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
         grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], self.camera.scroll)
-
         # Animation update
         self.update_sprite()             
 

@@ -45,6 +45,7 @@ class IA:
         self.count_x = 0
         self.count_y = 0
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
+        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
 
         #Farm
         self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
@@ -63,7 +64,7 @@ class IA:
         self.stone_list_iterator = iter(self.stone_list)
         self.gold_list_iterator = iter(self.gold_list)
         self.init_list_ressource()
-        for e in self.wood_list:
+        for e in self.food_list:
             print (e["grid"][0], e["grid"][1])
 
         #Events
@@ -74,7 +75,8 @@ class IA:
         if e.type == self.take_decision_event:
             # self.attack_villagers()
             # self.find_and_place_building("House", 3)
-            self.farm(self.wood_list_iterator, 1)
+            self.farm(self.food_list_iterator, 1)
+            self.farm(self.wood_list_iterator, 2)
             # pass
             
 
@@ -241,8 +243,8 @@ class IA:
 
 
     def init_list_ressource(self):
-        # self.load_farm_list("food", self.food_list) 
-        # self.reset_world_visted_tiles()
+        self.load_farm_list("food", self.food_list) 
+        self.reset_world_visted_tiles()
         self.load_farm_list("wood", self.wood_list)
         self.reset_world_visted_tiles()
         self.load_farm_list("stone", self.stone_list)
@@ -255,7 +257,7 @@ class IA:
                if (villager != None and not villager.busy and len(self.farmers) < number_of_villagers):
                     tile = next(ressource_to_farm_iterator, -1)
                     if tile != -1:
-                        print("here",tile["grid"][0], tile["grid"][1] )
+                        # print("here",tile["grid"][0], tile["grid"][1] )
                         villager.create_path(tile["grid"][0], tile["grid"][1], True)
                         villager.busy = True
                         self.farmers.append(villager)

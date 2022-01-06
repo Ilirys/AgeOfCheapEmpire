@@ -61,7 +61,7 @@ class Villager(Worker):
                     searching_for_path = False
                 elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0 or self.world.world[x][y]["tile"].tile_batiment != 0:
                     # Reinitialise la cible
-                    self.cible = None
+                    # self.cible = None
 
                     # Si la case contient une unitées ou du farm,
                     # On enleve la collision de la case du soldat (Or else can't get find_path to work)
@@ -80,7 +80,7 @@ class Villager(Worker):
                     # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
                     if self.path: self.path.pop()
 
-                    if self.world.unites[x][y] != None:  # Condition d'attaque
+                    if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.farm = False
@@ -206,8 +206,8 @@ class Villager(Worker):
 
             elif self.transfer_resources_bool:
                 self.transfer_resources() 
-                
-                       
+
+
    
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
