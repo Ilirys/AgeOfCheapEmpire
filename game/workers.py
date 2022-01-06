@@ -97,7 +97,7 @@ class Worker:
                     self.attack = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0 :
+                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0  or self.dest_tile["tile"].ressource.getNbRessources() != 0 :
                     # Reinitialise la derniere case de destination et la cible
                     self.cible = None
 

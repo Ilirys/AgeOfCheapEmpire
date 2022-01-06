@@ -46,6 +46,7 @@ class IA:
         self.count_y = 0
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
+        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
 
         #Farm
         self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
@@ -75,8 +76,8 @@ class IA:
         if e.type == self.take_decision_event:
             # self.attack_villagers()
             # self.find_and_place_building("House", 3)
-            self.farm(self.food_list_iterator, 1)
-            self.farm(self.wood_list_iterator, 2)
+            # self.farm(self.food_list_iterator, 1)
+            self.farm(self.wood_list_iterator, 3)
             # pass
             
 
@@ -169,31 +170,33 @@ class IA:
 
 
     def load_farm_list(self, ressource, ressource_list):      #Trouve en faisant le contour en spirale du towcenter les cases contenant les ressources spécifiées et les mets dans leur liste 
-        self.cant_turn_anywhere = 0
+        self.cant_turn_anywhere = 0                             
         self.x = self.build_position_x
         self.y = self.build_position_y + 1
         self.directions =cycle(["x_forwards", "y_backwards", "x_backwards", "y_forwards"])
         self.current_direction = next(self.directions)
         while self.cant_turn_anywhere < 600:
-            if self.x > 50: 
-                self.x = 49
+            if self.x > self.world.grid_length_x: 
+                self.x = self.world.grid_length_x - 1
                 self.current_direction = next(self.directions)
-                #   self.cant_turn_anywhere += 0.2  
-            if self.y > 50: 
-                self.y = 49
+            if self.y > self.world.grid_length_y: 
+                self.y = self.world.grid_length_y - 1
                 self.current_direction = next(self.directions)
-                # self.cant_turn_anywhere += 0.2
             if self.y < 0 : 
                 self.y = 0
                 self.current_direction = next(self.directions)
-                # self.cant_turn_anywhere += 0.2
             if self.x < 0 : 
                 self.x = 0
                 self.current_direction = next(self.directions)
-                # self.cant_turn_anywhere += 0.2 
+                
+            if self.x in range(0,self.world.grid_length_x) and self.y in range(0,self.world.grid_length_y):
+                self.world.world[self.x][self.y]["visited"] = True
+
+                if self.world.world[self.x][self.y ]["tile"].ressource.typeRessource == ressource:
+                    ressource_list.append(self.world.world[self.x][self.y])
 
             if self.current_direction == "x_forwards":
-                if self.x + 1 in range(0,50) and self.y -1 in range(0,50) and not self.world.world[self.x][self.y -1]["visited"]:
+                if self.x + 1 in range(0,self.world.grid_length_x) and self.y -1 in range(0,self.world.grid_length_y) and not self.world.world[self.x][self.y -1]["visited"]:
                     self.current_direction = next(self.directions)
                     self.y -= 1
                     self.cant_turn_anywhere = 0 
@@ -202,7 +205,7 @@ class IA:
                     self.cant_turn_anywhere += 1		
 
             elif self.current_direction == "y_backwards":
-                if self.x - 1 in range(0,50) and self.y - 1 in range(0,50) and not self.world.world[self.x - 1][self.y ]["visited"]:
+                if self.x - 1 in range(0,self.world.grid_length_x) and self.y - 1 in range(0,self.world.grid_length_y) and not self.world.world[self.x - 1][self.y ]["visited"]:
                     self.current_direction = next(self.directions)
                     self.x -= 1
                     self.cant_turn_anywhere = 0 
@@ -211,7 +214,7 @@ class IA:
                     self.cant_turn_anywhere += 1
 
             elif self.current_direction == "x_backwards":
-                if self.x - 1 in range(0,50) and self.y + 1 in range(0,50) and not self.world.world[self.x ][self.y + 1 ]["visited"]:
+                if self.x - 1 in range(0,self.world.grid_length_x) and self.y + 1 in range(0,self.world.grid_length_y) and not self.world.world[self.x ][self.y + 1 ]["visited"]:
                     self.current_direction = next(self.directions)
                     self.y += 1
                     self.cant_turn_anywhere = 0 
@@ -220,21 +223,13 @@ class IA:
                     self.cant_turn_anywhere += 1
 
             elif self.current_direction == "y_forwards":
-                if self.x + 1 in range(0,50) and self.y + 1 in range(0,50) and not self.world.world[self.x + 1][self.y ]["visited"]:
+                if self.x + 1 in range(0,self.world.grid_length_x) and self.y + 1 in range(0,self.world.grid_length_y) and not self.world.world[self.x + 1][self.y ]["visited"]:
                     self.current_direction = next(self.directions)
                     self.x += 1
                     self.cant_turn_anywhere = 0 
                 else: 
                     self.y += 1
                     self.cant_turn_anywhere += 1
-
-            if self.x in range(0,50) and self.y in range(0,50):
-                self.world.world[self.x][self.y]["visited"] = True
-
-                if self.world.world[self.x][self.y ]["tile"].ressource.typeRessource == ressource:
-                    # self.searching_for_ressource = False
-                    ressource_list.append(self.world.world[self.x][self.y])
-            # print("Tile: ", self.x, self.y, "visted:", self.world.world[self.x][self.y]["visited"], self.world.world[self.x][self.y ]["tile"].ressource.typeRessource )     
 
     def reset_world_visted_tiles(self):
         for x in range(self.world.grid_length_x):
