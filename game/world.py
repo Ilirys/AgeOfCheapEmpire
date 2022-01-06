@@ -337,6 +337,7 @@ class World:
     def grid_to_world(self, grid_x, grid_y):    #Renvoit un dictionnaire avec notamment des coordonnées isométriques pour une vue 2.5D
         rien = Ressource(0,"")
         tile = Tile(grid_x,grid_y,0, rien ,0)
+        visited = False
         #Matrice avec coordonées carthésiennes
         rect = [
             (grid_x * TILE_SIZE, grid_y * TILE_SIZE),
@@ -356,6 +357,7 @@ class World:
             "iso_poly": iso_poly,
             "render_pos": [minx,miny],
             "tile": tile,
+            "visited": visited,
             "collision": False if tile.nomElement == "" else True
         }
         return out

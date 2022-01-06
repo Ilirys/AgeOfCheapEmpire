@@ -285,41 +285,42 @@ class Villager(Worker):
 
     #override
     def farmer_cases_autour(self):  # Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée
-        if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
-            self.farmer_cases(self.cible)
+        if self.tile["grid"][0] not in [0,49] and self.tile["grid"][1] not in [0,49]:    
+            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
+                self.farmer_cases(self.cible)
 
-        else:
-            if self.dest_tile == self.tile:
-                self.create_path(self.cible["grid"][0], self.cible["grid"][1])
+            else:
+                if self.dest_tile == self.tile:
+                    self.create_path(self.cible["grid"][0], self.cible["grid"][1])
 
 
     def transfer_resources(self): #Si la capacité a atteint son max, on transfere les ressources du villageois, au compteur de ressources
