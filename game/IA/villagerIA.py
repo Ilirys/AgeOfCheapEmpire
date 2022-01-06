@@ -87,7 +87,6 @@ class VillagerIA(Villager):
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
-                self.path_index += 1
                 self.progression = 0
 
         else:
@@ -110,6 +109,7 @@ class VillagerIA(Villager):
             # collision matrix (for pathfinding and buildings)
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
