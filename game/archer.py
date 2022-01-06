@@ -112,6 +112,9 @@ class Archer(Worker):
             self.world.archer[self.tile["grid"][0]][self.tile["grid"][1]] = None
             self.world.archer[new_tile[0]][new_tile[1]] = self
 
+            # modif x, y => case normale (pas defog of war)
+            self.world.changeToNormalGrass(self.render_pos_x, self.render_pos_y, self.tile["grid"][0],self.tile["grid"][1])
+
             self.tile = self.world.world[new_tile[0]][new_tile[1]]
             self.render_pos_x = self.tile["render_pos"][0]
             self.render_pos_y = self.tile["render_pos"][1]

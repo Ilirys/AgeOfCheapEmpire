@@ -190,91 +190,91 @@ class World:
             for y in range(self.grid_length_y):
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
-                if nomElement != "":  #Si le nom de l'element sur la case n'est pas vide alors on affiche la ressource correspondante (arbre etc)
-                        screen.blit(self.tiles[nomElement],
-                                (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
-                                 render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
-                
-                #draw bâtiments    
-                batiment = self.batiment[x][y]
-                if batiment is not None:
-                    screen.blit(batiment.images[batiment.current_image],
-                                    (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x + 2 - ((dicoBatiment[batiment.name][1]-1) * 190)/3,
-                                     render_pos[1] - ((dicoBatiment[batiment.name][1] - 1) * 10) + camera.scroll.y - 5))
-                    if self.examine_tile is not None:
-                        if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
-                            mask = pygame.mask.from_surface(batiment.image.convert_alpha()).outline()
-                            # affiche le rectangle blanc autour du batiment
-                            mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x + 2 - ((dicoBatiment[batiment.name][1]-1) * 190)/3, y + render_pos[1] - ((dicoBatiment[batiment.name][1] - 1) * 10) + camera.scroll.y - 5) for x, y in mask]
-                            pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
-                            #affiche hud batiment
-                            if (batiment.team=="blue"):
-                                if (batiment.name=="Towncenter"):
-                                    self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
-                                elif (batiment.name=="Storage"):
-                                    self.hud.display_unit_icons = False
-                                    self.hud.blit_hud("hudGrenier", str(batiment.pv), screen)
-                                    self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
-                                elif (batiment.name=="House"):
-                                    self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
-                                elif (batiment.name=="Farm"):
-                                    self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudFarm", str(batiment.pv), screen)
-                                elif (batiment.name=="Barrack"):
-                                    self.hud.display_unit_icons = True
-                                    self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
-                                    self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
-                    elif not self.examine_tile:
-                        self.hud.display_unit_icons = False                
+                if self.world[x][y]["tile"].getVisible():
+                    if nomElement != "":  #Si le nom de l'element sur la case n'est pas vide alors on affiche la ressource correspondante (arbre etc)
+                        screen.blit(self.tiles[nomElement],(render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
+                                     render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
 
-                    if batiment.pv < 0:
-                        self.delete_batiment(x,y)
-                        self.hud.select_surface_empty = True
-                # draw units
-                unites = self.unites[x][y]
-                if unites is not None:
-                    #if unites.pv > 0:
-                                
-                    if unites.name == "horseman":
-                        if unites.selected:
-                            self.hud.blit_hud("hudCavalier", str(unites.pv), screen)
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
-                            
-                    else:
-                        if unites.selected:
-                            self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
-                            pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                    #draw bâtiments
+                    batiment = self.batiment[x][y]
+                    if batiment is not None:
+                        screen.blit(batiment.images[batiment.current_image],
+                                        (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x + 2 - ((dicoBatiment[batiment.name][1]-1) * 190)/3,
+                                         render_pos[1] - ((dicoBatiment[batiment.name][1] - 1) * 10) + camera.scroll.y - 5))
+                        if self.examine_tile is not None:
+                            if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
+                                mask = pygame.mask.from_surface(batiment.image.convert_alpha()).outline()
+                                # affiche le rectangle blanc autour du batiment
+                                mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x + 2 - ((dicoBatiment[batiment.name][1]-1) * 190)/3, y + render_pos[1] - ((dicoBatiment[batiment.name][1] - 1) * 10) + camera.scroll.y - 5) for x, y in mask]
+                                pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
+                                #affiche hud batiment
+                                if (batiment.team=="blue"):
+                                    if (batiment.name=="Towncenter"):
+                                        self.hud.display_unit_icons = False
+                                        self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
+                                    elif (batiment.name=="Storage"):
+                                        self.hud.display_unit_icons = False
+                                        self.hud.blit_hud("hudGrenier", str(batiment.pv), screen)
+                                        self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
+                                    elif (batiment.name=="House"):
+                                        self.hud.display_unit_icons = False
+                                        self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
+                                    elif (batiment.name=="Farm"):
+                                        self.hud.display_unit_icons = False
+                                        self.hud.blit_hud("hudFarm", str(batiment.pv), screen)
+                                    elif (batiment.name=="Barrack"):
+                                        self.hud.display_unit_icons = True
+                                        self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
+                                        self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
+                        elif not self.examine_tile:
+                            self.hud.display_unit_icons = False
 
-                            if unites.name == "Villageois":
-                                self.hud.display_building_icons = True
+                        if batiment.pv < 0:
+                            self.delete_batiment(x,y)
+                            self.hud.select_surface_empty = True
+                    # draw units
+                    unites = self.unites[x][y]
+                    if unites is not None:
+                        #if unites.pv > 0:
 
-                        screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
-                        unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
-                            
-                    if unites.pv <= 0:
-                        unites.delete()
-                        self.hud.select_surface_empty = True
-                # minimap hud
-                if definitions.afficher_minimap == "oui":
-                    self.minimap.tab_minimap[x][y] = GreenLight
-                    if nomElement == "tree":
-                        self.minimap.tab_minimap[x][y] = Green
-                    elif nomElement == "stone":
-                        self.minimap.tab_minimap[x][y] = Grey
-                    elif nomElement == "gold":
-                        self.minimap.tab_minimap[x][y] = Gold
-                    elif nomElement == "food":
-                        self.minimap.tab_minimap[x][y] = Brown
-                    elif self.world[x][y]["collision"]:
-                        self.minimap.tab_minimap[x][y] = Blue
-                        
-                    if self.minimap.tab_minimap[x][y] != GreenLight:
-                        pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
-                    
+                        if unites.name == "horseman":
+                            if unites.selected:
+                                self.hud.blit_hud("hudCavalier", str(unites.pv), screen)
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 22,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 55))
+
+                        else:
+                            if unites.selected:
+                                self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
+                                pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
+
+                                if unites.name == "Villageois":
+                                    self.hud.display_building_icons = True
+
+                            screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
+                            unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+
+                        if unites.pv <= 0:
+                            unites.delete()
+                            self.hud.select_surface_empty = True
+                    # minimap hud
+                    if definitions.afficher_minimap == "oui":
+                        self.minimap.tab_minimap[x][y] = GreenLight
+                        if nomElement == "tree":
+                            self.minimap.tab_minimap[x][y] = Green
+                        elif nomElement == "stone":
+                            self.minimap.tab_minimap[x][y] = Grey
+                        elif nomElement == "gold":
+                            self.minimap.tab_minimap[x][y] = Gold
+                        elif nomElement == "food":
+                            self.minimap.tab_minimap[x][y] = Brown
+                        elif self.world[x][y]["collision"]:
+                            self.minimap.tab_minimap[x][y] = Blue
+
+                        if self.minimap.tab_minimap[x][y] != GreenLight:
+                            pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
+
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
@@ -291,13 +291,41 @@ class World:
                     render_pos[1] - ((dicoBatiment[self.temp_tile["name"]][1] - 1) * 10) + camera.scroll.y - 5)                
                 )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
-        
-        # mouse_pos = pygame.mouse.get_pos()
-        # grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-        # txt = str(grid_pos)
-        # draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
-        
+        '''
+        mouse_pos = pygame.mouse.get_pos()
+        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        txt = str(grid_pos)
+        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        '''
 
+    #transforme la case x,y et celle autour en herbe "normale" (sans fog of war)
+    def changeToNormalGrass(self, xEcran, yEcran, xMap, yMap):
+        for x in range(xMap - 1, xMap + 2):
+            for y in range(yMap - 1, yMap + 2):
+                if (x >= 0 and x < self.grid_length_x-1 and y >= 0 and y < self.grid_length_y-1 and self.world[x][y]["tile"].getCpt()==0):
+                    self.world[x][y]["tile"].setVisible(True)
+                    self.world[x][y]["tile"].addCpt()
+                    #affichage herbe haut gauche
+                    if ((xMap == 0  and yMap !=0 and yMap != (self.grid_length_y - 1))):
+                        self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -60 ,yEcran-36 ))
+                        print("haut gauche")
+                    #affichage herbe bas droit
+                    elif ((xMap == (self.grid_length_x - 1) and yMap !=0 and yMap != (self.grid_length_y - 1))):
+                        self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -130 ,yEcran-65 ))
+                        print("bas droit")#ici
+                    #affichage herbe droit haut
+                    elif ((yMap == 0  and xMap !=0 and xMap != (self.grid_length_x - 1))):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
+                        self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -130, yEcran -35))
+                        print("haut droit")
+                    #affichage herbe gauche bas
+                    elif ((yMap == (self.grid_length_y - 1) and xMap !=0 and xMap != (self.grid_length_x - 1))):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
+                        self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -60, yEcran -65))
+                        print("bas gauche")#ici
+                    #affichage herbe centrale (3x3)
+                    elif xMap!=0 and yMap !=0 and xMap != (self.grid_length_x-1) and yMap != (self.grid_length_y-1):
+                        self.grass_tiles.blit(self.tiles["grass3x3"],(xEcran + (self.grass_tiles.get_width()) / 2 - 128, yEcran - 65))
+                        print("pute ?")
+                    print("xmap = ",xMap,", ymap= ", yMap,"\n","x = ",x,", y= ", y,"\n" )
 
 
     def create_world(self): #Génère la map
@@ -309,29 +337,33 @@ class World:
                 world[grid_x].append(world_tile)
 
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
-                self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
+                #CHANGER ON/OFF POUR LE FOG OF WAR
+                self.grass_tiles.blit(self.tiles["grass_fog"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
 
                 if self.Bou.M1[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[0], LES_RESSOURCES[0]))
+                    world[grid_x][grid_y]["tile"].setVisible(False)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], LES_RESSOURCES[1]))
+                    world[grid_x][grid_y]["tile"].setVisible(False)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "gold":
 
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], LES_RESSOURCES[2]))
+                    world[grid_x][grid_y]["tile"].setVisible(False)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], LES_RESSOURCES[3]))
+                    world[grid_x][grid_y]["tile"].setVisible(False)
                     world[grid_x][grid_y]["collision"] = True
-
         return world    
 
     def grid_to_world(self, grid_x, grid_y):    #Renvoit un dictionnaire avec notamment des coordonnées isométriques pour une vue 2.5D
@@ -409,11 +441,13 @@ class World:
                 if M2[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
                     self.world[grid_x][grid_y]["tile"].nomElement = ""
                     self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
+                    self.world[grid_x][grid_y]["tile"].setVisible(True)
                     self.world[grid_x][grid_y]["collision"] = False
                     self.collision_matrix[grid_y][grid_x] = 1
                 if M3[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
                     self.world[grid_x][grid_y]["tile"].nomElement = ""
                     self.world[grid_x][grid_y]["tile"].setRessource(Ressource(0,""))
+                    self.world[grid_x][grid_y]["tile"].setVisible(True)
                     self.world[grid_x][grid_y]["collision"] = False
                     self.collision_matrix[grid_y][grid_x] = 1
 
@@ -451,6 +485,7 @@ class World:
                 self.world[a+j][b+i]["collision"] = False
                 self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
                 self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+                self.world[a + j][b + i]["tile"].setVisible(True)
                 self.collision_matrix[b+i][a+j] = 1
                 self.world[a2+j][b2+i]["collision"] = False
                 self.world[a2+j][b2+i]["tile"].ressource.typeRessource = ""
@@ -460,6 +495,7 @@ class World:
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
                 self.world[a+j][b+i]["tile"].setRessource(Ressource(0, ""))
+                self.world[a + j][b + i]["tile"].setVisible(True)
                 self.collision_matrix[b+i][a+j] = 0
                 self.world[a2+j][b2+i]["collision"] = True
                 self.world[a2+j][b2+i]["tile"].setRessource(Ressource(0, ""))
@@ -472,10 +508,18 @@ class World:
         Barrack = pygame.image.load("assets/barrack.png").convert_alpha()
         Storage = pygame.image.load("assets/stone_storage.png").convert_alpha()
         grass = pygame.image.load("assets/grass.png").convert_alpha()
+        grass_fog = pygame.image.load("assets/grassFog.png").convert_alpha()
+        grass_zone = pygame.image.load("assets/grassZone.png").convert_alpha()
+        grass_3x3 = pygame.image.load("assets/grass3x3.png").convert_alpha()
+        grass_3x2Gauche = pygame.image.load("assets/grass3x2GaucheDroite.png").convert_alpha()
+        grass_3x2Haut = pygame.image.load("assets/grass2x2HautBas.png").convert_alpha()
+        grass_3x1GD = pygame.image.load("assets/grass3x1GaucheDroite.png").convert_alpha()
+        grass_3x1HB = pygame.image.load("assets/grass3x1HautBas.png").convert_alpha()
         tree = pygame.image.load("assets/tree.png").convert_alpha()
         stone = pygame.image.load("assets/stone.png").convert_alpha()
         gold = pygame.image.load("assets/gold.png").convert_alpha()
         fruit = pygame.image.load("assets/fruit.png").convert_alpha()
+
 
         images = {
             "Towncenter": Towncenter,
@@ -483,6 +527,13 @@ class World:
             "Barrack": Barrack,
             "Storage": Storage,
             "grass": grass,
+            "grass_fog": grass_fog,
+            "grassZone": grass_zone,
+            "grass3x3": grass_3x3,
+            "grass_3x2Gauche": grass_3x2Gauche,
+            "grass_3x2Haut":grass_3x2Haut,
+            "grass_3x1GD":grass_3x1GD,
+            "grass_3x1HB":grass_3x1HB,
             "tree": tree,
             "gold": gold,
             "food": fruit,

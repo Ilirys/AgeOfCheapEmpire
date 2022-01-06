@@ -9,25 +9,29 @@ class Tile:
     '''
 
     #Constructeur sans parametre qui initialise tous les attributs
-    def __init__(self, *args):
-        if(len(args)==0):
-            self.xTile = 0
-            self.yTile = 0
-            self.empty = True
-            self.ressource = Ressource.__init__()
-            self.idElem = -1
-            self.nomElement = ""
-            self.tile_batiment
-            self.batiment_pv
-        elif(len(args)==5):
-            self.xTile = args[0]
-            self.yTile = args[1]
-            self.empty = args[2]
-            self.ressource = args[3]
-            self.idElem = args[4]
-            self.nomElement = ""
-            self.tile_batiment = 0
-            self.batiment_pv = None
+    def __init__(self, xTile=0, yTile=0, empty=True, ressource="", id=-1, visible= False):
+        self.xTile = xTile
+        self.yTile = yTile
+        self.empty = empty
+        self.ressource = ressource
+        self.idElem = id
+        self.nomElement = ""
+        self.tile_batiment = 0
+        self.batiment_pv = None
+        self.visible = False
+        self.cpt = 0 # permet de savoir si le fog of war est dicipé 0= non 1 = oui
+
+    def getCpt(self):
+        return self.cpt
+
+    def addCpt(self):
+        self.cpt = 1
+
+    def setVisible(self, monVisible):
+        self.visible = monVisible
+
+    def getVisible(self):
+        return self.visible
 
     def isEmpty(self):
         return self.empty

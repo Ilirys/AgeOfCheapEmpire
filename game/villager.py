@@ -130,6 +130,11 @@ class Villager(Worker):
             self.render_pos_x = self.tile["render_pos"][0]
             self.render_pos_y = self.tile["render_pos"][1]
 
+
+            #modif x, y => case normale (pas defog of war)
+            self.world.changeToNormalGrass(self.render_pos_x, self.render_pos_y, self.tile["grid"][0],  self.tile["grid"][1])
+
+
             # collision matrix (for pathfinding and buildings)
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
