@@ -83,10 +83,6 @@ class Options:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        pygame.quit()
-                        sys.exit()
                 if event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         click = True
