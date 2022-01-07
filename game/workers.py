@@ -12,7 +12,7 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera,pv=2000, team="blue"):
+    def __init__(self,tile,world,camera, pv=2000, team="blue"):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
