@@ -67,7 +67,7 @@ class IA:
                 match self.evolution:
                     
                     case 0:
-                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]:
+                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]and self.number_of_buildings < 1:
                             self.find_and_place_building("Barrack", 1)
                         self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
                         if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Barrack"][2] + 100)):
@@ -78,18 +78,33 @@ class IA:
                             
                     case 1:
                         self.spawn_unit_autour_caserne("Villageois", self.world.world[self.barrack_x][self.barrack_y])
-                        self.evolution += 1
+                        self.number_of_buildings += 1
+                        if self.number_of_buildings >= 3:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
                     case 2:
-                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
+                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"] and self.number_of_buildings < 3:
                             self.find_and_place_building("Farm", 1)
                         self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
                         if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Farm"][2] + 100)):
                             self.action_faite = 0
                             self.compteur_construction_bat = 0
                             if self.number_of_buildings >= 3:
+                                self.number_of_buildings = 0
+                                self.evolution += 1
+
+                    case 3:
+                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["House"]["wood"] and self.number_of_buildings < 5:
+                            self.find_and_place_building("House", 1)
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["House"][2] + 200)):
+                            self.action_faite = 0
+                            self.compteur_construction_bat = 0
+                            if self.number_of_buildings >= 5:
                                 self.evolution += 1
                                 
-            self.ressource_manager.resources["wood"]+=20
+            self.ressource_manager.resources["wood"] += 25
             # self.attack_villagers()
             
 
@@ -106,7 +121,7 @@ class IA:
                                     self.attacking = False
 
     def find_and_place_building(self, name_of_building, number_of_buildings_to_build = 1):  #Cherche ou poser autour du Towncenter, le batiment en parametre, le nombre de batiment a poser.
-        if self.number_of_buildings < number_of_buildings_to_build and self.get_number_of_free_units(self.villagers) != 0:  #Si le nombre de batiments qu'on a construit est inférieur au nombre désiré et si on a des villageois libre
+        if self.get_number_of_free_units(self.villagers) != 0:  #Si le nombre de batiments qu'on a construit est inférieur au nombre désiré et si on a des villageois libre
             if self.count == self.a:
                 self.count_x += 1
                 self.count = 0
@@ -131,7 +146,6 @@ class IA:
 
             self.count += 1
 
-
     def build(self, name_of_building):  #Placer le batiment
         if self.build_position_x != self.towncenter["grid"][0] and self.build_position_y != self.towncenter["grid"][1]:    
             
@@ -145,7 +159,9 @@ class IA:
                 self.world.world[self.build_position_x][self.build_position_y]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
                 self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y, name_of_building)
                 self.number_of_buildings += 1
-                print(name_of_building, " has been built successfuly")
+                print("------------------------------------------------------------> ", name_of_building, " en construction")
+                self.compteur_construction_bat = 0 # on remet à 0 le compteur pour qu'il puisse attendre le temps de construction du batiment
+                self.action_faite = 1
 
             elif self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y):
 
@@ -173,7 +189,6 @@ class IA:
                 self.compteur_construction_bat = 0 # on remet à 0 le compteur pour qu'il puisse attendre le temps de construction du batiment
                 self.action_faite = 1
             
-
     def ordre_de_construction_villageois(self, grid_pos_x, grid_pos_y, nom_du_batiment): #Ordonner a un villageois de construire
         for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
            for villager in villager_x:
