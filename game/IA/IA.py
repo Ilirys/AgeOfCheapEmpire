@@ -1,3 +1,4 @@
+from time import process_time_ns
 from pygame import *
 import pygame
 from itertools import count, cycle
@@ -13,7 +14,7 @@ from ..definitions import IA_DECISION_TIME
 
 class IA:
 
-    def __init__(self,world, ressource_manager, camera, team="red", strategy="defensive"):
+    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy="defensive"):
         self.team = team
         self.world = world
         self.camera = camera
@@ -22,6 +23,8 @@ class IA:
         self.ressource_manager = ressource_manager
         self.strategy=strategy
         self.evolution = 0
+        self.action_faite = 0
+        self.clock = clock 
 
         #Units
         self.warriors = []
@@ -46,6 +49,9 @@ class IA:
         self.count = 0
         self.count_x = 0
         self.count_y = 0
+
+        self.compteur_construction_bat = 0
+
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
 
         #Events
@@ -58,14 +64,28 @@ class IA:
             print(self.evolution, self.strategy)
             if self.strategy == "defensive":  
                 match self.evolution:
-                    case 2:
-                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
-                            self.find_and_place_building("Farm", 1)
+                    
                     case 0:
                         if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]:
                             self.find_and_place_building("Barrack", 1)
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
+                        print(self.compteur_construction_bat)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Barrack"][2] + 100)):
+                            self.evolution += 1
+                            self.compteur_construction_bat = 0
+                            self.action_faite = 0
                     case 1:
-                        self.spawn_unit_autour_caserne("Workers", self.caserne_tile)
+                        self.spawn_unit_autour_caserne("Villageois", self.world.world[self.barrack_x][self.barrack_y])
+                        self.evolution += 1
+                    case 2:
+                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
+                            self.find_and_place_building("Farm", 1)
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
+                        print(self.compteur_construction_bat)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Farm"][2] + 100)):
+                            self.evolution += 1
+                            self.compteur_construction_bat = 0
+                            self.action_faite = 0
 
             self.ressource_manager.resources["wood"]+=20
             print(self.ressource_manager.resources["wood"])
@@ -84,14 +104,19 @@ class IA:
                                 if villager.pv < 0 or w.dest_tile == w.tile:
                                     self.attacking = False
 
-    def find_and_place_building(self, name_of_building, number_of_buildings_to_build=10):  #Cherche ou poser autour du Towncenter, le batiment en parametre, le nombre de batiment a poser.
+    def find_and_place_building(self, name_of_building, number_of_buildings_to_build=1):  #Cherche ou poser autour du Towncenter, le batiment en parametre, le nombre de batiment a poser.
         if self.number_of_buildings < number_of_buildings_to_build and self.get_number_of_free_units(self.villagers) != 0:  #Si le nombre de batiments qu'on a construit est inférieur au nombre désiré et si on a des villageois libre
             if self.count == self.a:
                 self.count_x += 1
                 self.count = 0
                 self.a = next(self.odd_even)
 
-            if  (self.build_position_x + self.count_x * self.next_val) in range(self.world.grid_length_x) and  (self.build_position_y + self.count_y * self.next_val * self.next_val_2) in range(self.world.grid_length_y)  and  not self.world.world[self.build_position_x + self.count_x * self.next_val ][self.build_position_y + self.count_y * self.next_val * self.next_val_2]["collision"]:
+            if  ((self.build_position_x + self.count_x * self.next_val) in range(self.world.grid_length_x) 
+                    and  (self.build_position_y + self.count_y * self.next_val * self.next_val_2) in range(self.world.grid_length_y)
+                    and  not self.world.world[self.build_position_x + self.count_x * self.next_val ][self.build_position_y 
+                    + self.count_y * self.next_val * self.next_val_2]["collision"]
+                    and (self.build_position_x + dicoBatiment[name_of_building][1])<MAP_SIZE
+                    and (self.build_position_y + dicoBatiment[name_of_building][1])<MAP_SIZE):
                 
                 build_save = [self.build_position_x, self.build_position_y]
                 self.build_position_x += self.count_x * self.next_val 
@@ -118,11 +143,11 @@ class IA:
                 self.world.collision_matrix[self.build_position_y][self.build_position_x] = 0
                 self.world.world[self.build_position_x][self.build_position_y]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
                 self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y, name_of_building)
-                
                 self.number_of_buildings += 1
                 print(name_of_building, " has been built successfuly")
 
             elif self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y):
+
                 collision2 = self.world.world[self.build_position_x + 1][self.build_position_y]["collision"]
                 collision3 = self.world.world[self.build_position_x + 1][self.build_position_y + 1]["collision"]
                 collision4 = self.world.world[self.build_position_x ][self.build_position_y + 1]["collision"]
@@ -137,10 +162,17 @@ class IA:
                             self.world.world[self.build_position_x + i][self.build_position_y + j]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
 
                     self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y, name_of_building)
+
+                    if name_of_building == "Barrack":  # coordonnée caserne
+                        print("lezgo")
+                        self.barrack_x = self.build_position_x
+                        self.barrack_y = self.build_position_y
+
                     self.number_of_buildings += 1
                     print(name_of_building, " has been built successfuly")
-
-            self.evolution += 1 # on change la stratégie
+                self.compteur_construction_bat = 0 # on remet à 0 le compteur pour qu'il puisse attendre le temps de construction du batiment
+                self.action_faite = 1
+            
 
     def ordre_de_construction_villageois(self, grid_pos_x, grid_pos_y, nom_du_batiment): #Ordonner a un villageois de construire
         for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
@@ -159,4 +191,137 @@ class IA:
         for unit_x in unit_list:
             for unit in unit_x:
                 if unit != None and not unit.busy: count += 1
-        return count        
+        return count
+
+    def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
+        if (not self.world.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]):
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera, self) 
+                VillagerIA(self.world.world[tile["grid"][0] ][tile["grid"][1] + 2], self.world, self.camera, self) 
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] ][tile["grid"][1] + 2], self.world, self.camera, self) 
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] ][tile["grid"][1] + 2], self.world, self.camera)
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] ][tile["grid"][1] + 2], self.world, self.camera)
+        
+        elif (not self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 2]["collision"]):
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] -1 ][tile["grid"][1] ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] ], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] ], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] ], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] -1 ][tile["grid"][1] ], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] ][tile["grid"][1] - 1]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] ][tile["grid"][1] - 1], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] +1 ][tile["grid"][1] - 1]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] +2 ][tile["grid"][1] ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] ], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] ], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] ], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] ], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
+                VillagerIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self.world, self.camera)
+        
+        elif not self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self.world, self.camera)
+
+        elif not self.world.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ]["collision"]:
+            if unit_name == "Villageois":
+                #Worker(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera, self)    
+                VillagerIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self.world, self.camera, self)    
+            if unit_name == "Soldier":
+                SoldierIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self.world, self.camera, self)    
+            if unit_name == "horseman":
+                HorsemanIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self.world, self.camera, self)    
+            if unit_name == "Archer":
+                ArcherIA(self.world.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self.world, self.camera)
