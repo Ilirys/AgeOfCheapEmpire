@@ -6,7 +6,7 @@ from game import ecranDemarrage
 from game.game import Game
 from game.font import *
 from pygame.locals import *
-from game.ecranDemarrage import StartScreen
+from game.ecranDemarrage import StartScreen 
 from game.bouquet import Bouquet
 from game.ecranSave import Save
 import game.definitions as definitions

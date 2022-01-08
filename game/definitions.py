@@ -22,7 +22,7 @@ MAP_SIZE = 50
 
 #Resource
 LES_RESSOURCES = ["wood", "food", "gold", "stone"]
-INIT_RESSOURCE = [2000, 1000, 10, 0]
+INIT_RESSOURCE = [50, 100, 10, 0]
 NB_RESSOURCES = [300,100,600,600]  #Nombre de bois par arbres, de food par buisson, de gold etc
 
 #Fonts
@@ -30,7 +30,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], None : ["", 1] }
 
 
 #Colors

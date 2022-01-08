@@ -77,7 +77,7 @@ class Game:
         self.ecran_options = Save(self.screen, self.clock, self)
 
         # IA
-        self.IA = IA(self.world, self.ressource_manager_IA, self.camera)
+        self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock)
 
         #Unité
         # Worker(self.world.world[1][1], self.world,self.camera)
