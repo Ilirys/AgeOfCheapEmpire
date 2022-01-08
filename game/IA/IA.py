@@ -78,7 +78,7 @@ class IA:
             self.find_and_place_building("House", 3)
             # self.farm(self.food_list_iterator, 1)
             self.farm(self.wood_list_iterator, 3)
-            print(self.ressource_manager.resources)
+            # print(self.ressource_manager.resources)
             # pass
             
 
@@ -194,7 +194,7 @@ class IA:
                 self.world.world[self.x][self.y]["visited"] = True
 
                 if self.world.world[self.x][self.y ]["tile"].ressource.typeRessource == ressource:
-                    ressource_list.append(self.world.world[self.x][self.y])
+                    if self.world.world[self.x][self.y] not in ressource_list: ressource_list.append(self.world.world[self.x][self.y])
 
             if self.current_direction == "x_forwards":
                 if self.x + 1 in range(0,self.world.grid_length_x) and self.y -1 in range(0,self.world.grid_length_y) and not self.world.world[self.x][self.y -1]["visited"]:
