@@ -76,6 +76,7 @@ class Worker:
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         self.mouse_to_grid(0,0,self.camera.scroll)
+        self.create_path(self.tile["grid"][0],self.tile["grid"][1])
         
     def create_path(self, x, y):
         searching_for_path = True
@@ -117,13 +118,13 @@ class Worker:
                     # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
                     if self.path: self.path.pop()
 
-                    if self.world.unites[x][y] != None:  # Condition d'attaque
+                    if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
-                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
-                        self.cible =   self.world.batiment[[self.world.world[x][y]["tile"].tile_batiment][0]][[self.world.world[x][y]["tile"].tile_batiment][1]]  #self.world.world[x][y]["tile"].tile_batiment
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team :
+                        self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
                         self.attack_bati = True
 
 
@@ -229,7 +230,7 @@ class Worker:
                     self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
-                #self.attack_ani = True
+                self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False

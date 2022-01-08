@@ -39,14 +39,12 @@ class World:
         self.world = self.create_world()
         self.collision_matrix = self.create_collision_matrix()
 
+        # towncenter positions
 
-        #coordonnées town_center
-
-        self.a = 0
-        self.b = 0
-        self.a2 = 0
-        self.b2 = 0
-
+        self.towncenter_posx = 0
+        self.towncenter_posy = 0
+        self.towncenter_IA_posx = 0
+        self.towncenter_IA_posy = 0
 
         self.animation = Animation()
         
@@ -238,7 +236,10 @@ class World:
                         self.hud.display_unit_icons = False                
 
                     if batiment.pv < 0:
-                        self.delete_batiment(x,y)
+                        if batiment.name == "Barrack" or batiment.name == "Towncenter":
+                            self.delete_batiment2(x,y)
+                        else:
+                            self.delete_batiment(x,y)
                         self.hud.select_surface_empty = True
                 # draw units
                 unites = self.unites[x][y]
@@ -399,21 +400,21 @@ class World:
         y = random.randint(-4,4)
         z = random.randint(-4,4)
         if générateur<0.25:
-            self.a = x+y
-            self.b = x+z
+            a = x+y
+            b = x+z
         elif générateur<0.5:
-            self.a = self.grid_length_x-x+y
-            self.b = x+z
+            a = self.grid_length_x-x+y
+            b = x+z
         elif générateur<0.75:
-            self.a = x+y
-            self.b = self.grid_length_y-x+z
+            a = x+y
+            b = self.grid_length_y-x+z
         else:
-            self.a = self.grid_length_x-x+y
-            self.b = self.grid_length_y-x+z
-        self.a2 = MAP_SIZE - self.a   # position towncenter ennemi
-        self.b2 = MAP_SIZE - self.b
-        M2=self.Bou.creation_camp(self.a, self.b) # enlève les ressources aléatoirement autour du towncenter
-        M3=self.Bou.creation_camp(self.a2, self.b2) # pareil pour le towncenter ennemi
+            a = self.grid_length_x-x+y
+            b = self.grid_length_y-x+z
+        a2 = MAP_SIZE - a   # position towncenter ennemi
+        b2 = MAP_SIZE - b
+        M2=self.Bou.creation_camp(a, b) # enlève les ressources aléatoirement autour du towncenter
+        M3=self.Bou.creation_camp(a2, b2) # pareil pour le towncenter ennemi
         for grid_x in range(self.grid_length_x): #On itère pour la taille de la map
             for grid_y in range(self.grid_length_y):
                 if M2[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile 
@@ -427,53 +428,53 @@ class World:
                     self.world[grid_x][grid_y]["collision"] = False
                     self.collision_matrix[grid_y][grid_x] = 1
 
-        render_pos = self.world[self.a][self.b]["render_pos"]
+        render_pos = self.world[a][b]["render_pos"]
         ent = Batiment(render_pos, "Towncenter", self.resource_manager, dicoBatiment["Towncenter"][2]) # (Towncenter(render_pos, self.resource_manager)
         ent.current_image = 2
         self.entities.append(ent)
         
 
-        render_pos2 = self.world[self.a2][self.b2]["render_pos"]
+        render_pos2 = self.world[a2][b2]["render_pos"]
         ent2 = Batiment(render_pos2, "Towncenter", self.resource_manager, dicoBatiment["Towncenter"][2], team="red") # (Towncenter(render_pos, self.resource_manager)
         ent2.current_image = 2
         self.entities.append(ent2) # A CHANGER SI DEFFERENT EN FONCTION DES TEAMS
 
-        self.storage_tile = self.world[self.a][self.b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
+        self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
         self.spawn_unit_autour_caserne("Villageois",self.storage_tile)    #Spawn villageois initial
         
         #self.storage_tile_IA = self.world[a2][b2]
         #self.spawn_unit_autour_caserne("Villageois",self.storage_tile, team="red")    #Spawn villageois initial
 
-        self.towncenter_posx=self.a
-        self.towncenter_posy=self.b
-        self.towncenter_IA_posx=self.a2
-        self.towncenter_IA_posy=self.b2
-
-        self.batiment[self.a][self.b] = ent
-        self.batiment[self.a2][self.b2] = ent2
+        self.towncenter_posx=a
+        self.towncenter_posy=b
+        self.towncenter_IA_posx=a2
+        self.towncenter_IA_posy=b2
+        self.batiment[a][b] = ent
+        self.batiment[a2][b2] = ent2
 
         for i in range (2):
             for j in range (2):
-              self.world[self.a + i][self.b + j]["tile"].tile_batiment = self.world[self.a][self.b]
+              self.world[a + i][b + j]["tile"].tile_batiment = self.world[a][b]
+              self.world[a2 + i][b2 + j]["tile"].tile_batiment = self.world[a2][b2]
 
         for i in range (3):
             for j in range (3):
-                self.world[self.a+j][self.b+i]["collision"] = False
-                self.world[self.a+j][self.b+i]["tile"].ressource.typeRessource = ""
-                self.world[self.a+j][self.b+i]["tile"].ressource.nbRessource = 0
-                self.collision_matrix[self.b+i][self.a+j] = 1
-                self.world[self.a2+j][self.b2+i]["collision"] = False
-                self.world[self.a2+j][self.b2+i]["tile"].ressource.typeRessource = ""
-                self.world[self.a2+j][self.b2+i]["tile"].ressource.nbRessource = 0
-                self.collision_matrix[self.b2+i][self.a2+j] = 1
+                self.world[a+j][b+i]["collision"] = False
+                self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
+                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
+                self.collision_matrix[b+i][a+j] = 1
+                self.world[a2+j][b2+i]["collision"] = False
+                self.world[a2+j][b2+i]["tile"].ressource.typeRessource = ""
+                self.world[a2+j][b2+i]["tile"].ressource.nbRessource = 0
+                self.collision_matrix[b2+i][a2+j] = 1
         for i in range (2):
             for j in range (2):
-                self.world[self.a+j][self.b+i]["collision"] = True
-                self.world[self.a+j][self.b+i]["tile"].setRessource(Ressource(0, ""))
-                self.collision_matrix[self.b+i][self.a+j] = 0
-                self.world[self.a2+j][self.b2+i]["collision"] = True
-                self.world[self.a2+j][self.b2+i]["tile"].setRessource(Ressource(0, ""))
-                self.collision_matrix[self.b2+i][self.a2+j] = 0
+                self.world[a+j][b+i]["collision"] = True
+                self.world[a+j][b+i]["tile"].setRessource(Ressource(0, ""))
+                self.collision_matrix[b+i][a+j] = 0
+                self.world[a2+j][b2+i]["collision"] = True
+                self.world[a2+j][b2+i]["tile"].setRessource(Ressource(0, ""))
+                self.collision_matrix[b2+i][a2+j] = 0
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 
@@ -735,6 +736,18 @@ class World:
 
 
 
+    def delete_batiment2(self,x,y):
+
+        for i in range(2):
+            for j in range(2):
+                self.collision_matrix[y+i][x+j] = 1  # Free the last tile from collision
+                self.world[x+i][y+j]["collision"] = False
+
+                self.batiment[x+i][y+j] = None
+
+                self.selected = False
+                self.temp = 0
+
     def delete_batiment(self,x,y):
 
 
@@ -745,3 +758,4 @@ class World:
 
         self.selected = False
         self.temp = 0
+

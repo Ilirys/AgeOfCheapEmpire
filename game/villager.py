@@ -77,7 +77,7 @@ class Villager(Worker):
                     # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
                     if self.path: self.path.pop()
 
-                    if self.world.unites[x][y] != None:  # Condition d'attaque
+                    if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.farm = False
@@ -89,12 +89,12 @@ class Villager(Worker):
                         self.farm = True
                         self.construire = False
                         self.attack_bati = False
-                    elif self.world.batiment[x][y]: #and self.team == self.world.batiment[x][y].team
+                    elif self.world.batiment[x][y] and self.team == self.world.batiment[x][y].team :
                         self.cible = self.dest_tile
                         self.farm = False
                         if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
                             self.transfer_resources()
-                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
                         self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]#self.world.world[x][y]["tile"].tile_batiment
 
                         self.attack_bati = True

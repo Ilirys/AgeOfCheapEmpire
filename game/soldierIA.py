@@ -21,12 +21,13 @@ class SoldierIA(Soldier):
         self.IA = IA
         self.IA.warriors.append(self)
         self.world.unites_combat[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.team = team
     #override
 
     def update(self):
 
         if self.dest_tile == self.tile:
-            if self.attacked == True :
+            if self.attacked == True and self.attack == False:
                 self.create_path(self.attacker.tile["grid"][0], self.attacker.tile["grid"][1])
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
                     if self.cible.dest_tile == self.cible.tile:
@@ -76,6 +77,13 @@ class SoldierIA(Soldier):
                         self.world.unites[self.cible.dest_tile["grid"][0]][
                             self.cible.dest_tile["grid"][1]] == self.cible
                         self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
+                if self.cible.pv <= 0:
+                    self.attack = False
+                    self.attack_ani = False
+            elif self.attack_bati:
+                self.walkdown_animation = False
+                self.attack_ani = True
+                self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False

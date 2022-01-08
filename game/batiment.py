@@ -10,7 +10,7 @@ class Batiment:
         self.small_ruin_image = pygame.image.load("assets/RubbleSmall.png").convert_alpha()
         self.current_image = current_image
         self.images = [self.ruin_image, self.small_ruin_image, self.image]
-        
+
         self.name = name
         self.pos = pos 
         self.taille = dicoBatiment[name][1]
