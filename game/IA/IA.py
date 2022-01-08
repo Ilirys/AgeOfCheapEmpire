@@ -54,8 +54,8 @@ class IA:
         self.compteur_construction_bat = 0
 
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
-        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
-        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
+        #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
+        #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
 
         #Farm
         self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
@@ -91,6 +91,7 @@ class IA:
                     case 0:
                         if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]and self.number_of_buildings < 1:
                             self.find_and_place_building("Barrack", 1)
+                        else: self.farm(self.wood_list_iterator, 1)
                         self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
                         if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Barrack"][2] + 100)):
                             self.compteur_construction_bat = 0
@@ -126,11 +127,9 @@ class IA:
                             if self.number_of_buildings >= 5:
                                 self.evolution += 1
                                 
-            self.ressource_manager.resources["wood"] += 25
-            # self.attack_villagers()
-            self.farm(self.wood_list_iterator, 3)
+            #self.ressource_manager.resources["wood"] += 25
             
-
+            
     def attack_villagers(self):
         if self.attacking == False:
             for villager_x in self.world.villager:
@@ -231,7 +230,6 @@ class IA:
                 if unit != None and not unit.busy: count += 1
         return count
 
-
     def load_farm_list(self, ressource, ressource_list):      #Trouve en faisant le contour en spirale du towcenter les cases contenant les ressources spécifiées et les mets dans leur liste 
         self.cant_turn_anywhere = 0                             
         self.x = self.build_position_x
@@ -299,7 +297,6 @@ class IA:
             for y in range(self.world.grid_length_y):
                 self.world.world[x][y]["visited"] = False
 
-
     def init_list_ressource(self):
         self.load_farm_list("food", self.food_list) 
         self.reset_world_visted_tiles()
@@ -320,9 +317,6 @@ class IA:
                         villager.busy = True
                         self.farmers.append(villager)
                         
-                    
-         
-
     def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
         if (not self.world.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]):
             if unit_name == "Villageois":
