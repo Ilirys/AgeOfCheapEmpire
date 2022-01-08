@@ -65,12 +65,14 @@ class Soldier(Worker):
 
     # #Override
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
                 self.temp = 0
         elif self.attack_ani == True and self.attack == True:
+            if self.temp + 0.2 >= 9:
+                self.temp = 0
             self.temp += 0.2
             if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
                 self.image = self.animation_attack_up[int(self.temp)]
@@ -94,9 +96,11 @@ class Soldier(Worker):
 
     #Override
     def delete(self):
-        self.temp += 0.1
-        self.image = self.animation_mort[int(self.temp)]
-        if self.temp >= 9:
+        #if self.temp + 0.1 > 11 :
+            #self.temp = 0
+        #self.temp += 0.1
+        #self.image = self.animation_mort[int(self.temp)]
+        #if self.temp >= 10.9:
 
             self.world.entities.remove(self)
 

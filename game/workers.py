@@ -26,7 +26,7 @@ class Worker:
         self.temp = 0
         self.animation = self.world.animation.villager_walk
         self.animation_mort = self.world.animation.villager_mort
-        self.movestraight_animation = False
+        self.walkdown_animation = False
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
         self.attack_ani = False
         self.farm_ani = False
@@ -47,7 +47,7 @@ class Worker:
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
-        self.cible = self
+        self.cible = 0
         self.dest_tile = self.tile
         
         #Attaque
@@ -56,7 +56,7 @@ class Worker:
         self.dmg = 1
         self.range = 2
         self.temp_tile_a = self.tile
-
+        self.isDead = False
 
         #Farm
         self.farm = False
@@ -77,6 +77,7 @@ class Worker:
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         self.mouse_to_grid(0,0,self.camera.scroll)
+        self.create_path(self.tile["grid"][0],self.tile["grid"][1])
         
     def create_path(self, x, y):
         searching_for_path = True
@@ -118,13 +119,13 @@ class Worker:
                     # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
                     if self.path: self.path.pop()
 
-                    if self.world.unites[x][y] != None:  # Condition d'attaque
+                    if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
-                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
-                        self.cible =   self.world.batiment[[self.world.world[x][y]["tile"].tile_batiment][0]][[self.world.world[x][y]["tile"].tile_batiment][1]]  #self.world.world[x][y]["tile"].tile_batiment
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team :
+                        self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
                         self.attack_bati = True
 
 
@@ -228,9 +229,10 @@ class Worker:
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+                    self.cible = 0
             elif self.attack_bati:
-                self.movestraight_animation = False
-                #self.attack_ani = True
+                self.walkdown_animation = False
+                self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False
@@ -244,7 +246,7 @@ class Worker:
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -264,12 +266,12 @@ class Worker:
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
         
                 
 
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp +=0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):

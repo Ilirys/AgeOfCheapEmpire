@@ -46,10 +46,9 @@ class Game:
 
         #entities 
         self.entities = []
-        
-        # resource manager
+
+        # resource manager IA
         self.resource_manager = Ressource()
-        self.ressource_manager_IA = Ressource()
         self.resource_manager.restore_save()
 
         # hud
@@ -78,6 +77,10 @@ class Game:
 
         # IA
         self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock)
+
+        # resource manager IA
+        self.ressource_manager_IA = self.IA.ressource_manager
+
 
         #Unité
         # Worker(self.world.world[1][1], self.world,self.camera)

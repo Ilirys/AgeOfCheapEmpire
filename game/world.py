@@ -40,6 +40,13 @@ class World:
         self.world = self.create_world()
         self.collision_matrix = self.create_collision_matrix()
 
+        # towncenter positions
+
+        self.towncenter_posx = 0
+        self.towncenter_posy = 0
+        self.towncenter_IA_posx = 0
+        self.towncenter_IA_posy = 0
+
         self.animation = Animation()
         
         #Units and their corresponding save
@@ -62,6 +69,9 @@ class World:
                                                                         
         self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.unites_combat = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
 
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -230,7 +240,10 @@ class World:
                         self.hud.display_unit_icons = False                
 
                     if batiment.pv < 0:
-                        self.delete_batiment(x,y)
+                        if batiment.name == "Barrack" or batiment.name == "Towncenter":
+                            self.delete_batiment2(x,y)
+                        else:
+                            self.delete_batiment(x,y)
                         self.hud.select_surface_empty = True
                 # draw units
                 unites = self.unites[x][y]
@@ -256,7 +269,9 @@ class World:
                         unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
                             
                     if unites.pv <= 0:
+                        unites.isDead = True
                         unites.delete()
+
                         self.hud.select_surface_empty = True
                 # minimap hud
                 if definitions.afficher_minimap == "oui":
@@ -443,13 +458,13 @@ class World:
         self.towncenter_IA_posx=a2
         self.towncenter_IA_posy=b2
         self.towncenterIA_tile = self.world[a2][b2]
-
         self.batiment[a][b] = ent
         self.batiment[a2][b2] = ent2
 
         for i in range (2):
             for j in range (2):
               self.world[a + i][b + j]["tile"].tile_batiment = self.world[a][b]
+              self.world[a2 + i][b2 + j]["tile"].tile_batiment = self.world[a2][b2]
 
         for i in range (3):
             for j in range (3):
@@ -756,6 +771,18 @@ class World:
 
 
 
+    def delete_batiment2(self,x,y):
+
+        for i in range(2):
+            for j in range(2):
+                self.collision_matrix[y+i][x+j] = 1  # Free the last tile from collision
+                self.world[x+i][y+j]["collision"] = False
+
+                self.batiment[x+i][y+j] = None
+
+                self.selected = False
+                self.temp = 0
+
     def delete_batiment(self,x,y):
 
 
@@ -766,3 +793,4 @@ class World:
 
         self.selected = False
         self.temp = 0
+
