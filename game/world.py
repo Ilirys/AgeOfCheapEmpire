@@ -292,10 +292,10 @@ class World:
                 )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
         
-        # mouse_pos = pygame.mouse.get_pos()
-        # grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-        # txt = str(grid_pos)
-        # draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        mouse_pos = pygame.mouse.get_pos()
+        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        txt = str(grid_pos)
+        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
         
 
 
@@ -337,6 +337,7 @@ class World:
     def grid_to_world(self, grid_x, grid_y):    #Renvoit un dictionnaire avec notamment des coordonnées isométriques pour une vue 2.5D
         rien = Ressource(0,"")
         tile = Tile(grid_x,grid_y,0, rien ,0)
+        visited = False
         #Matrice avec coordonées carthésiennes
         rect = [
             (grid_x * TILE_SIZE, grid_y * TILE_SIZE),
@@ -356,6 +357,7 @@ class World:
             "iso_poly": iso_poly,
             "render_pos": [minx,miny],
             "tile": tile,
+            "visited": visited,
             "collision": False if tile.nomElement == "" else True
         }
         return out
@@ -689,6 +691,8 @@ class World:
                 self.world = restore_world_dto.world
                 self.collision_matrix = restore_world_dto.collision_matrix
                 self.storage_tile = restore_world_dto.storage_tile
+                self.towncenterIA_tile = restore_world_dto.towncenterIA_tile
+                self.towncenter_tile = restore_world_dto.towncenter_tile
                 input.close()
         except Exception as e: print("An error occured while loading Map save:", e)
 
@@ -720,7 +724,7 @@ class World:
     def save(self):
         try:   #Map save
             with open(self.map_save_file_path, "wb") as output:
-                worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile)
+                worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile, self.towncenterIA_tile, self.towncenter_tile)
                 pickle.dump(worker_dto,output)
                 output.close()
         except Exception as e: print("Couldnt dump map save in file", e)

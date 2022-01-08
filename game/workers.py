@@ -97,7 +97,7 @@ class Worker:
                     self.attack = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0 :
+                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0  or self.dest_tile["tile"].ressource.getNbRessources() != 0 :
                     # Reinitialise la derniere case de destination et la cible
                     self.cible = None
 
@@ -157,6 +157,7 @@ class Worker:
             #collision matrix (for pathfinding and buildings): Active collision for the current tile 
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
@@ -260,7 +261,6 @@ class Worker:
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
-                self.path_index += 1
                 self.progression = 0
 
         else:

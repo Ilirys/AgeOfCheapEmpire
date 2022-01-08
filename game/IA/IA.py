@@ -54,6 +54,28 @@ class IA:
         self.compteur_construction_bat = 0
 
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
+        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
+        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
+
+        #Farm
+        self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
+        self.x = self.build_position_x
+        self.y = self.build_position_y + 1
+        self.directions =cycle(["x_forwards", "y_backwards", "x_backwards", "y_forwards"])
+        self.current_direction = next(self.directions)
+        self.number_of_villagers_farming = 0
+
+        self.wood_list = [] #La liste des cases arbres les plus proches du towncenter IA, trié. (Premier element c'est la case de world qui contient l'arbre le plus proche)
+        self.food_list = []
+        self.stone_list = []
+        self.gold_list = []
+        self.wood_list_iterator = iter(self.wood_list)  #Pour parcourir les cases où envoyer les villageois farm
+        self.food_list_iterator = iter(self.food_list)
+        self.stone_list_iterator = iter(self.stone_list)
+        self.gold_list_iterator = iter(self.gold_list)
+        self.init_list_ressource()
+        for e in self.food_list:
+            print (e["grid"][0], e["grid"][1])
 
         #Events
         self.take_decision_event = pygame.USEREVENT + 1
@@ -106,6 +128,7 @@ class IA:
                                 
             self.ressource_manager.resources["wood"] += 25
             # self.attack_villagers()
+            self.farm(self.wood_list_iterator, 3)
             
 
     def attack_villagers(self):
@@ -207,6 +230,98 @@ class IA:
             for unit in unit_x:
                 if unit != None and not unit.busy: count += 1
         return count
+
+
+    def load_farm_list(self, ressource, ressource_list):      #Trouve en faisant le contour en spirale du towcenter les cases contenant les ressources spécifiées et les mets dans leur liste 
+        self.cant_turn_anywhere = 0                             
+        self.x = self.build_position_x
+        self.y = self.build_position_y + 1
+        self.directions =cycle(["x_forwards", "y_backwards", "x_backwards", "y_forwards"])
+        self.current_direction = next(self.directions)
+        while self.cant_turn_anywhere < 600:
+            if self.x > self.world.grid_length_x: 
+                self.x = self.world.grid_length_x - 1
+                self.current_direction = next(self.directions)
+            if self.y > self.world.grid_length_y: 
+                self.y = self.world.grid_length_y - 1
+                self.current_direction = next(self.directions)
+            if self.y < 0 : 
+                self.y = 0
+                self.current_direction = next(self.directions)
+            if self.x < 0 : 
+                self.x = 0
+                self.current_direction = next(self.directions)
+                
+            if self.x in range(0,self.world.grid_length_x) and self.y in range(0,self.world.grid_length_y):
+                self.world.world[self.x][self.y]["visited"] = True
+
+                if self.world.world[self.x][self.y ]["tile"].ressource.typeRessource == ressource:
+                    if self.world.world[self.x][self.y] not in ressource_list: ressource_list.append(self.world.world[self.x][self.y])
+
+            if self.current_direction == "x_forwards":
+                if self.x + 1 in range(0,self.world.grid_length_x) and self.y -1 in range(0,self.world.grid_length_y) and not self.world.world[self.x][self.y -1]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.y -= 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.x += 1
+                    self.cant_turn_anywhere += 1		
+
+            elif self.current_direction == "y_backwards":
+                if self.x - 1 in range(0,self.world.grid_length_x) and self.y - 1 in range(0,self.world.grid_length_y) and not self.world.world[self.x - 1][self.y ]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.x -= 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.y -= 1
+                    self.cant_turn_anywhere += 1
+
+            elif self.current_direction == "x_backwards":
+                if self.x - 1 in range(0,self.world.grid_length_x) and self.y + 1 in range(0,self.world.grid_length_y) and not self.world.world[self.x ][self.y + 1 ]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.y += 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.x -= 1
+                    self.cant_turn_anywhere += 1
+
+            elif self.current_direction == "y_forwards":
+                if self.x + 1 in range(0,self.world.grid_length_x) and self.y + 1 in range(0,self.world.grid_length_y) and not self.world.world[self.x + 1][self.y ]["visited"]:
+                    self.current_direction = next(self.directions)
+                    self.x += 1
+                    self.cant_turn_anywhere = 0 
+                else: 
+                    self.y += 1
+                    self.cant_turn_anywhere += 1
+
+    def reset_world_visted_tiles(self):
+        for x in range(self.world.grid_length_x):
+            for y in range(self.world.grid_length_y):
+                self.world.world[x][y]["visited"] = False
+
+
+    def init_list_ressource(self):
+        self.load_farm_list("food", self.food_list) 
+        self.reset_world_visted_tiles()
+        self.load_farm_list("wood", self.wood_list)
+        self.reset_world_visted_tiles()
+        self.load_farm_list("stone", self.stone_list)
+        self.reset_world_visted_tiles()
+        # self.load_farm_list("gold", self.gold_list)
+
+    def farm(self, ressource_to_farm_iterator, number_of_villagers):  #Si on veut envoyer deux villageois farm du bois --> self.farm(self.wood_list_iterator, 2)    
+        for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
+           for villager in villager_x:
+               if (villager != None and not villager.busy and len(self.farmers) < number_of_villagers):
+                    tile = next(ressource_to_farm_iterator, -1)
+                    if tile != -1:
+                        # print("here",tile["grid"][0], tile["grid"][1] )
+                        villager.create_path(tile["grid"][0], tile["grid"][1], True)
+                        villager.busy = True
+                        self.farmers.append(villager)
+                        
+                    
+         
 
     def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
         if (not self.world.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]):
