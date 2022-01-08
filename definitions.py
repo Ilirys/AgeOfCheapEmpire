@@ -1,4 +1,5 @@
 import pygame
+
 CURRENT_SPEED = "fast"
 #Time-based settings
 UNITS_SPAWN_TIME = 10
@@ -7,7 +8,7 @@ UNITS_SPAWN_TIME = 10
 SAVED_GAME_FOLDER = "data/"
 
 #Speed
-DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "potato_pc": 8}
+DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "potato_pc": 100}
 CURRENT_SPEED = "fast"
 
 #Screen

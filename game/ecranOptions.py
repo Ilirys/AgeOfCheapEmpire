@@ -32,19 +32,17 @@ class Options:
                 image = pygame.image.load('assets/ecran_options3.png').convert_alpha()
                 self.screen.blit(image, (0, 0))
 
-
  
             draw_text(self.screen, 'Options', 30, WHITE, (20, 20))
             mx, my = pygame.mouse.get_pos()  # récupération des clics de souris
 
-            button_ok = pygame.Rect(600, 900, 280, 40)  # les boutons (ici, invisibles) -> bouton ok
-            button_normal = pygame.Rect(170, 250, 15, 15)
+            button_normal = pygame.Rect(170, 250, 15, 15) # les boutons (ici, invisibles) -> bouton ok
             button_fast = pygame.Rect(170, 300, 15, 15)
             button_veryfast = pygame.Rect(170, 350, 15, 15)
-            button_charg = pygame.Rect(900,900,280,40)
+            button_ok = pygame.Rect(897,903,278,40)
 
             if button_ok.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (594, 902, 277, 40), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (896, 902, 277, 40), 3)
                 if click:
                     self.playing=False
 
@@ -63,12 +61,6 @@ class Options:
                 if click:
                     definitions.case_coche = 2
                     definitions.CURRENT_SPEED = "veryfast"
-
-            if button_charg.collidepoint((mx, my)):
-                pygame.draw.rect(self.screen, (255, 255, 255), (894, 902, 277, 40), 3)
-                if click:
-                    definitions.SAVE_GAME_FOLDER = "data/"
-
 
 
 

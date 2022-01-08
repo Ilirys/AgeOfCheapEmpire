@@ -2,7 +2,7 @@ import pygame as pg
 import game.definitions as definitions
 
 from game.BIGDADDY import Bigdaddy
-
+from .definitions import *
 
 pg.init()
 pg.font.init()
@@ -64,6 +64,15 @@ class Chat:
                     
                     elif self.text == "STEROIDS":
                         print("training, building, farming are instantaneous for every players")
+
+                    elif self.text == "speed = normal":
+                        definitions.CURRENT_SPEED = "normal"
+                    elif self.text == "speed = fast":
+                        definitions.CURRENT_SPEED = "fast"
+                    elif self.text == "speed = veryfast":
+                        definitions.CURRENT_SPEED = "veryfast"
+                    elif self.text == "speed = god":
+                        definitions.CURRENT_SPEED = "potato_pc"
 
 
                     elif self.text == "minimap":
