@@ -73,14 +73,19 @@ class SoldierIA(Soldier):
                 self.attack_ani = True
                 self.cible.pv -= self.dmg
                 # self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
-                if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != \
-                        self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
+                if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
                     if self.cible.dest_tile == self.cible.tile:
-                        self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]][
-                            "collision"] = True
-                        self.world.unites[self.cible.dest_tile["grid"][0]][
-                            self.cible.dest_tile["grid"][1]] == self.cible
+                        self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
+                        self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
                         self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
+                        self.cible.dest_tile = 0
+                if self.cible.pv <= 0:
+                    self.attack = False
+                    self.attack_ani = False
+            elif self.attack_bati:
+                self.walkdown_animation = False
+                #self.attack_ani = True
+                self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
@@ -92,7 +97,7 @@ class SoldierIA(Soldier):
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -112,14 +117,14 @@ class SoldierIA(Soldier):
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
 
     def distance_tile(self,tile):
         return sqrt((self.tile["grid"][0] - tile["grid"][0])**2 + (self.tile["grid"][1] - tile["grid"][1])**2)
 
 
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):

@@ -10,6 +10,7 @@ from.archerIA import ArcherIA
 from .villagerIA import VillagerIA
 from ..world import World
 from ..definitions import IA_DECISION_TIME
+from ..villager import Villager
 
 
 class IA:
@@ -84,7 +85,8 @@ class IA:
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
 
-        if e.type == self.take_decision_event:
+        self.attack_villagers()
+        """if e.type == self.take_decision_event:
             print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"], " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
             if self.strategy == "defensive":  
                 match self.evolution:
@@ -126,8 +128,8 @@ class IA:
                             self.action_faite = 0
                             self.compteur_construction_bat = 0
                             if self.number_of_buildings >= 5:
-                                self.evolution += 1
-                                
+                                self.evolution += 1"""
+
             #self.ressource_manager.resources["wood"] += 25
             
             
@@ -458,10 +460,10 @@ class IA:
 
     def attack_player_warriors(self):
             self.attacking = True
-            for unit_x in self.world.unites_combat:
+            for unit_x in self.world.unites:
                 for unit in unit_x:
                     for w in self.warriors:
-                        if unit is not None and w is not None:
+                        if unit is not None and w is not None and isinstance(unit,Villager) == False:
                             #print(unit.team)
                             if w.attack == False: # pour attaquer unités une par une sans appeller create path en boucle
                                 if w.cible == 0:
@@ -475,11 +477,11 @@ class IA:
         self.attacking = True
         for w in self.warriors:
             #print(1)
-            if self.player_towncenter is not None and w is not None:
+            if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]] is not None and w is not None:
                 #print(2)
-                if self.player_towncenter.pv > 0:
-                    if self.player_towncenter.team != w.team and w.attack_bati == False:
-                        w.create_path(self.world.towncenter_posx, self.world.towncenter_posy)
+                if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].pv > 0:
+                    if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].team != w.team and w.attack_bati == False:
+                        w.create_path(self.player_towncenter["grid"][0], self.player_towncenter["grid"][1])
                         print(w.cible.pv)
 
 
