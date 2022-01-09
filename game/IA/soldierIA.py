@@ -21,6 +21,7 @@ class SoldierIA(Soldier):
         self.attacked = False
         self.IA = IA
         self.busy = False 
+        self.IA.ressource_manager.apply_cost_to_resource(self.name)
 
         #Lists
         self.IA.warriors.append(self)

@@ -120,7 +120,7 @@ class Game:
 
         self.screen.fill(BLACK) #Arrière plan
         self.world.draw(self.screen, self.camera) #Fonction de dessin de la map
-        draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
+        draw_text(self.screen,'FPS = {} IA = {}'.format(round(self.clock.get_fps()), self.IA.ressource_manager.resources) ,25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
         self.minimap.draw(self.screen) #Affichage de la minimap

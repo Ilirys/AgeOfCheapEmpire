@@ -71,7 +71,7 @@ class Worker:
         self.batiment_pv = 0
 
         #init
-        self.world.resource_manager.apply_cost_to_resource(self.name)
+        if self.team == "blue": self.world.resource_manager.apply_cost_to_resource(self.name)
         self.path_index = 0
         self.path = []
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
