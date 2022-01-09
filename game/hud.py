@@ -134,7 +134,7 @@ class Hud:
         
         elif self.display_unit_icons:
             for icon in self.unit_icons:
-                if self.resource_manager.is_affordable(icon["name"]):
+                if self.resource_manager.is_affordable(icon["name"]) and self.resource_manager.population < self.resource_manager.max_population:
                    icon["affordable"] = True
                 else:
                    icon["affordable"] = False
@@ -179,11 +179,11 @@ class Hud:
                  screen.blit(icon["icon"], icon["rect"].topleft)   
 
     
-    def blit_hud(self, imgtoblit, pv, screen, ressource="", type_ressource=""):
+    def blit_hud(self, imgtoblit, pv, screen, ressource="", type_ressource="", population="", max_population=""):
         self.select_surface_empty = False
         self.select_surface.blit(self.images_hud[imgtoblit], (0, 0))
         self.unit_pv_img = self.font.render(pv, True, WHITE)
-        self.unit_ressource_img = self.font.render(type_ressource + " " + ressource, True, WHITE)        
+        self.unit_ressource_img = self.font.render(type_ressource + " " + ressource + " Population   " + population + "        Population maximum   " + max_population, True, WHITE)        
 
     def load_images(self):
 

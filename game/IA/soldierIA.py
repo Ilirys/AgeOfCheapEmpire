@@ -22,6 +22,7 @@ class SoldierIA(Soldier):
         self.IA = IA
         self.busy = False 
         self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
 
         #Lists
         self.IA.warriors.append(self)

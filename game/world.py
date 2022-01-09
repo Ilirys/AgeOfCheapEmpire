@@ -144,6 +144,7 @@ class World:
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
                         self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
+                        if self.hud.selected_tile["name"] == "House": self.resource_manager.max_population += 1
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
@@ -221,20 +222,20 @@ class World:
                             if (batiment.team=="blue"):
                                 if (batiment.name=="Towncenter"):
                                     self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Storage"):
                                     self.hud.display_unit_icons = False
-                                    self.hud.blit_hud("hudGrenier", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudGrenier", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
                                 elif (batiment.name=="House"):
                                     self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudHouse", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Farm"):
                                     self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudFarm", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudFarm", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Barrack"):
                                     self.hud.display_unit_icons = True
-                                    self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudCaserne", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                

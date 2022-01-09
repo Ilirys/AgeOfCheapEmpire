@@ -3,9 +3,11 @@ from .definitions import *
 import pickle
 class Ressource:
 
-    def __init__(self, *args, team="blue"):
+    def __init__(self, *args, team="blue", max_population= definitions.PLAYER_POPULATION):
 
         self.team=team
+        self.max_population = max_population
+        self.population = 0
         if(len(args)==0):
             self.nbRessources = 0
             self.typeRessource = ""
@@ -69,6 +71,7 @@ class Ressource:
                 self.resources = res_manager.resources
                 self.nbRessources = res_manager.nbRessources
                 self.typeRessource = res_manager.typeRessource
+                self.max_population = res_manager.max_population
                 input.close()
         except Exception as e: print("An error occured while loading resource save:", e)
 

@@ -1,11 +1,14 @@
 import pygame
 
+#Population
+PLAYER_POPULATION = 10
+
 #Time-based settings
 UNITS_SPAWN_TIME = 10
 
 # IA 
 IA_DECISION_TIME = 1000  #(L'IA prendra une decision chaque X ms au lieu de chaque frame, comme ça 0 perte de fps)
-
+IA_POPULATION = 10
 #Speed
 DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "veryfast": 5, "potato_pc": 8}
 
