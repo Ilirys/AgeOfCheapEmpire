@@ -446,7 +446,6 @@ class World:
         self.entities.append(ent2) # A CHANGER SI DEFFERENT EN FONCTION DES TEAMS
 
         self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
-        self.spawn_unit_autour_caserne("Villageois",self.storage_tile)    #Spawn villageois initial
         
         #self.storage_tile_IA = self.world[a2][b2]
         #self.spawn_unit_autour_caserne("Villageois",self.storage_tile, team="red")    #Spawn villageois initial
@@ -484,6 +483,8 @@ class World:
                 self.world[a2+j][b2+i]["collision"] = True
                 self.world[a2+j][b2+i]["tile"].setRessource(Ressource(0, ""))
                 self.collision_matrix[b2+i][a2+j] = 0
+                
+        self.spawn_unit_autour_caserne("Villageois",self.storage_tile)    #Spawn villageois initial
         
     def load_images(self): #Chargement des images, retourne le dictionnaire d'images
 

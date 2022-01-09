@@ -77,7 +77,6 @@ class Worker:
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(self.tile["grid"][0],self.tile["grid"][1])
         
     def create_path(self, x, y):
         searching_for_path = True
@@ -96,7 +95,6 @@ class Worker:
 
                     self.progression = 0
                     self.attack = False
-
                     searching_for_path = False
                 elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0  or self.dest_tile["tile"].ressource.getNbRessources() != 0 :
                     # Reinitialise la derniere case de destination et la cible

@@ -55,8 +55,8 @@ class IA:
 
         self.compteur_construction_bat = 0
 
-        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
-        #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
+        # VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
+        SoldierIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
         #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
 
         #Farm
@@ -76,16 +76,16 @@ class IA:
         self.stone_list_iterator = iter(self.stone_list)
         self.gold_list_iterator = iter(self.gold_list)
         self.init_list_ressource()
-        for e in self.food_list:
-            print (e["grid"][0], e["grid"][1])
+        # for e in self.food_list:
+        #     print (e["grid"][0], e["grid"][1])
 
         #Events
         self.take_decision_event = pygame.USEREVENT + 1
         pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
-
-        self.attack_villagers()
+        if e.type == self.take_decision_event:
+            self.attack_villagers()
         """if e.type == self.take_decision_event:
             print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"], " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
             if self.strategy == "defensive":  
@@ -470,7 +470,7 @@ class IA:
                                     w.create_path(unit.tile["grid"][0], unit.tile["grid"][1]) # attaquer la premiere unités sachant que
                                 elif w.cible.isDead and self.world.unites_combat:
                                     w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
-                                    print(1)
+                                    # print(1)
 
 
     def attack_town_center(self):
@@ -482,7 +482,7 @@ class IA:
                 if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].pv > 0:
                     if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].team != w.team and w.attack_bati == False:
                         w.create_path(self.player_towncenter["grid"][0], self.player_towncenter["grid"][1])
-                        print(w.cible.pv)
+                        # print(w.cible.pv)
 
 
 
