@@ -22,7 +22,7 @@ MAP_SIZE = 50
 
 #Resource
 LES_RESSOURCES = ["wood", "food", "gold", "stone"]
-INIT_RESSOURCE = [50, 100, 10, 0]
+INIT_RESSOURCE = [200, 200, 200, 200]
 NB_RESSOURCES = [300,100,600,600]  #Nombre de bois par arbres, de food par buisson, de gold etc
 
 #Fonts
