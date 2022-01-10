@@ -15,7 +15,6 @@ from .utils import draw_text
 from .camera import Camera
 from .hud import Hud
 from .minimap import Minimap
-from .units import *
 from .villager import *
 from pygame import *
 from .benchmark import Benchmark

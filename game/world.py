@@ -267,6 +267,24 @@ class World:
 
                         screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
                         unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+
+                    #barre de HP des unités
+                    if unites.pv != unites.pv_max:
+                        print("ARTHUR")
+                        pygame.draw.rect(screen, (140, 132, 132), [unites.pos_x, unites.pos_y, unites.pv_max, 5])
+                        if unites.pv >= 0.75*unites.pv_max:
+                            #afficher barre de hp verte quand t'es quasi full life
+                            pygame.draw.rect(screen, (44, 205, 44), [unites.pos_x, unites.pos_y, unites.pv, 5])
+                        elif unites.pv >= 0.50 * unites.pv_max:
+                            # afficher barre de hp jaune quand t'es mid life
+                            pygame.draw.rect(screen, (255, 236, 0), [unites.pos_x, unites.pos_y, unites.pv, 5])
+                        elif unites.pv >= 0.25 * unites.pv_max:
+                            # afficher barre de hp orange quand t'es mal
+                            pygame.draw.rect(screen, (255, 128, 0), [unites.pos_x, unites.pos_y, unites.pv, 5])
+                        elif unites.pv > 0:
+                            # afficher barre de hp rouge quand t'es dans la barba-sauce
+                            pygame.draw.rect(screen, (236, 15, 15), [unites.pos_x, unites.pos_y, unites.pv, 5])
+
                             
                     if unites.pv <= 0:
                         unites.isDead = True
