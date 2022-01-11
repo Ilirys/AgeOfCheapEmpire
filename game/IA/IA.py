@@ -54,7 +54,8 @@ class IA:
         self.compteur_construction_bat = 0
 
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
-        #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
+        VillagerIA(self.world.world[self.player_towncenter["grid"][0] - 1][self.player_towncenter["grid"][1] + 1], self.world,self.camera, self)
+        VillagerIA(self.world.world[self.player_towncenter["grid"][0] - 1][self.player_towncenter["grid"][1] + 3], self.world,self.camera, self)
         #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
 
         #Farm

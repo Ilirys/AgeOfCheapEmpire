@@ -270,20 +270,21 @@ class World:
 
                     #barre de HP des unités
                     if unites.pv != unites.pv_max:
-                        print("ARTHUR")
-                        pygame.draw.rect(screen, (140, 132, 132), [unites.pos_x, unites.pos_y, unites.pv_max, 5])
+                        bon_placement_rectangle_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, unites.pv_max * 0.02, 5]
+                        bon_placement_barre_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, unites.pv* 0.02, 5]
+                        pygame.draw.rect(screen, (140, 132, 132), bon_placement_rectangle_hp)
                         if unites.pv >= 0.75*unites.pv_max:
                             #afficher barre de hp verte quand t'es quasi full life
-                            pygame.draw.rect(screen, (44, 205, 44), [unites.pos_x, unites.pos_y, unites.pv, 5])
+                            pygame.draw.rect(screen, (44, 205, 44), bon_placement_barre_hp)
                         elif unites.pv >= 0.50 * unites.pv_max:
                             # afficher barre de hp jaune quand t'es mid life
-                            pygame.draw.rect(screen, (255, 236, 0), [unites.pos_x, unites.pos_y, unites.pv, 5])
+                            pygame.draw.rect(screen, (255, 236, 0), bon_placement_barre_hp)
                         elif unites.pv >= 0.25 * unites.pv_max:
                             # afficher barre de hp orange quand t'es mal
-                            pygame.draw.rect(screen, (255, 128, 0), [unites.pos_x, unites.pos_y, unites.pv, 5])
+                            pygame.draw.rect(screen, (255, 128, 0), bon_placement_barre_hp)
                         elif unites.pv > 0:
                             # afficher barre de hp rouge quand t'es dans la barba-sauce
-                            pygame.draw.rect(screen, (236, 15, 15), [unites.pos_x, unites.pos_y, unites.pv, 5])
+                            pygame.draw.rect(screen, (236, 15, 15), bon_placement_barre_hp)
 
                             
                     if unites.pv <= 0:
