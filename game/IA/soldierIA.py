@@ -82,6 +82,7 @@ class SoldierIA(Soldier):
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+                    self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
                 #self.attack_ani = True

@@ -85,7 +85,7 @@ class IA:
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
-            self.attack_villagers()
+            self.attack_player_warriors()
         """if e.type == self.take_decision_event:
             print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"], " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
             if self.strategy == "defensive":  
@@ -468,8 +468,9 @@ class IA:
                             if w.attack == False: # pour attaquer unités une par une sans appeller create path en boucle
                                 if w.cible == 0:
                                     w.create_path(unit.tile["grid"][0], unit.tile["grid"][1]) # attaquer la premiere unités sachant que
-                                elif w.cible.isDead and self.world.unites_combat:
-                                    w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
+                                #elif w.cible is not None:
+                                    #if w.cible.isDead and self.world.unites:
+                                        #w.create_path(unit.tile["grid"][0], unit.tile["grid"][1])
                                     # print(1)
 
 
