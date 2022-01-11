@@ -10,11 +10,11 @@ class Bouquet:
         self.random_spawn_wood = 5        #spawn permet de définir le nombre de "bouquet" de ressources
         self.random_spawn_stone = 1.5       #que l'on veut faire
         self.random_spawn_gold = 0.5
-        self.random_spawn_fruit = 1.5
+        self.random_spawn_fruit = 4
         self.debut_coeff_wood = 80        #debut/fin coeff permet de définir la taille des "bouquets"
         self.fin_coeff_wood = 100
         self.debut_coeff_other = 70
-        self.fin_coeff_other = 90
+        self.fin_coeff_other = 93
         self.M = [["    " for i in range(self.n)] for j in range(self.n)]
         self.MM = [["" for i in range(self.n)] for j in range(self.n)]
         self.M1 = self.creation_map()

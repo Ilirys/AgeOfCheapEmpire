@@ -32,6 +32,7 @@ class Ressource:
             "Soldier": {"food": 17},
             "horseman": {"food": 17},
             "Archer": {"food": 17},
+            "BIGDADDY": {"food": 30}
         }
 
         #Save

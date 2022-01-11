@@ -108,7 +108,7 @@ class Villager(Worker):
                         self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
                         self.temp_tile = None    
 
-                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
+                    if self.path: self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
 
                     self.progression = 0
 
