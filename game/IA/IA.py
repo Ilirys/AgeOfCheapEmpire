@@ -103,8 +103,8 @@ class IA:
                     case 1:
                         if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
                             self.spawn_unit_autour_caserne("Villageois", self.world.world[self.barrack_x][self.barrack_y])
-                            self.ressource_manager.resources["food"] -= 50
-                        self.number_of_buildings += 1
+                            self.number_of_buildings += 1
+                        else: self.farm(self.food_list_iterator, 1+self.number_of_buildings)
                         if self.number_of_buildings >= 3:
                             self.number_of_buildings = 0
                             self.evolution += 1
@@ -112,6 +112,7 @@ class IA:
                     case 2:
                         if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"] and self.number_of_buildings < 3:
                             self.find_and_place_building("Farm", 1)
+                        else: self.farm(self.wood_list_iterator, 1+self.number_of_buildings)
                         self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
                         if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Farm"][2] + 100)):
                             self.action_faite = 0
@@ -123,15 +124,22 @@ class IA:
                     case 3:
                         if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["House"]["wood"] and self.number_of_buildings < 5:
                             self.find_and_place_building("House", 1)
+                        else: self.farm(self.wood_list_iterator, 1+self.number_of_buildings)
                         self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
                         if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["House"][2] + 200)):
                             self.action_faite = 0
                             self.compteur_construction_bat = 0
                             if self.number_of_buildings >= 5:
                                 self.evolution += 1
-                                
-            #self.ressource_manager.resources["wood"] += 25
-            
+
+                    case 4:
+                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                            self.number_of_buildings += 1
+                        else: self.farm(self.food_list_iterator, 1+self.number_of_buildings)
+                        if self.number_of_buildings >= 5:
+                            self.number_of_buildings = 0
+                            self.evolution += 1        
             
     def attack_villagers(self):
         if self.attacking == False:
