@@ -92,7 +92,7 @@ class SoldierIA(Soldier):
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -112,14 +112,14 @@ class SoldierIA(Soldier):
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
 
     def distance_tile(self,tile):
         return sqrt((self.tile["grid"][0] - tile["grid"][0])**2 + (self.tile["grid"][1] - tile["grid"][1])**2)
 
 
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
