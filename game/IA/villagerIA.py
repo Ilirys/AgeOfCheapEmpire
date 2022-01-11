@@ -16,6 +16,7 @@ class VillagerIA(Villager):
         self.IA = IA
         self.IA.villagers[self.tile["grid"][0]][self.tile["grid"][1]] = self
         self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
         self.busy = False 
 
         #Farm

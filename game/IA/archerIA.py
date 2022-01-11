@@ -16,6 +16,7 @@ class ArcherIA(Archer):
         self.IA = IA
         self.busy = False 
         self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
         self.IA.warriors.append(self)
 
     # override
