@@ -42,6 +42,7 @@ class Animation:
         self.horseman_mort = self.animation_horseman_mort()
         self.archer_mort = self.animation_archer_mort()
         self.soldier_mort = self.animation_soldier_mort()
+        self.soldierIA_walk = self.animation_soldierIA_walk()
 
     def animation_villager_attack(self):
         villager_attack = []
@@ -587,6 +588,26 @@ class Animation:
         soldier_mort.append(pygame.image.load('assets/soldier/Halbadierdie010.png').convert_alpha())
         return soldier_mort
 
+
+
+    def animation_soldierIA_walk(self):
+        soldierIA_walk = []
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk001V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk002V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk003V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk004V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk005V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk006V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk007V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk008V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk009V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk010V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk011V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk012V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk013V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk014V2.png').convert_alpha())
+        soldierIA_walk.append(pygame.image.load('assets\soldierIA\Halbadierwalk015V2.png').convert_alpha())
+        return soldierIA_walk
 
 
 

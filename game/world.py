@@ -275,7 +275,7 @@ class World:
                         self.hud.select_surface_empty = True
                 # minimap hud
                 if definitions.afficher_minimap == "oui":
-                    self.minimap.tab_minimap[x][y] = GreenLightF
+                    self.minimap.tab_minimap[x][y] = GreenLight
                     if nomElement == "tree":
                         self.minimap.tab_minimap[x][y] = Green
                     elif nomElement == "stone":

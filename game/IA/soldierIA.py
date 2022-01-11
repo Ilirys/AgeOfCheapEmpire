@@ -16,7 +16,8 @@ from ..soldier import Soldier
 class SoldierIA(Soldier):
     def __init__(self,tile,world,camera, IA,pv=2000,team="red"):
         super().__init__(tile,world,camera, pv, team)
-        self.image_standby = pygame.image.load('assets/soldierIA/Halbadierattack011V2.png').convert_alpha()
+        self.image_standby = pygame.image.load('assets/soldierIA/Halbadierwalk001V2.png').convert_alpha()
+        self.animation = self.world.animation.animation_soldierIA_walk()
         self.attacker = 0
         self.attacked = False
         self.IA = IA
@@ -33,11 +34,12 @@ class SoldierIA(Soldier):
         if self.dest_tile == self.tile:
             if self.attacked == True :
                 self.create_path(self.attacker.tile["grid"][0], self.attacker.tile["grid"][1])
-                if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
-                    if self.cible.dest_tile == self.cible.tile:
-                        self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
-                        self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
-                        self.create_path(self.cible.tile["grid"][0],self.cible.tile["grid"][1])
+                if self.cible != 0:
+                    if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
+                        if self.cible.dest_tile == self.cible.tile:
+                            self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
+                            self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
+                            self.create_path(self.cible.tile["grid"][0],self.cible.tile["grid"][1])
             #self.create_path(15,15)
 
 
@@ -70,26 +72,27 @@ class SoldierIA(Soldier):
 
         if self.dest_tile == self.tile:
             if self.attack:
-                self.attack_ani = True
-                self.cible.pv -= self.dmg
-                # self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
-                if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
-                    if self.cible.dest_tile == self.cible.tile:
-                        self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
-                        self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
-                        self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
-                        self.cible.dest_tile = 0
-                if self.cible.pv <= 0:
-                    self.attack = False
-                    self.attack_ani = False
-                    self.cible = 0
-            elif self.attack_bati:
-                self.walkdown_animation = False
-                #self.attack_ani = True
-                self.cible.pv -= self.dmg
-                if self.cible.pv <= 0:
-                    self.attack = False
-                    self.attack_ani = False
+                if self.cible != 0:
+                    self.attack_ani = True
+                    self.cible.pv -= self.dmg
+                    # self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
+                    if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
+                        if self.cible.dest_tile == self.cible.tile:
+                            self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
+                            self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
+                            self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
+                            self.cible.dest_tile = 0
+                    if self.cible.pv <= 0:
+                        self.attack = False
+                        self.attack_ani = False
+                        self.cible = 0
+                elif self.attack_bati:
+                    self.walkdown_animation = False
+                    #self.attack_ani = True
+                    self.cible.pv -= self.dmg
+                    if self.cible.pv <= 0:
+                        self.attack = False
+                        self.attack_ani = False
 
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
