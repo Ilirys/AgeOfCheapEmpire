@@ -28,6 +28,7 @@ class Horseman(Worker):
         self.animation_mort = self.world.animation.horseman_mort
 
         self.image = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
+        self.image_standby = pygame.image.load('assets\horseman\Cavalierwalk001.png').convert_alpha()
         self.dmg = 5
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
@@ -92,7 +93,7 @@ class Horseman(Worker):
 
            if self.temp + 0.2 >= len(self.animation_attack):
                self.temp= 0
-       elif self.pv > 0: self.image = self.world.animation.horseman_standby
+       elif self.pv > 0: self.image = self.image_standby
        
     #Override
     def delete(self):

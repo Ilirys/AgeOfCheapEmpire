@@ -15,11 +15,14 @@ class HorsemanIA(Horseman):
         self.IA = IA
         self.busy = False 
         self.IA.warriors.append(self)
+        self.image_standby = pygame.image.load('assets\horsemanIA\Cavalierwalk001V2.png').convert_alpha()
+        self.animation = self.world.animation.horsemanIA_walk
 
     # override
 
     def update(self):
-
+        if self.tile == self.dest_tile:
+            self.create_path(40,40)
         # collision matrix (for pathfinding and buildings)
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True

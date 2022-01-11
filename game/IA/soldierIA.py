@@ -17,7 +17,7 @@ class SoldierIA(Soldier):
     def __init__(self,tile,world,camera, IA,pv=2000,team="red"):
         super().__init__(tile,world,camera, pv, team)
         self.image_standby = pygame.image.load('assets/soldierIA/Halbadierwalk001V2.png').convert_alpha()
-        self.animation = self.world.animation.animation_soldierIA_walk()
+        self.animation = self.world.animation.soldierIA_walk
         self.attacker = 0
         self.attacked = False
         self.IA = IA

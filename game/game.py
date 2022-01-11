@@ -86,8 +86,8 @@ class Game:
         Horseman(self.world.world[0][1], self.world,self.camera)
         Soldier(self.world.world[10][1], self.world, self.camera)
         SoldierIA(self.world.world[1][0], self.world,self.camera, self.IA)
-        # VillagerIA(self.world.world[1][0], self.world,self.camera, self.IA)
-        # ArcherIA(self.world.world[2][2], self.world,self.camera, self.IA)
+        HorsemanIA(self.world.world[1][0], self.world,self.camera, self.IA)
+        ArcherIA(self.world.world[2][2], self.world,self.camera, self.IA)
         
         #Save
         self.restore()

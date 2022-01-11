@@ -84,8 +84,8 @@ class IA:
         pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
-        if e.type == self.take_decision_event:
-            self.attack_player_warriors()
+        #if e.type == self.take_decision_event:
+            #self.attack_player_warriors()
         """if e.type == self.take_decision_event:
             print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"], " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
             if self.strategy == "defensive":  

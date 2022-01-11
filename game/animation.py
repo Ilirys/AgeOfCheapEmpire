@@ -43,6 +43,9 @@ class Animation:
         self.archer_mort = self.animation_archer_mort()
         self.soldier_mort = self.animation_soldier_mort()
         self.soldierIA_walk = self.animation_soldierIA_walk()
+        self.villagerIA_walk = self.animation_villagerIA_walk()
+        self.horsemanIA_walk = self.animation_horsemanIA_walk()
+        self.archerIA_walk = self.animation_archerIA_walk()
 
     def animation_villager_attack(self):
         villager_attack = []
@@ -130,6 +133,7 @@ class Animation:
         villager_walk.append(pygame.image.load('assets/sprites/villager/Villagerwalk012.png').convert_alpha())
         villager_walk.append(pygame.image.load('assets/sprites/villager/Villagerwalk013.png').convert_alpha())
         villager_walk.append(pygame.image.load('assets/sprites/villager/Villagerwalk014.png').convert_alpha())
+        villager_walk.append(pygame.image.load('assets/sprites/villager/Villagerwalk015.png').convert_alpha())
         return villager_walk
 
     def animation_soldier_standby(self):
@@ -611,4 +615,50 @@ class Animation:
 
 
 
+    def animation_villagerIA_walk(self):
+        villagerIA_walk = []
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk002V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk003V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk004V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk005V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk006V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk007V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk008V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk009V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk010V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk011V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk012V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk013V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk014V2.png').convert_alpha())
+        villagerIA_walk.append(pygame.image.load('assets/villagerIA/Villagerwalk015V2.png').convert_alpha())
+        return villagerIA_walk
+
+    def animation_archerIA_walk(self):
+        archerIA_walk = []
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk001V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk002V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk003V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk004V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk005V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk006V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk007V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk008V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk009V2.png').convert_alpha())
+        archerIA_walk.append(pygame.image.load('assets/archerIA/Archerwalk010V2.png').convert_alpha())
+        return archerIA_walk
+
+    def animation_horsemanIA_walk(self):
+        horsemanIA_walk = []
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk001V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk002V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk003V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk004V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk005V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk006V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk007V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk008V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk009V2.png').convert_alpha())
+        horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk010V2.png').convert_alpha())
+        return horsemanIA_walk
 

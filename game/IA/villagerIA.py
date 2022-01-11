@@ -15,7 +15,9 @@ class VillagerIA(Villager):
         super().__init__(tile, world, camera, pv, team)
         self.IA = IA
         self.IA.villagers[self.tile["grid"][0]][self.tile["grid"][1]] = self
-        self.busy = False 
+        self.animation = self.world.animation.villagerIA_walk
+        self.busy = False
+        self.image_standby = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
         # self.IA.farmers.append(self)
 
         #Farm
@@ -24,6 +26,7 @@ class VillagerIA(Villager):
 
     #Override
     def update(self):
+
         # Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()

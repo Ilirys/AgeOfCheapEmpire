@@ -22,7 +22,8 @@ class Worker:
 
         #Visual and audio effects
         self.name = "Villageois"
-        self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
+        self.image_standby = self.world.animation.villager_standby
+        self.image = self.world.animation.villager_standby
         self.temp = 0
         self.animation = self.world.animation.villager_walk
         self.animation_mort = self.world.animation.villager_mort
@@ -282,7 +283,7 @@ class Worker:
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
         elif self.pv > 0:
-            self.image = self.world.animation.villager_standby
+            self.image = self.image_standby
 
     def delete(self):
         self.temp += 0.1
