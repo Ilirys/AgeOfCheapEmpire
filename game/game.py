@@ -49,7 +49,7 @@ class Game:
 
         # resource manager IA
         self.resource_manager = Ressource()
-        self.ressource_manager_IA = Ressource()
+        self.ressource_manager_IA = Ressource(team="red", max_population=definitions.IA_POPULATION)
         self.resource_manager.restore_save()
 
         # hud
@@ -120,7 +120,7 @@ class Game:
 
         self.screen.fill(BLACK) #Arrière plan
         self.world.draw(self.screen, self.camera) #Fonction de dessin de la map
-        draw_text(self.screen,'FPS = {}'.format(round(self.clock.get_fps())),25,WHITE,(10,70)) #Affichage des fps
+        draw_text(self.screen,'FPS = {} IA = {} IA_POPULATION = {} IA_MAX_POP = {}'.format(round(self.clock.get_fps()), self.IA.ressource_manager.resources, self.IA.ressource_manager.population, self.IA.ressource_manager.max_population) ,25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
         self.minimap.draw(self.screen) #Affichage de la minimap

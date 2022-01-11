@@ -71,13 +71,14 @@ class Worker:
         self.batiment_pv = 0
 
         #init
-        self.world.resource_manager.apply_cost_to_resource(self.name)
+        if self.team == "blue": 
+            self.world.resource_manager.apply_cost_to_resource(self.name)
+            self.world.resource_manager.population += 1
         self.path_index = 0
         self.path = []
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
         self.mouse_to_grid(0,0,self.camera.scroll)
-        self.create_path(self.tile["grid"][0],self.tile["grid"][1])
         
     def create_path(self, x, y):
         searching_for_path = True

@@ -15,11 +15,14 @@ class VillagerIA(Villager):
         super().__init__(tile, world, camera, pv, team)
         self.IA = IA
         self.IA.villagers[self.tile["grid"][0]][self.tile["grid"][1]] = self
+        self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
         self.busy = False 
-        # self.IA.farmers.append(self)
 
         #Farm
         self.storage_tile = self.IA.towncenter
+
+
 
 
     #Override

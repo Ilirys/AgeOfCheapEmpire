@@ -13,6 +13,8 @@ class HorsemanIA(Horseman):
     def __init__(self,tile,world,camera, IA, pv=2000,team="red"):
         super().__init__(tile,world,camera,pv,team)
         self.IA = IA
+        self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
         self.busy = False 
         self.IA.warriors.append(self)
 

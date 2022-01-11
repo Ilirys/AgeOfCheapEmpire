@@ -15,6 +15,8 @@ class ArcherIA(Archer):
         super().__init__(tile,world,camera,pv,team)
         self.IA = IA
         self.busy = False 
+        self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
         self.IA.warriors.append(self)
 
     # override

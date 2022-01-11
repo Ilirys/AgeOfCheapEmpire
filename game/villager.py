@@ -25,7 +25,7 @@ class Villager(Worker):
         self.farm = False
         self.ressource_Transp = ""
         self.nb_ressource_Transp = 0
-        self.max_ressources = 1000
+        self.max_ressources = 200
         self.transfer_resources_bool = False
         self.cibleFarm = 0
         self.efficiency = 5

@@ -1,11 +1,14 @@
 import pygame
 
+#Population
+PLAYER_POPULATION = 10
+
 #Time-based settings
 UNITS_SPAWN_TIME = 10
 
 # IA 
 IA_DECISION_TIME = 1000  #(L'IA prendra une decision chaque X ms au lieu de chaque frame, comme ça 0 perte de fps)
-
+IA_POPULATION = 10
 #Speed
 DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "veryfast": 5, "potato_pc": 8}
 
@@ -22,7 +25,7 @@ MAP_SIZE = 50
 
 #Resource
 LES_RESSOURCES = ["wood", "food", "gold", "stone"]
-INIT_RESSOURCE = [50, 100, 10, 0]
+INIT_RESSOURCE = [200, 200, 200, 200]
 NB_RESSOURCES = [300,100,600,600]  #Nombre de bois par arbres, de food par buisson, de gold etc
 
 #Fonts
