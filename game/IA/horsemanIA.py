@@ -13,6 +13,8 @@ class HorsemanIA(Horseman):
     def __init__(self,tile,world,camera, IA, pv=2000,team="red"):
         super().__init__(tile,world,camera,pv,team)
         self.IA = IA
+        self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
         self.busy = False 
         self.IA.warriors.append(self)
 
@@ -46,7 +48,7 @@ class HorsemanIA(Horseman):
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -64,11 +66,10 @@ class HorsemanIA(Horseman):
                     self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
-                self.path_index += 1
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
 
     #override
     def change_tile(self, new_tile):
@@ -85,6 +86,7 @@ class HorsemanIA(Horseman):
             # collision matrix (for pathfinding and buildings)
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x

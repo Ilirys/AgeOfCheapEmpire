@@ -73,7 +73,7 @@ class Archer(Worker):
                 self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
                 # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
-                if self.world.unites[x][y] != None:
+                if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:
                     self.cible = self.world.unites[x][y]
                     if self.dest_tile != self.tile:
                         for i in range(2):
@@ -84,8 +84,8 @@ class Archer(Worker):
                     self.temp_tile_a = self.cible.tile
                     self.attack = True
 
-                elif self.world.world[x][y]["tile"].tile_batiment != 0:
-                    self.cible = self.world.batiment[[self.world.world[x][y]["tile"].tile_batiment][0]][[self.world.world[x][y]["tile"].tile_batiment][1]]  #self.world.world[x][y]["tile"].tile_batiment
+                elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
+                    self.cible = self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
 
                     if self.dest_tile != self.tile:
                         for i in range(2):
@@ -93,7 +93,6 @@ class Archer(Worker):
                                 self.path.pop()
                                 if self.path:
                                     self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
-                    self.temp_tile_a = self.cible.tile
                     self.attack_bati = True
                 self.progression = 0
                 searching_for_path = False
@@ -119,6 +118,7 @@ class Archer(Worker):
 
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
@@ -126,7 +126,7 @@ class Archer(Worker):
 
     # #Override
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
@@ -156,9 +156,11 @@ class Archer(Worker):
         # Override
 
     def delete(self):
-        self.temp += 0.1
-        self.image = self.animation_mort[int(self.temp)]
-        if self.temp >= 9:
+        #if self.temp + 0.1 > 11 :
+            #self.temp = 0
+        #self.temp += 0.1
+        #self.image = self.animation_mort[int(self.temp)]
+        #if self.temp >= 10.9:
 
             self.world.entities.remove(self)
 
@@ -169,3 +171,4 @@ class Archer(Worker):
             self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
             self.selected = False
             self.temp = 0
+

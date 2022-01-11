@@ -57,9 +57,11 @@ class Chat:
                             self.resource_manager.resources["gold"] += 10000
                         else :
                             self.resource_manager.resources["gold"] = 99999
-
+        
                     elif self.text == "BIGDADDY":
-                        self.world.spawn_unit_autour_caserne("Bigdaddy", self.world.caserne_tile)
+                        if self.resource_manager.is_affordable("BIGDADDY") and self.world.caserne_tile:
+                            self.world.spawn_unit_autour_caserne("Bigdaddy", self.world.caserne_tile)
+                        else: print("Can't spawn super unit, not enough food or no barrack")    
 
                     
                     elif self.text == "STEROIDS":

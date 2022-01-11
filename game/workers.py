@@ -12,7 +12,7 @@ import DTO.workerDTO
 
 class Worker:
 
-    def __init__(self,tile,world,camera,pv=2000, team="blue"):
+    def __init__(self,tile,world,camera, pv=2000, team="blue"):
         self.world = world
         self.world.entities.append(self)
         self.camera = camera
@@ -26,7 +26,7 @@ class Worker:
         self.temp = 0
         self.animation = self.world.animation.villager_walk
         self.animation_mort = self.world.animation.villager_mort
-        self.movestraight_animation = False
+        self.walkdown_animation = False
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
         self.attack_ani = False
         self.farm_ani = False
@@ -47,7 +47,7 @@ class Worker:
         self.hitbox = pygame.Rect(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
         iso_poly = self.tile["iso_poly"]
         self.iso_poly = None
-        self.cible = self
+        self.cible = 0
         self.dest_tile = self.tile
         
         #Attaque
@@ -56,7 +56,7 @@ class Worker:
         self.dmg = 1
         self.range = 2
         self.temp_tile_a = self.tile
-
+        self.isDead = False
 
         #Farm
         self.farm = False
@@ -71,7 +71,9 @@ class Worker:
         self.batiment_pv = 0
 
         #init
-        self.world.resource_manager.apply_cost_to_resource(self.name)
+        if self.team == "blue": 
+            self.world.resource_manager.apply_cost_to_resource(self.name)
+            self.world.resource_manager.population += 1
         self.path_index = 0
         self.path = []
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
@@ -97,7 +99,7 @@ class Worker:
                     self.attack = False
 
                     searching_for_path = False
-                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0 :
+                elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0  or self.dest_tile["tile"].ressource.getNbRessources() != 0 :
                     # Reinitialise la derniere case de destination et la cible
                     self.cible = None
 
@@ -118,17 +120,17 @@ class Worker:
                     # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
                     if self.path: self.path.pop()
 
-                    if self.world.unites[x][y] != None:  # Condition d'attaque
+                    if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
-                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
-                        self.cible =   self.world.batiment[[self.world.world[x][y]["tile"].tile_batiment][0]][[self.world.world[x][y]["tile"].tile_batiment][1]]  #self.world.world[x][y]["tile"].tile_batiment
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team :
+                        self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
                         self.attack_bati = True
 
 
-                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
+                    if self.path: self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
 
                     if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
                         self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
@@ -157,6 +159,7 @@ class Worker:
             #collision matrix (for pathfinding and buildings): Active collision for the current tile 
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
@@ -227,9 +230,10 @@ class Worker:
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+                    self.cible = 0
             elif self.attack_bati:
-                self.movestraight_animation = False
-                #self.attack_ani = True
+                self.walkdown_animation = False
+                self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False
@@ -243,7 +247,7 @@ class Worker:
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -260,16 +264,15 @@ class Worker:
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1 #Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
-                self.path_index += 1
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
         
                 
 
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp +=0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):

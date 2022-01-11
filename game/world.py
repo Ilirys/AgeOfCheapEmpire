@@ -40,6 +40,13 @@ class World:
         self.world = self.create_world()
         self.collision_matrix = self.create_collision_matrix()
 
+        # towncenter positions
+
+        self.towncenter_posx = 0
+        self.towncenter_posy = 0
+        self.towncenter_IA_posx = 0
+        self.towncenter_IA_posy = 0
+
         self.animation = Animation()
         
         #Units and their corresponding save
@@ -62,6 +69,9 @@ class World:
                                                                         
         self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
+        self.unites_combat = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
 
         #Buildings
         self.batiment = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
@@ -134,6 +144,7 @@ class World:
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
                         self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
+                        if self.hud.selected_tile["name"] == "House": self.resource_manager.max_population += 1
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
@@ -211,26 +222,29 @@ class World:
                             if (batiment.team=="blue"):
                                 if (batiment.name=="Towncenter"):
                                     self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Storage"):
                                     self.hud.display_unit_icons = False
-                                    self.hud.blit_hud("hudGrenier", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudGrenier", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
                                 elif (batiment.name=="House"):
                                     self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudHouse", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudHouse", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Farm"):
                                     self.hud.display_unit_icons = False 
-                                    self.hud.blit_hud("hudFarm", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudFarm", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Barrack"):
                                     self.hud.display_unit_icons = True
-                                    self.hud.blit_hud("hudCaserne", str(batiment.pv), screen)
+                                    self.hud.blit_hud("hudCaserne", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
 
                     if batiment.pv < 0:
-                        self.delete_batiment(x,y)
+                        if batiment.name == "Barrack" or batiment.name == "Towncenter":
+                            self.delete_batiment2(x,y)
+                        else:
+                            self.delete_batiment(x,y)
                         self.hud.select_surface_empty = True
                 # draw units
                 unites = self.unites[x][y]
@@ -256,7 +270,9 @@ class World:
                         unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
                             
                     if unites.pv <= 0:
+                        unites.isDead = True
                         unites.delete()
+
                         self.hud.select_surface_empty = True
                 # minimap hud
                 if definitions.afficher_minimap == "oui":
@@ -292,10 +308,10 @@ class World:
                 )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
         
-        # mouse_pos = pygame.mouse.get_pos()
-        # grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-        # txt = str(grid_pos)
-        # draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        mouse_pos = pygame.mouse.get_pos()
+        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        txt = str(grid_pos)
+        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
         
 
 
@@ -337,6 +353,7 @@ class World:
     def grid_to_world(self, grid_x, grid_y):    #Renvoit un dictionnaire avec notamment des coordonnées isométriques pour une vue 2.5D
         rien = Ressource(0,"")
         tile = Tile(grid_x,grid_y,0, rien ,0)
+        visited = False
         #Matrice avec coordonées carthésiennes
         rect = [
             (grid_x * TILE_SIZE, grid_y * TILE_SIZE),
@@ -356,6 +373,7 @@ class World:
             "iso_poly": iso_poly,
             "render_pos": [minx,miny],
             "tile": tile,
+            "visited": visited,
             "collision": False if tile.nomElement == "" else True
         }
         return out
@@ -441,13 +459,13 @@ class World:
         self.towncenter_IA_posx=a2
         self.towncenter_IA_posy=b2
         self.towncenterIA_tile = self.world[a2][b2]
-
         self.batiment[a][b] = ent
         self.batiment[a2][b2] = ent2
 
         for i in range (2):
             for j in range (2):
               self.world[a + i][b + j]["tile"].tile_batiment = self.world[a][b]
+              self.world[a2 + i][b2 + j]["tile"].tile_batiment = self.world[a2][b2]
 
         for i in range (3):
             for j in range (3):
@@ -689,6 +707,8 @@ class World:
                 self.world = restore_world_dto.world
                 self.collision_matrix = restore_world_dto.collision_matrix
                 self.storage_tile = restore_world_dto.storage_tile
+                self.towncenterIA_tile = restore_world_dto.towncenterIA_tile
+                self.towncenter_tile = restore_world_dto.towncenter_tile
                 input.close()
         except Exception as e: print("An error occured while loading Map save:", e)
 
@@ -720,7 +740,7 @@ class World:
     def save(self):
         try:   #Map save
             with open(self.map_save_file_path, "wb") as output:
-                worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile)
+                worker_dto = WorldDTO(self.world, self.collision_matrix, self.storage_tile, self.towncenterIA_tile, self.towncenter_tile)
                 pickle.dump(worker_dto,output)
                 output.close()
         except Exception as e: print("Couldnt dump map save in file", e)
@@ -752,6 +772,18 @@ class World:
 
 
 
+    def delete_batiment2(self,x,y):
+
+        for i in range(2):
+            for j in range(2):
+                self.collision_matrix[y+i][x+j] = 1  # Free the last tile from collision
+                self.world[x+i][y+j]["collision"] = False
+
+                self.batiment[x+i][y+j] = None
+
+                self.selected = False
+                self.temp = 0
+
     def delete_batiment(self,x,y):
 
 
@@ -762,3 +794,4 @@ class World:
 
         self.selected = False
         self.temp = 0
+

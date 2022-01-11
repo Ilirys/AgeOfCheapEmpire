@@ -25,10 +25,11 @@ class Villager(Worker):
         self.farm = False
         self.ressource_Transp = ""
         self.nb_ressource_Transp = 0
-        self.max_ressources = 1000
-
+        self.max_ressources = 200
+        self.transfer_resources_bool = False
         self.cibleFarm = 0
         self.efficiency = 5
+        self.storage_tile = self.world.storage_tile
 
 
 
@@ -60,7 +61,7 @@ class Villager(Worker):
                     searching_for_path = False
                 elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0 or self.world.world[x][y]["tile"].tile_batiment != 0:
                     # Reinitialise la cible
-                    self.cible = None
+                    # self.cible = None
 
                     # Si la case contient une unitées ou du farm,
                     # On enleve la collision de la case du soldat (Or else can't get find_path to work)
@@ -79,7 +80,7 @@ class Villager(Worker):
                     # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et soit on attaque soit on farm
                     if self.path: self.path.pop()
 
-                    if self.world.unites[x][y] != None:  # Condition d'attaque
+                    if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:  # Condition d'attaque
                         self.cible = self.world.unites[x][y]
                         self.attack = True
                         self.farm = False
@@ -91,12 +92,12 @@ class Villager(Worker):
                         self.farm = True
                         self.construire = False
                         self.attack_bati = False
-                    elif self.world.batiment[x][y]: #and self.team == self.world.batiment[x][y].team
+                    elif self.world.batiment[x][y] and self.team == self.world.batiment[x][y].team :
                         self.cible = self.dest_tile
                         self.farm = False
-                        if x == self.world.storage_tile["grid"][0] and y == self.world.storage_tile["grid"][1]:
-                            self.transfer_resources()
-                    elif self.world.world[x][y]["tile"].tile_batiment != 0:
+                        if x == self.storage_tile["grid"][0] and y == self.storage_tile["grid"][1]:
+                            self.transfer_resources_bool = True
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
                         self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]#self.world.world[x][y]["tile"].tile_batiment
 
                         self.attack_bati = True
@@ -107,7 +108,7 @@ class Villager(Worker):
                         self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0   # 0 pour collision!
                         self.temp_tile = None    
 
-                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
+                    if self.path: self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][1]]  # La case destination est la dernière de la liste path
 
                     self.progression = 0
 
@@ -134,6 +135,7 @@ class Villager(Worker):
             # collision matrix (for pathfinding and buildings)
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
@@ -177,7 +179,7 @@ class Villager(Worker):
 
         if self.dest_tile == self.tile:
             if self.attack:
-                self.movestraight_animation = False
+                self.walkdown_animation = False
                 self.cible.attacked = True
                 self.cible.attacker = self
                 #self.attack_ani = True
@@ -191,7 +193,7 @@ class Villager(Worker):
                     self.attack = False
                     self.attack_ani = False
             elif self.attack_bati:
-                self.movestraight_animation = False
+                self.walkdown_animation = False
                 #self.attack_ani = True
                 self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
@@ -201,7 +203,12 @@ class Villager(Worker):
                 self.farmer_cases_autour()
 
             elif self.construire:
-                self.construire_batiment(self.batiment_tile, self.batiment_pv)     
+                self.construire_batiment(self.batiment_tile, self.batiment_pv) 
+
+            elif self.transfer_resources_bool:
+                self.transfer_resources() 
+
+
    
         if self.hitbox.collidepoint(mouse_pos):
             if mouse_action[0]:
@@ -210,7 +217,7 @@ class Villager(Worker):
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -226,15 +233,14 @@ class Villager(Worker):
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
-                self.path_index += 1
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
 
     #override
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
@@ -257,9 +263,11 @@ class Villager(Worker):
 
     #override
     def delete(self):
-        self.temp += 0.1
-        self.image = self.animation_mort[int(self.temp)]
-        if self.temp >= 11:
+        #if self.temp + 0.1 > 11 :
+            #self.temp = 0
+        #self.temp += 0.1
+        #self.image = self.animation_mort[int(self.temp)]
+        #if self.temp >= 10.9:
 
             self.world.entities.remove(self)
 
@@ -281,45 +289,47 @@ class Villager(Worker):
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
 
         if self.nb_ressource_Transp >= self.max_ressources:
-            self.create_path(self.world.storage_tile["grid"][0], self.world.storage_tile["grid"][1], True)    
+            if self.team ==  "red": self.world.reset_tile(self.cible["grid"][0], self.cible["grid"][1])
+            self.create_path(self.storage_tile["grid"][0], self.storage_tile["grid"][1], True)    
 
     #override
     def farmer_cases_autour(self):  # Farme les cases autour de soit, si rien a farm alors on se déplace sur la dernière case farmée
-        if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
-            self.farmer_cases(self.cible)
+        if self.tile["grid"][0] not in [0,49] and self.tile["grid"][1] not in [0,49]:    
+            if (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 0]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] + 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] + 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 0]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 0][self.tile["grid"][1] - 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] - 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] - 1][self.tile["grid"][1] + 1]
+                self.farmer_cases(self.cible)
 
-        elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
-            self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
-            self.farmer_cases(self.cible)
+            elif (self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]["tile"].ressource.nbRessources > 0):
+                self.cible = self.world.world[self.tile["grid"][0] + 1][self.tile["grid"][1] - 1]
+                self.farmer_cases(self.cible)
 
-        else:
-            if self.dest_tile == self.tile:
-                self.create_path(self.cible["grid"][0], self.cible["grid"][1])
+            else:
+                if self.dest_tile == self.tile:
+                    self.create_path(self.cible["grid"][0], self.cible["grid"][1])
 
 
     def transfer_resources(self): #Si la capacité a atteint son max, on transfere les ressources du villageois, au compteur de ressources

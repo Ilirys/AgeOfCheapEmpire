@@ -21,6 +21,8 @@ class SoldierIA(Soldier):
         self.attacked = False
         self.IA = IA
         self.busy = False 
+        self.IA.ressource_manager.apply_cost_to_resource(self.name)
+        self.IA.ressource_manager.population += 1
 
         #Lists
         self.IA.warriors.append(self)
@@ -41,19 +43,6 @@ class SoldierIA(Soldier):
             #self.create_path(15,15)
 
 
-
-        #Updating mouse position and action and the grid_pos
-        mouse_pos = pygame.mouse.get_pos()
-        mouse_action = pygame.mouse.get_pressed()
-        grid_pos = self.mouse_to_grid(mouse_pos[0],mouse_pos[1],self.camera.scroll)
-
-        #Hitbox
-        self.hitbox.update(self.pos_x  + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50, 28, 60)
-
-        #Selection polygon
-        pos_poly = [self.pos_x + self.world.grass_tiles.get_width()/2 + self.camera.scroll.x + 47, self.pos_y - self.image.get_height() + self.camera.scroll.y + 50]
-        self.iso_poly = [(pos_poly[0] - 10, pos_poly[1] +44), (pos_poly[0] + 15, pos_poly[1] + 29), (pos_poly[0] + 40, pos_poly[1] + 44), (pos_poly[0] + 15 , pos_poly[1] + 59)]
-
         # collision matrix (for pathfinding and buildings)
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
@@ -61,11 +50,6 @@ class SoldierIA(Soldier):
         # Animation update
         self.update_sprite()
 
-        if self.selected:
-            if mouse_action[0]:
-                self.selected = False
-                self.world.hud.select_surface_empty = True
-                self.world.hud.display_building_icons = False
 
 
         if self.dest_tile == self.tile:
@@ -85,14 +69,9 @@ class SoldierIA(Soldier):
                     self.attack = False
                     self.attack_ani = False
 
-        if self.hitbox.collidepoint(mouse_pos):
-            if mouse_action[0]:
-                self.selected = True
-                self.sound.play()
-
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:
-                self.movestraight_animation = True
+                self.walkdown_animation = True
 
             new_pos = self.path[self.path_index]
             new_real_pos = self.world.world[new_pos[0]][new_pos[1]]["render_pos"]
@@ -109,18 +88,17 @@ class SoldierIA(Soldier):
                 self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
                 self.change_tile(new_pos)
-                self.path_index += 1
                 self.progression = 0
 
         else:
-            self.movestraight_animation = False
+            self.walkdown_animation = False
 
     def distance_tile(self,tile):
         return sqrt((self.tile["grid"][0] - tile["grid"][0])**2 + (self.tile["grid"][1] - tile["grid"][1])**2)
 
 
     def update_sprite(self):
-        if self.movestraight_animation == True:
+        if self.walkdown_animation == True:
             self.temp += 0.2
             self.image = self.animation[int(self.temp)]
             if self.temp + 0.2 >= len(self.animation):
@@ -162,6 +140,7 @@ class SoldierIA(Soldier):
 
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+            self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
