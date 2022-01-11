@@ -54,7 +54,7 @@ class IA:
         self.compteur_construction_bat = 0
 
         VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
-        #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
+        #SoldierIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
         #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
 
         #Farm
@@ -74,8 +74,6 @@ class IA:
         self.stone_list_iterator = iter(self.stone_list)
         self.gold_list_iterator = iter(self.gold_list)
         self.init_list_ressource()
-        for e in self.food_list:
-            print (e["grid"][0], e["grid"][1])
 
         #Events
         self.take_decision_event = pygame.USEREVENT + 1
@@ -304,7 +302,7 @@ class IA:
         self.reset_world_visted_tiles()
         self.load_farm_list("stone", self.stone_list)
         self.reset_world_visted_tiles()
-        # self.load_farm_list("gold", self.gold_list)
+        self.load_farm_list("gold", self.gold_list)
 
     def farm(self, ressource_to_farm_iterator, number_of_villagers):  #Si on veut envoyer deux villageois farm du bois --> self.farm(self.wood_list_iterator, 2)    
         for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
