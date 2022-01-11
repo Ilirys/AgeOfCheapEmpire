@@ -137,7 +137,35 @@ class IA:
                         else: self.farm(self.food_list_iterator, 1+self.number_of_buildings)
                         if self.number_of_buildings >= 5:
                             self.number_of_buildings = 0
-                            self.evolution += 1        
+                            self.evolution += 1
+            elif self.strategy == "attaque":
+                pass
+            elif self.strategy == "blitz":
+                pass
+            elif self.strategy == "vague":
+                match self.evolution:
+                    case 0:
+                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]and self.number_of_buildings < 1:
+                            self.find_and_place_building("Barrack", 1)
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
+                        self.ressource_manager.resources["wood"] += 10
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Barrack"][2] + 100)):
+                            self.compteur_construction_bat = 0
+                            self.action_faite = 0
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 1:
+                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                            self.number_of_buildings += 1
+                        self.ressource_manager.resources["food"] += 10
+                        if self.number_of_buildings >= 5:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+
+     
             
     def attack_villagers(self):
         if self.attacking == False:
