@@ -61,4 +61,4 @@ def init():
 
     #SPEED
     global CURRENT_SPEED
-    CURRENT_SPEED = "potato_pc"
+    CURRENT_SPEED = "normal"
