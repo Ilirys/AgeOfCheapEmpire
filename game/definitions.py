@@ -10,7 +10,7 @@ UNITS_SPAWN_TIME = 10
 IA_DECISION_TIME = 1000  #(L'IA prendra une decision chaque X ms au lieu de chaque frame, comme ça 0 perte de fps)
 IA_POPULATION = 10
 #Speed
-DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 3, "veryfast": 5, "potato_pc": 8}
+DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 5, "veryfast": 8, "potato_pc": 100}
 
 
 #Screen
@@ -61,4 +61,4 @@ def init():
 
     #SPEED
     global CURRENT_SPEED
-    CURRENT_SPEED = "normal"
+    CURRENT_SPEED = "veryfast"

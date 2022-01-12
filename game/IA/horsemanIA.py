@@ -10,7 +10,7 @@ from game.deplacement import lerp
 from ..horseman import Horseman
 
 class HorsemanIA(Horseman):
-    def __init__(self,tile,world,camera, IA, pv=2000,team="red"):
+    def __init__(self,tile,world,camera, IA, pv=3000,team="red"):
         super().__init__(tile,world,camera,pv,team)
         self.IA = IA
         self.IA.ressource_manager.apply_cost_to_resource(self.name)
