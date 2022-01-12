@@ -11,7 +11,7 @@ from .workers import Worker
 
 class Horseman(Worker):
 
-    def __init__(self, tile, world, camera, pv=2000, team="blue"):
+    def __init__(self, tile, world, camera, pv=3000, team="blue"):
         super().__init__(tile, world, camera, pv, team)
 
         # Visual and audio effects

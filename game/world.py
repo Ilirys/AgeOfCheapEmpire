@@ -251,10 +251,10 @@ class World:
                         #barre de hp des batiments
                         bon_placement_rectangle_hp = [
                             render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
-                            render_pos[1] - batiment.image.get_height() + camera.scroll.y + 40, batiment.pv_max * 0.02, 5]
+                            render_pos[1] - batiment.image.get_height() + camera.scroll.y + 40, 40, 5]
                         bon_placement_barre_hp = [
                             render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
-                            render_pos[1] - batiment.image.get_height() + camera.scroll.y + 40, batiment.pv * 0.02, 5]
+                            render_pos[1] - batiment.image.get_height() + camera.scroll.y + 40, (batiment.pv* 40) / batiment.pv_max, 5]
                         pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
                         if batiment.pv >= 0.75 * batiment.pv_max:
                             # afficher barre de hp verte quand t'es quasi full life
@@ -294,8 +294,8 @@ class World:
 
                     #barre de HP des unités
                     if unites.pv != unites.pv_max:
-                        bon_placement_rectangle_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, unites.pv_max * 0.02, 5]
-                        bon_placement_barre_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, unites.pv* 0.02, 5]
+                        bon_placement_rectangle_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, 40, 5]
+                        bon_placement_barre_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, (unites.pv* 40) / unites.pv_max , 5]
                         pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
                         if unites.pv >= 0.75*unites.pv_max:
                             #afficher barre de hp verte quand t'es quasi full life
