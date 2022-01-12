@@ -15,6 +15,7 @@ class Batiment:
         self.pos = pos 
         self.taille = dicoBatiment[name][1]
         self.pv = pv
+        self.pv_max = dicoBatiment[name][2]
         self.team = team
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_cooldown = pygame.time.get_ticks()

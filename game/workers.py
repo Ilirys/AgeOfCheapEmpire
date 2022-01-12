@@ -18,6 +18,7 @@ class Worker:
         self.camera = camera
         self.tile = tile
         self.pv = pv
+        self.pv_max = self.pv
         self.team = team
 
         #Visual and audio effects

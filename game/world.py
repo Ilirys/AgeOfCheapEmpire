@@ -246,6 +246,29 @@ class World:
                         else:
                             self.delete_batiment(x,y)
                         self.hud.select_surface_empty = True
+
+                    if batiment.pv != batiment.pv_max:
+                        #barre de hp des batiments
+                        bon_placement_rectangle_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - batiment.image.get_height() + camera.scroll.y + 40, batiment.pv_max * 0.02, 5]
+                        bon_placement_barre_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - batiment.image.get_height() + camera.scroll.y + 40, batiment.pv * 0.02, 5]
+                        pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
+                        if batiment.pv >= 0.75 * batiment.pv_max:
+                            # afficher barre de hp verte quand t'es quasi full life
+                            pygame.draw.rect(screen, (44, 205, 44), bon_placement_barre_hp)
+                        elif batiment.pv >= 0.50 * batiment.pv_max:
+                            # afficher barre de hp jaune quand t'es mid life
+                            pygame.draw.rect(screen, (255, 236, 0), bon_placement_barre_hp)
+                        elif batiment.pv >= 0.25 * batiment.pv_max:
+                            # afficher barre de hp orange quand t'es mal
+                            pygame.draw.rect(screen, (255, 128, 0), bon_placement_barre_hp)
+                        elif batiment.pv > 0:
+                            # afficher barre de hp rouge quand t'es dans la barba-sauce
+                            pygame.draw.rect(screen, (236, 15, 15), bon_placement_barre_hp)
+
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
@@ -268,6 +291,25 @@ class World:
 
                         screen.blit(unites.image, (unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 45,
                         unites.pos_y - unites.image.get_height() + camera.scroll.y + 50))
+
+                    #barre de HP des unités
+                    if unites.pv != unites.pv_max:
+                        bon_placement_rectangle_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, unites.pv_max * 0.02, 5]
+                        bon_placement_barre_hp = [unites.pos_x + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42, unites.pos_y - unites.image.get_height() + camera.scroll.y + 40, unites.pv* 0.02, 5]
+                        pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
+                        if unites.pv >= 0.75*unites.pv_max:
+                            #afficher barre de hp verte quand t'es quasi full life
+                            pygame.draw.rect(screen, (44, 205, 44), bon_placement_barre_hp)
+                        elif unites.pv >= 0.50 * unites.pv_max:
+                            # afficher barre de hp jaune quand t'es mid life
+                            pygame.draw.rect(screen, (255, 236, 0), bon_placement_barre_hp)
+                        elif unites.pv >= 0.25 * unites.pv_max:
+                            # afficher barre de hp orange quand t'es mal
+                            pygame.draw.rect(screen, (255, 128, 0), bon_placement_barre_hp)
+                        elif unites.pv > 0:
+                            # afficher barre de hp rouge quand t'es dans la barba-sauce
+                            pygame.draw.rect(screen, (236, 15, 15), bon_placement_barre_hp)
+
                             
                     if unites.pv <= 0:
                         unites.isDead = True
