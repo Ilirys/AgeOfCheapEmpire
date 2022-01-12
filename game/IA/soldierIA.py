@@ -77,9 +77,9 @@ class SoldierIA(Soldier):
                     self.cible.pv -= self.dmg
                     # self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
                     if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
-                        if self.cible.dest_tile == self.cible.tile:
-                            self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
-                            self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
+                        #if self.cible.dest_tile == self.cible.tile:
+                            #self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
+                            #self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
                             self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
                             self.cible.dest_tile = 0
                     if self.cible.pv <= 0:
@@ -171,7 +171,8 @@ class SoldierIA(Soldier):
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
             self.path_index += 1
-        else: 
+
+        else:
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y        

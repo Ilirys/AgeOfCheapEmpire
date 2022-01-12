@@ -29,6 +29,7 @@ class Soldier(Worker):
         self.image = pygame.image.load('assets\soldier\Halbadierwalk001.png').convert_alpha()
         self.dmg = 5
         # pathfinding
+
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
         if self.team == "blue":

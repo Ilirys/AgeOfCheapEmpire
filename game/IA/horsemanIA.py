@@ -21,8 +21,8 @@ class HorsemanIA(Horseman):
     # override
 
     def update(self):
-        if self.tile == self.dest_tile:
-            self.create_path(40,40)
+        #if self.tile == self.dest_tile:
+            #self.create_path(40,40)
         # collision matrix (for pathfinding and buildings)
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
