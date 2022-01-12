@@ -46,6 +46,7 @@ class Archer(Worker):
 
     def create_path(self, x, y):
         searching_for_path = True
+        self.attack = False
         while searching_for_path:
             self.dest_tile = self.world.world[x][y]
             if not self.dest_tile["collision"]:

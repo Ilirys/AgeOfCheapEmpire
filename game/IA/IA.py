@@ -85,7 +85,7 @@ class IA:
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
-            self.attack_town_center()
+            self.set_defense_pos()
         """if e.type == self.take_decision_event:
             print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"], " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
             if self.strategy == "defensive":  
@@ -478,7 +478,7 @@ class IA:
                 if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].pv > 0:
                     if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].team != w.team and w.attack_bati == False:
                         w.create_path(self.player_towncenter["grid"][0], self.player_towncenter["grid"][1])
-                
+
 
 
 
@@ -490,26 +490,41 @@ class IA:
 
 
     def defend_town_center(self):
-        for w in self.warriors:
-            for i in range (len(self.warriors)) :
-                w.create_path(self.position_defense["grid"][0]+i,self.position_defense["grid"][1])
-                if self.world.world[self.position_defense["grid"][0]+i][self.position_defense["grid"][1]]["collision"]:
-                    w.create_path(self.position_defense["grid"][0], self.position_defense["grid"][1]+i)
+        pass
 
 
 
 
     def set_defense_pos(self):
+
+        i = 0
+        j = 0
+
         if self.world.towncenter_IA_posx < 25 and self.world.towncenter_IA_posy < 25:
             self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]
+            for w in self.warriors:
+                if self.world.world[self.position_defense["grid"][0] - i][self.position_defense["grid"][1] - j]["collision"] == False:
+                    if w.dest_tile == 0:
+                        w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
 
         if self.world.towncenter_IA_posx > 25 and self.world.towncenter_IA_posy < 25:
-            self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]
+            self.position_defense = self.world.world[self.world.towncenter_IA_posx - 2 ][self.world.towncenter_IA_posy + 2]
+            for w in self.warriors:
+                if self.world.world[self.position_defense["grid"][0] - i][self.position_defense["grid"][1] - j]["collision"] == False:
+                    if w.dest_tile == 0:
+                        w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
 
-        if self.world.towncenter_IA_posx < 25 and self.world.towncenter_IA_posy < 25:
-            self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]
+        if self.world.towncenter_IA_posx < 25 and self.world.towncenter_IA_posy > 25:
+            self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy - 2]
+            for w in self.warriors:
+                if self.world.world[self.position_defense["grid"][0] - i][self.position_defense["grid"][1] - j]["collision"] == False:
+                    if w.dest_tile == 0:
+                        w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
 
-        if self.world.towncenter_IA_posx < 25 and self.world.towncenter_IA_posy < 25:
-            self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]
-
+        if self.world.towncenter_IA_posx > 25 and self.world.towncenter_IA_posy > 25:
+            self.position_defense = self.world.world[self.world.towncenter_IA_posx - 2][self.world.towncenter_IA_posy - 2]
+            for w in self.warriors:
+                if self.world.world[self.position_defense["grid"][0] - i][self.position_defense["grid"][1] - j]["collision"] == False:
+                    if w.dest_tile == 0:
+                        w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
 

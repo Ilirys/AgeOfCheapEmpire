@@ -31,15 +31,15 @@ class SoldierIA(Soldier):
 
     def update(self):
 
+
+        if self.attack == False:
+            if self.dest_tile == self.tile:
+                self.dest_tile = 0
+
         if self.dest_tile == self.tile:
             if self.attacked == True :
                 self.create_path(self.attacker.tile["grid"][0], self.attacker.tile["grid"][1])
-                if self.cible != 0:
-                    if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
-                        if self.cible.dest_tile == self.cible.tile:
-                            self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
-                            self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
-                            self.create_path(self.cible.tile["grid"][0],self.cible.tile["grid"][1])
+
             #self.create_path(15,15)
 
 
@@ -80,7 +80,8 @@ class SoldierIA(Soldier):
                         #if self.cible.dest_tile == self.cible.tile:
                             #self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
                             #self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
-                            self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
+                            if self.cible is not None:
+                                self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
                             self.cible.dest_tile = 0
                     if self.cible.pv <= 0:
                         self.attack = False

@@ -34,6 +34,10 @@ class VillagerIA(Villager):
         # Animation update
         self.update_sprite()             
 
+        if self.attack == False and self.farm == False:
+            if self.dest_tile == self.tile:
+                self.dest_tile = 0
+
         if self.dest_tile == self.tile:
             if self.attack:
                 self.walkdown_animation = False

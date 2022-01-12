@@ -24,11 +24,17 @@ class HorsemanIA(Horseman):
         #if self.tile == self.dest_tile:
             #self.create_path(40,40)
         # collision matrix (for pathfinding and buildings)
+
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
+
         # Animation update
         self.update_sprite()
+
+        if self.attack == False:
+            if self.dest_tile == self.tile:
+                self.dest_tile = 0
 
         if self.dest_tile == self.tile:
             if self.attack:
