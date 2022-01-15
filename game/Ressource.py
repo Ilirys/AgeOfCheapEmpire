@@ -34,7 +34,8 @@ class Ressource:
             "Soldier": {"food": 17},
             "horseman": {"food": 17},
             "Archer": {"food": 17},
-            "BIGDADDY": {"food": 30}
+            "BIGDADDY": {"food": 30},
+            "Passage_Age": {"gold": 1500}
         }
 
         #Save

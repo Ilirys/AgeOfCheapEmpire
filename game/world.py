@@ -1,3 +1,4 @@
+from tkinter.font import families
 import pygame
 import random
 import game.definitions as definitions
@@ -173,6 +174,21 @@ class World:
 
                         self.move_timer = now
                     else: self.hud.selected_unit_icon = None   
+        
+        elif self.hud.selected_towncenter_icon:  #Si les icones du towncenter sont selectionées, le clic gauche déclenche soit le spawn du villageois soit l'Age
+                now = pygame.time.get_ticks()
+                if mouse_action[0]:
+                    if self.hud.selected_towncenter_icon["name"] == "Villageois" and now - self.move_timer > UNITS_SPAWN_TIME:
+                        print("Villageois")
+                        self.spawn_unit_autour_caserne(
+                            self.hud.selected_towncenter_icon["name"], self.towncenter_tile)
+                        self.hud.selected_towncenter_icon = None
+
+                        self.move_timer = now
+                    elif self.hud.selected_towncenter_icon["name"] == "Passage_Age":
+                        # self.passage_age_joueur()   
+                        print("Age")  
+                    else: self.hud.selected_towncenter_icon = None   
 
         else:
 
@@ -222,18 +238,23 @@ class World:
                             if (batiment.team=="blue"):
                                 if (batiment.name=="Towncenter"):
                                     self.hud.display_unit_icons = False 
+                                    self.hud.display_towncenter_icons = True
                                     self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Storage"):
                                     self.hud.display_unit_icons = False
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.blit_hud("hudGrenier", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
                                 elif (batiment.name=="House"):
                                     self.hud.display_unit_icons = False 
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.blit_hud("hudHouse", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Farm"):
                                     self.hud.display_unit_icons = False 
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.blit_hud("hudFarm", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                 elif (batiment.name=="Barrack"):
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.display_unit_icons = True
                                     self.hud.blit_hud("hudCaserne", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
@@ -350,10 +371,10 @@ class World:
                 )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
         
-        mouse_pos = pygame.mouse.get_pos()
-        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-        txt = str(grid_pos)
-        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        # mouse_pos = pygame.mouse.get_pos()
+        # grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        # txt = str(grid_pos)
+        # draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
         
 
 
