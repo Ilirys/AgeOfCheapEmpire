@@ -5,13 +5,13 @@ class Batiment:
     
     def __init__(self, pos, name, resource_manager, pv=0, current_image=0, team="blue"):
         #Images
+        self.name = name
         self.image = pygame.image.load(dicoBatiment[name][0]).convert_alpha()
         self.ruin_image = pygame.image.load("assets/Rubble1.png").convert_alpha()
         self.small_ruin_image = pygame.image.load("assets/RubbleSmall.png").convert_alpha()
         self.current_image = current_image
         self.images = [self.ruin_image, self.small_ruin_image, self.image]
 
-        self.name = name
         self.pos = pos 
         self.taille = dicoBatiment[name][1]
         self.pv = pv
@@ -31,7 +31,33 @@ class Batiment:
                 self.resource_cooldown = now
         else:
             pass
+
+    def load_Age2_images(self):   
+        if self.name == "Towncenter":
+            image = pygame.image.load("assets/Towncenter128-2.png").convert_alpha()        
+        if self.name == "House":
+            image = pygame.image.load("assets/House2.png").convert_alpha()        
+        if self.name == "Barrack":
+            image = pygame.image.load("assets/barracks182-2.png").convert_alpha()        
+        if self.name == "Farm":
+            image = pygame.image.load("assets/stable_tool2.png").convert_alpha()        
+        if self.name == "Storage":
+            image = pygame.image.load("assets/Stable128-2.png").convert_alpha()
+        for name in dicoBatiment:
+            if name == "Towncenter":
+                dicoBatiment[name][0] = "assets/Towncenter128-2.png"
+            if name == "House":
+                dicoBatiment[name][0] = "assets/House2.png"
+            if name == "Barrack":
+                dicoBatiment[name][0] = "assets/barracks182-2.png"
+            if name == "Farm":
+                dicoBatiment[name][0] = "assets/stable_tool2.png"
+            if name == "Storage":
+                dicoBatiment[name][0] = "assets/Stable128-2.png"        
+
+        self.images[2] = image 
         
+
 
 class Towncenter ( Batiment ):
  

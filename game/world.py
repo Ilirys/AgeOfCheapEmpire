@@ -186,8 +186,8 @@ class World:
 
                         self.move_timer = now
                     elif self.hud.selected_towncenter_icon["name"] == "Passage_Age":
-                        # self.passage_age_joueur()   
-                        print("Age")  
+                        self.passage_age_joueur()
+                        self.hud.selected_towncenter_icon = None 
                     else: self.hud.selected_towncenter_icon = None   
 
         else:
@@ -605,6 +605,13 @@ class World:
                     villager.construire = True
                     break    
 
+    def passage_age_joueur(self):
+        for batiment in self.entities:
+            if isinstance(batiment, Batiment):
+                print("Ageing up!")
+                if batiment.team == "blue":
+                    batiment.load_Age2_images()
+    
     def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
         if not self.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]:
             if unit_name == "Villageois":
