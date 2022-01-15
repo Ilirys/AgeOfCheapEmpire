@@ -62,3 +62,7 @@ def init():
     #SPEED
     global CURRENT_SPEED
     CURRENT_SPEED = "veryfast"
+
+    # Statut partie (0: en cours, 1: victoire, 2: défaite)
+    global statut_partie
+    statut_partie = 0

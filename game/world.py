@@ -241,7 +241,7 @@ class World:
                         self.hud.display_unit_icons = False                
 
                     if batiment.pv < 0:
-                        self.delete_batiment(x,y, batiment.name)
+                        self.delete_batiment(x,y, batiment)
                         self.hud.select_surface_empty = True
 
                     if batiment.pv != batiment.pv_max:
@@ -811,10 +811,13 @@ class World:
 
 
 
-    def delete_batiment(self,x,y, bat_name):
-
-        for i in range(dicoBatiment[bat_name][1]):
-            for j in range(dicoBatiment[bat_name][1]):
+    def delete_batiment(self,x,y, batiment):
+        if batiment.name == "Towncenter":
+            if batiment.team != "blue":
+                definitions.statut_partie = 1
+            else: definitions.statut_partie = 2
+        for i in range(dicoBatiment[batiment.name][1]):
+            for j in range(dicoBatiment[batiment.name][1]):
                 self.collision_matrix[y+i][x+j] = 1  # Free the last tile from collision
                 self.world[x+i][y+j]["collision"] = False
 
