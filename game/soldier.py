@@ -45,6 +45,7 @@ class Soldier(Worker):
 
 
     #Override
+
     def change_tile(self, new_tile):
         if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:        
             self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None

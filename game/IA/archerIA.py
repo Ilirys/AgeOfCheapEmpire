@@ -38,13 +38,14 @@ class ArcherIA(Archer):
         if self.dest_tile == self.tile:
             if self.attack:
                 self.attack_ani = True
-                self.cible.pv -= self.dmg
+                if self.cible != 0 and self.cible is not None:
+                    self.cible.pv -= self.dmg
                 # self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
                     #if self.cible.dest_tile == self.cible.tile:
                         #self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
                         #self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
-                        if self.cible is not None:
+                        if self.cible is not None and self.cible != 0:
                             self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
                         self.cible.dest_tile = 0
                 if self.cible.pv <= 0:
@@ -53,11 +54,12 @@ class ArcherIA(Archer):
                     self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
-                #self.attack_ani = True
-                self.cible.pv -= self.dmg
-                if self.cible.pv <= 0:
-                    self.attack = False
-                    self.attack_ani = False
+                self.attack_ani = True
+                if self.cible is not None and self.cible != 0:
+                    self.cible.pv -= self.dmg
+                    if self.cible.pv <= 0:
+                        self.attack = False
+                        self.attack_ani = False
 
 
         if self.path_index <= len(self.path) - 1:
@@ -74,8 +76,7 @@ class ArcherIA(Archer):
             self.pos_x = round(lerp(self.tile["render_pos"][0], new_real_pos[0], self.progression), 3)
             self.pos_y = round(lerp(self.tile["render_pos"][1], new_real_pos[1], self.progression), 3)
 
-            if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[
-                1]:  # now - self.move_timer > 1000:  # update position in the world
+            if self.pos_x == new_real_pos[0] and self.pos_y == new_real_pos[1]:  # now - self.move_timer > 1000:  # update position in the world
                 self.world.collision_matrix[self.tile["grid"][1]][
                     self.tile["grid"][0]] = 1  # Free the last tile from collision
                 self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
