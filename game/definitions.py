@@ -4,7 +4,7 @@ import pygame
 PLAYER_POPULATION = 10
 
 #Time-based settings
-UNITS_SPAWN_TIME = 10
+UNITS_SPAWN_TIME = 100
 
 # IA 
 IA_DECISION_TIME = 1000  #(L'IA prendra une decision chaque X ms au lieu de chaque frame, comme ça 0 perte de fps)

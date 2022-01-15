@@ -185,7 +185,8 @@ class World:
                         self.hud.selected_towncenter_icon = None
 
                         self.move_timer = now
-                    elif self.hud.selected_towncenter_icon["name"] == "Passage_Age":
+                    elif self.hud.selected_towncenter_icon["name"] == "Passage_Age" and now - self.move_timer > UNITS_SPAWN_TIME:
+                        self.resource_manager.apply_cost_to_resource(self.hud.selected_towncenter_icon["name"])
                         self.passage_age_joueur()
                         self.hud.selected_towncenter_icon = None 
                     else: self.hud.selected_towncenter_icon = None   
@@ -260,6 +261,7 @@ class World:
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
+                        self.hud.display_towncenter_icons = False                
 
                     if batiment.pv < 0:
                         if batiment.name == "Barrack" or batiment.name == "Towncenter":

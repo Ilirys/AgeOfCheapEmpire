@@ -76,9 +76,9 @@ class Hud:
         for image_name, image in self.images.items():
 
             pos = render_pos.copy()
-            pos = [pos[0] + 10, pos[1]]
+            pos = [pos[0] -5 , pos[1]]
             image_tmp = image.copy()
-            image_scale = self.scale_image(image_tmp, w=object_width)
+            image_scale = self.scale_image(image_tmp, w=object_width + 20)
             rect = image_scale.get_rect(topleft=pos)            
 
             tiles.append(
@@ -91,7 +91,7 @@ class Hud:
                 }
             )
 
-            render_pos[0] += self.build_surface.get_width() // 10
+            render_pos[0] += int(self.build_surface.get_width() // 10)
         
         for image_name, image in self.images_icons.items():
 
