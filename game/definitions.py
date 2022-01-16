@@ -50,10 +50,17 @@ Blue=(0,128,255)
 
 
 def init():
+
+    #Minimap
     global afficher_minimap
     afficher_minimap = "oui"
+
+    #Menu options
     global case_coche
     case_coche = 1
+
+    global clik
+    clik = 0
 
     # Saves
     global SAVED_GAME_FOLDER
