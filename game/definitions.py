@@ -1,14 +1,14 @@
 import pygame
 
 #Population
-PLAYER_POPULATION = 10
+PLAYER_POPULATION = 25
 
 #Time-based settings
 UNITS_SPAWN_TIME = 100
 
 # IA 
 IA_DECISION_TIME = 1000  #(L'IA prendra une decision chaque X ms au lieu de chaque frame, comme ça 0 perte de fps)
-IA_POPULATION = 10
+IA_POPULATION = 25
 #Speed
 DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 5, "veryfast": 8, "potato_pc": 100}
 
@@ -33,7 +33,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], "Towncenter2" : ["assets/Towncenter128-2.png", 2, 2400], "House2" : ["assets/House2.png", 1, 550], "Barrack2" : ["assets/barracks182-2.png", 2, 200], "Storage2" : ["assets/Stable128-2.png", 1, 600], "Farm2" : ["assets/stable_tool2.png", 2, 600], None : ["", 1] }
 
 
 #Colors

@@ -64,12 +64,7 @@ class VillagerIA(Villager):
 
             elif self.transfer_resources_bool:
                 self.transfer_resources()  
-
-            else: 
-                self.busy = False
-                try:
-                    self.IA.farmers.remove(self)
-                except: pass    
+ 
 
 
         if self.path_index <= len(self.path) - 1:
@@ -135,7 +130,7 @@ class VillagerIA(Villager):
         if (self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources > 0):
             self.farmer_cases(self.cible)  
         else: 
-            self.IA.farmers.remove(self)          
+            if self in self.IA.farmers: self.IA.farmers.remove(self)          
             self.farm = False    
             self.busy = False   
         
