@@ -36,13 +36,13 @@ class Options:
             draw_text(self.screen, 'Options', 30, WHITE, (20, 20))
             mx, my = pygame.mouse.get_pos()  # récupération des clics de souris
 
-            button_normal = pygame.Rect(170, 250, 15, 15) # les boutons (ici, invisibles) -> bouton ok
-            button_fast = pygame.Rect(170, 300, 15, 15)
-            button_veryfast = pygame.Rect(170, 350, 15, 15)
-            button_ok = pygame.Rect(897,903,278,40)
+            button_normal = pygame.Rect(171, 251, 20, 20) # les boutons (ici, invisibles) -> bouton ok
+            button_fast = pygame.Rect(171, 301, 20, 20)
+            button_veryfast = pygame.Rect(171, 352, 20, 20)
+            button_ok = pygame.Rect(925,915,285,40)
 
             if button_ok.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (896, 902, 277, 40), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (925, 915, 288, 42), 3)
                 if click:
                     self.playing=False
 
@@ -69,6 +69,7 @@ class Options:
             # pygame.draw.rect(self.screen, (255, 215, 50), button_ok)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_veryfast)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_normal)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_fast)
 
             click = False
             for event in pygame.event.get():
