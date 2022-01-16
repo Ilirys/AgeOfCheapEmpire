@@ -131,6 +131,7 @@ class IA:
                                 self.evolution += 1
 
                     case 4:
+                        self.passage_age_IA()
                         if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
                             self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
                             self.number_of_buildings += 1
@@ -354,7 +355,17 @@ class IA:
                         villager.create_path(tile["grid"][0], tile["grid"][1], True)
                         villager.busy = True
                         self.farmers.append(villager)
-                        
+
+    def passage_age_IA(self):
+        self.ressource_manager.age = "2"
+        if self.ressource_manager.is_affordable("Passage_Age"):
+            self.ressource_manager.apply_cost_to_resource("Passage_Age")
+            for batiment in self.world.entities:
+                if isinstance(batiment, Batiment):
+                    print("Ageing up!")
+                    if batiment.team == self.team:
+                        batiment.load_Age2_images()                    
+
     def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
         if self.ressource_manager.population < self.ressource_manager.max_population:
             if (not self.world.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]):

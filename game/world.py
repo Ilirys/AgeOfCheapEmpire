@@ -610,9 +610,9 @@ class World:
 
     def passage_age_joueur(self):
         self.resource_manager.age = "2"
+        print("Ageing up!")
         for batiment in self.entities:
             if isinstance(batiment, Batiment):
-                print("Ageing up!")
                 if batiment.team == "blue":
                     batiment.load_Age2_images()
     
