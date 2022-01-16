@@ -36,7 +36,7 @@ def main():
     while running:
 
         # start menu goes here
-        startscreen.ecran_demarrage()
+        #startscreen.ecran_demarrage()
 
         while playing:
             # game loop here

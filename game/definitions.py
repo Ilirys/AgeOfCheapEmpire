@@ -62,3 +62,7 @@ def init():
     #SPEED
     global CURRENT_SPEED
     CURRENT_SPEED = "veryfast"
+
+    #Images
+    global IMAGE_MENU
+    IMAGE_MENU = 'assets/menu_options.png'
