@@ -202,10 +202,101 @@ class World:
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
                 if nomElement != "":  #Si le nom de l'element sur la case n'est pas vide alors on affiche la ressource correspondante (arbre etc)
-                        screen.blit(self.tiles[nomElement],
+                    screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
                                  render_pos[1] -  (self.tiles[nomElement].get_height() - TILE_SIZE +15) + camera.scroll.y))
-                
+
+                    if (self.world[x][y]["tile"].ressource.getNbRessources() != NB_RESSOURCES[0] and self.world[x][y]["tile"].ressource.typeRessource == "wood"):
+                        #barre de hp des arbres
+                        bon_placement_rectangle_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40, 40, 5]
+                        bon_placement_barre_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40, (self.world[x][y]["tile"].ressource.getNbRessources()* 40) / NB_RESSOURCES[0], 5]
+                        pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
+                        if self.world[x][y]["tile"].ressource.getNbRessources() >= 0.75 * NB_RESSOURCES[0]:
+                            # afficher barre de hp verte quand t'es quasi full life
+                            pygame.draw.rect(screen, (44, 205, 44), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.50 * NB_RESSOURCES[0]:
+                            # afficher barre de hp jaune quand t'es mid life
+                            pygame.draw.rect(screen, (255, 236, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.25 * NB_RESSOURCES[0]:
+                            # afficher barre de hp orange quand t'es mal
+                            pygame.draw.rect(screen, (255, 128, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() > 0:
+                            # afficher barre de hp rouge quand t'es dans la barba-sauce
+                            pygame.draw.rect(screen, (236, 15, 15), bon_placement_barre_hp)
+
+                    elif (self.world[x][y]["tile"].ressource.getNbRessources() != NB_RESSOURCES[1] and self.world[x][y]["tile"].ressource.typeRessource == "food"):
+                        # barre de hp des buissons
+                        bon_placement_rectangle_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40, 40, 5]
+                        bon_placement_barre_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40,
+                            (self.world[x][y]["tile"].ressource.getNbRessources() * 40) / NB_RESSOURCES[1], 5]
+                        pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
+                        if self.world[x][y]["tile"].ressource.getNbRessources() >= 0.75 * NB_RESSOURCES[1]:
+                            # afficher barre de hp verte quand t'es quasi full life
+                            pygame.draw.rect(screen, (44, 205, 44), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.50 * NB_RESSOURCES[1]:
+                            # afficher barre de hp jaune quand t'es mid life
+                            pygame.draw.rect(screen, (255, 236, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.25 * NB_RESSOURCES[1]:
+                            # afficher barre de hp orange quand t'es mal
+                            pygame.draw.rect(screen, (255, 128, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() > 0:
+                            # afficher barre de hp rouge quand t'es dans la barba-sauce
+                            pygame.draw.rect(screen, (236, 15, 15), bon_placement_barre_hp)
+
+                    elif (self.world[x][y]["tile"].ressource.getNbRessources() != NB_RESSOURCES[2] and self.world[x][y]["tile"].ressource.typeRessource == "gold"):
+                        # barre de hp des carrières d'or
+                        bon_placement_rectangle_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40, 40, 5]
+                        bon_placement_barre_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40,
+                            (self.world[x][y]["tile"].ressource.getNbRessources() * 40) / NB_RESSOURCES[2], 5]
+                        pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
+                        if self.world[x][y]["tile"].ressource.getNbRessources() >= 0.75 * NB_RESSOURCES[2]:
+                            # afficher barre de hp verte quand t'es quasi full life
+                            pygame.draw.rect(screen, (44, 205, 44), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.50 * NB_RESSOURCES[2]:
+                            # afficher barre de hp jaune quand t'es mid life
+                            pygame.draw.rect(screen, (255, 236, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.25 * NB_RESSOURCES[2]:
+                            # afficher barre de hp orange quand t'es mal
+                            pygame.draw.rect(screen, (255, 128, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() > 0:
+                            # afficher barre de hp rouge quand t'es dans la barba-sauce
+                            pygame.draw.rect(screen, (236, 15, 15), bon_placement_barre_hp)
+
+                    elif (self.world[x][y]["tile"].ressource.getNbRessources() != NB_RESSOURCES[3] and self.world[x][y]["tile"].ressource.typeRessource == "stone"):
+                        # barre de hp des carrières de pierre
+                        bon_placement_rectangle_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40, 40, 5]
+                        bon_placement_barre_hp = [
+                            render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x + 42,
+                            render_pos[1] - self.tiles[nomElement].get_height() + camera.scroll.y + 40,
+                            (self.world[x][y]["tile"].ressource.getNbRessources() * 40) / NB_RESSOURCES[3], 5]
+                        pygame.draw.rect(screen, (81, 71, 71), bon_placement_rectangle_hp)
+                        if self.world[x][y]["tile"].ressource.getNbRessources() >= 0.75 * NB_RESSOURCES[3]:
+                            # afficher barre de hp verte quand t'es quasi full life
+                            pygame.draw.rect(screen, (44, 205, 44), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.50 * NB_RESSOURCES[3]:
+                            # afficher barre de hp jaune quand t'es mid life
+                            pygame.draw.rect(screen, (255, 236, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() >= 0.25 * NB_RESSOURCES[3]:
+                            # afficher barre de hp orange quand t'es mal
+                            pygame.draw.rect(screen, (255, 128, 0), bon_placement_barre_hp)
+                        elif self.world[x][y]["tile"].ressource.getNbRessources() > 0:
+                            # afficher barre de hp rouge quand t'es dans la barba-sauce
+                            pygame.draw.rect(screen, (236, 15, 15), bon_placement_barre_hp)
+
                 #draw bâtiments    
                 batiment = self.batiment[x][y]
                 if batiment is not None:
