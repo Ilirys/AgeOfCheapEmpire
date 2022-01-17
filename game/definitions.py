@@ -33,7 +33,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 480], None : ["", 1] }
 
 
 #Colors
@@ -61,7 +61,7 @@ def init():
 
     #SPEED
     global CURRENT_SPEED
-    CURRENT_SPEED = "veryfast"
+    CURRENT_SPEED = "fast"
 
     # Statut partie (0: en cours, 1: victoire, 2: défaite)
     global statut_partie

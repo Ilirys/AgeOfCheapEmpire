@@ -29,12 +29,12 @@ class Ressource:
             "House": {"wood": 25},
             "Barrack": {"wood": 175},
             "Storage": {"wood": 100},
-            "Farm": {"wood": 200},
+            "Farm": {"wood": 60},
             "Villageois": {"food": 50},
-            "Soldier": {"food": 17},
-            "horseman": {"food": 17},
-            "Archer": {"food": 17},
-            "BIGDADDY": {"food": 30}
+            "Soldier": {"food": 60},
+            "horseman": {"food": 80},
+            "Archer": {"food": 60},
+            "BIGDADDY": {"food": 0}
         }
 
         #Save

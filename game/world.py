@@ -280,7 +280,7 @@ class World:
                             
                     else:
                         if unites.selected:
-                            self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
+                            self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(int(unites.nb_ressource_Transp)), unites.ressource_Transp)
                             pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
 
                             if unites.name == "Villageois":
