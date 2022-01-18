@@ -29,7 +29,7 @@ def main():
     definitions.init()
 
     #implement game
-    game = Game(SCREEN,clock)
+
     startscreen = StartScreen(SCREEN, clock)
 
 
@@ -37,6 +37,8 @@ def main():
 
         # start menu goes here
         startscreen.ecran_demarrage()
+        game = Game(SCREEN, clock)
+
 
         while playing:
             # game loop here
