@@ -294,6 +294,7 @@ class Hud:
         hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
+        hudAge2 = pygame.image.load("assets/HUD/Hud1v1_Age2.png").convert_alpha()
         hudArbre= pygame.image.load("assets/HUD/Hud_Arbre_1920-1080.png").convert_alpha()
         hudBuisson = pygame.image.load("assets/HUD/Hud_Forum_1920-1080.png").convert_alpha()
         hudMineOr = pygame.image.load("assets/HUD/Hud_MineOr_1920-1080.png").convert_alpha()
@@ -316,6 +317,7 @@ class Hud:
             "hudVillageois": hudVillageois,
             "hudRessources": hudRessources,
             "hudAge": hudAge,
+            "hudAge2": hudAge2,
             "hudTowncenter": hudTowncenter,
             "hudArbre":hudArbre,
             "hudBuisson":hudBuisson ,

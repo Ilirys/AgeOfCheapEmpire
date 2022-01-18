@@ -610,6 +610,7 @@ class World:
 
     def passage_age_joueur(self):
         self.resource_manager.age = "2"
+        self.hud.age_surface.blit(self.hud.images_hud["hudAge2"],(0,0))
         print("Ageing up!")
         for batiment in self.entities:
             if isinstance(batiment, Batiment):
