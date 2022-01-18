@@ -86,7 +86,7 @@ class Archer(Worker):
                     self.temp_tile_a = self.cible.tile
                     self.attack = True
 
-                elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
+                elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.world[x][y]["tile"].tile_batiment != None and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
                     self.cible = self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
 
                     if self.dest_tile != self.tile:

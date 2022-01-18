@@ -140,6 +140,10 @@ class IA:
                         if self.number_of_buildings >= 5:
                             self.number_of_buildings = 0
                             self.evolution += 1
+                    
+                    case 5:
+                        self.attack_town_center()
+                        
             elif self.strategy == "attaque":
                 pass
             elif self.strategy == "blitz":

@@ -283,9 +283,10 @@ class Villager(Worker):
 
     #override
     def farmer_cases(self, cible):  # Farme la cible
-        self.ressource_Transp = cible["tile"].ressource.typeRessource
-        self.nb_ressource_Transp += self.efficiency
-        cible["tile"].ressource.nbRessources -= self.efficiency
+        if cible["tile"].ressource.typeRessource != "":
+            self.ressource_Transp = cible["tile"].ressource.typeRessource
+            self.nb_ressource_Transp += self.efficiency
+            cible["tile"].ressource.nbRessources -= self.efficiency
         if cible["tile"].ressource.nbRessources <= 0:
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
 
