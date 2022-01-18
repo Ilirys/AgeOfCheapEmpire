@@ -356,10 +356,7 @@ class World:
                         self.hud.display_towncenter_icons = False                
 
                     if batiment.pv < 0:
-                        if batiment.name == "Barrack" or batiment.name == "Towncenter":
-                            self.delete_batiment2(x,y)
-                        else:
-                            self.delete_batiment(x,y)
+                        self.delete_batiment(x,y, batiment)
                         self.hud.select_surface_empty = True
 
                     if batiment.pv != batiment.pv_max:
@@ -398,7 +395,7 @@ class World:
                             
                     else:
                         if unites.selected:
-                            self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(unites.nb_ressource_Transp), unites.ressource_Transp)
+                            self.hud.blit_hud("hud" + unites.name, str(unites.pv), screen, str(int(unites.nb_ressource_Transp)), unites.ressource_Transp)
                             pygame.draw.polygon(screen, (255, 255, 255), unites.iso_poly, 2)
 
                             if unites.name == "Villageois":
@@ -560,7 +557,7 @@ class World:
 
     def générer_camp(self):
         générateur = random.random()
-        x = 7
+        x = 9
         y = random.randint(-4,4)
         z = random.randint(-4,4)
         if générateur<0.25:
@@ -575,8 +572,8 @@ class World:
         else:
             a = self.grid_length_x-x+y
             b = self.grid_length_y-x+z
-        a2 = MAP_SIZE - a   # position towncenter ennemi
-        b2 = MAP_SIZE - b
+        a2 = MAP_SIZE - a -1   # position towncenter ennemi
+        b2 = MAP_SIZE - b -1
         M2=self.Bou.creation_camp(a, b) # enlève les ressources aléatoirement autour du towncenter
         M3=self.Bou.creation_camp(a2, b2) # pareil pour le towncenter ennemi
         for grid_x in range(self.grid_length_x): #On itère pour la taille de la map
@@ -605,8 +602,6 @@ class World:
 
         self.storage_tile = self.world[a][b]    #En absence de grenier, les villageois rapportent les ressources au towncenter
         
-        #self.storage_tile_IA = self.world[a2][b2]
-        #self.spawn_unit_autour_caserne("Villageois",self.storage_tile, team="red")    #Spawn villageois initial
 
         self.towncenter_posx=a
         self.towncenter_posy=b
@@ -623,16 +618,16 @@ class World:
               self.world[a + i][b + j]["tile"].tile_batiment = self.world[a][b]
               self.world[a2 + i][b2 + j]["tile"].tile_batiment = self.world[a2][b2]
 
-        for i in range (3):
-            for j in range (3):
-                self.world[a+j][b+i]["collision"] = False
-                self.world[a+j][b+i]["tile"].ressource.typeRessource = ""
-                self.world[a+j][b+i]["tile"].ressource.nbRessource = 0
-                self.collision_matrix[b+i][a+j] = 1
-                self.world[a2+j][b2+i]["collision"] = False
-                self.world[a2+j][b2+i]["tile"].ressource.typeRessource = ""
-                self.world[a2+j][b2+i]["tile"].ressource.nbRessource = 0
-                self.collision_matrix[b2+i][a2+j] = 1
+        for i in range (6):
+            for j in range (6):
+                self.world[a-2+j][b-2+i]["collision"] = False
+                self.world[a-2+j][b-2+i]["tile"].setRessource(Ressource(0, ""))
+                self.collision_matrix[b-2+i][a-2+j] = 1
+                self.world[a-2+j][b-2+i]["tile"].nomElement=""
+                self.world[a2-2+j][b2-2+i]["collision"] = False
+                self.world[a2-2+j][b2-2+i]["tile"].setRessource(Ressource(0, ""))
+                self.collision_matrix[b2-2+i][a2-2+j] = 1
+                self.world[a2-2+j][b2-2+i]["tile"].nomElement=""
         for i in range (2):
             for j in range (2):
                 self.world[a+j][b+i]["collision"] = True
@@ -939,10 +934,13 @@ class World:
 
 
 
-    def delete_batiment2(self,x,y):
-
-        for i in range(2):
-            for j in range(2):
+    def delete_batiment(self,x,y, batiment):
+        if batiment.name == "Towncenter":
+            if batiment.team != "blue":
+                definitions.statut_partie = 1
+            else: definitions.statut_partie = 2
+        for i in range(dicoBatiment[batiment.name][1]):
+            for j in range(dicoBatiment[batiment.name][1]):
                 self.collision_matrix[y+i][x+j] = 1  # Free the last tile from collision
                 self.world[x+i][y+j]["collision"] = False
 
@@ -951,14 +949,4 @@ class World:
                 self.selected = False
                 self.temp = 0
 
-    def delete_batiment(self,x,y):
-
-
-        self.collision_matrix[y][x] = 1  # Free the last tile from collision
-        self.world[x][y]["collision"] = False
-
-        self.batiment[x][y] = None
-
-        self.selected = False
-        self.temp = 0
 

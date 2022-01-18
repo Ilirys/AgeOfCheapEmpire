@@ -25,10 +25,10 @@ class Villager(Worker):
         self.farm = False
         self.ressource_Transp = ""
         self.nb_ressource_Transp = 0
-        self.max_ressources = 200
+        self.max_ressources = 50
         self.transfer_resources_bool = False
         self.cibleFarm = 0
-        self.efficiency = 5
+        self.efficiency = .1
         self.storage_tile = self.world.storage_tile
 
 
@@ -285,8 +285,8 @@ class Villager(Worker):
     def farmer_cases(self, cible):  # Farme la cible
         if cible["tile"].ressource.typeRessource != "":
             self.ressource_Transp = cible["tile"].ressource.typeRessource
-            self.nb_ressource_Transp += self.efficiency
-            cible["tile"].ressource.nbRessources -= self.efficiency
+            self.nb_ressource_Transp += self.efficiency*definitions.EFFICIENCY*DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5
+            cible["tile"].ressource.nbRessources -= self.efficiency*DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5
         if cible["tile"].ressource.nbRessources <= 0:
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
 
@@ -336,7 +336,7 @@ class Villager(Worker):
 
     def transfer_resources(self): #Si la capacité a atteint son max, on transfere les ressources du villageois, au compteur de ressources
         if self.nb_ressource_Transp >= self.max_ressources:
-            self.world.resource_manager.resources[self.ressource_Transp] += self.nb_ressource_Transp
+            self.world.resource_manager.resources[self.ressource_Transp] += int(self.nb_ressource_Transp)
             self.nb_ressource_Transp = 0
             self.ressource_Transp = "" 
             self.busy = False
@@ -344,7 +344,7 @@ class Villager(Worker):
     def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
         
         if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
-           self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1 
+           self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1*definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
         else:
             self.construire = False
             self.busy = False

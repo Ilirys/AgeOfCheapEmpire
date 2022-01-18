@@ -33,7 +33,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], "Towncenter2" : ["assets/Towncenter128-2.png", 2, 2400], "House2" : ["assets/House2.png", 1, 550], "Barrack2" : ["assets/barracks182-2.png", 2, 200], "Storage2" : ["assets/Stable128-2.png", 1, 600], "Farm2" : ["assets/stable_tool2.png", 2, 600], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 480], None : ["", 1] }
 
 
 #Colors
@@ -48,6 +48,7 @@ Brown=(70,33, 0)
 Red=(175,0,0)
 Blue=(0,128,255)
 
+EFFICIENCY = 1
 
 def init():
 
@@ -68,8 +69,12 @@ def init():
 
     #SPEED
     global CURRENT_SPEED
-    CURRENT_SPEED = "veryfast"
+    CURRENT_SPEED = "fast"
 
     #Images
     global IMAGE_MENU
     IMAGE_MENU = 'assets/menu_options.png'
+
+    # Statut partie (0: en cours, 1: victoire, 2: défaite)
+    global statut_partie
+    statut_partie = 0

@@ -24,7 +24,7 @@ class Bouquet:
     
     def bouquet(self,type_ressource, r, grid_x, grid_y):
         if self.M[grid_x][grid_y] == "    ":
-            if r >= 70 :
+            if r >= 65 :
                 self.M[grid_x][grid_y] = type_ressource
                 if type_ressource == "wood":
                     if grid_x != self.n - 1:

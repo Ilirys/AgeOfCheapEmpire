@@ -25,6 +25,7 @@ from .soldier import Soldier
 from .horseman import Horseman
 from.archer import Archer
 from .ecranSave import Save
+from .ecranFinPartie import FinPartie
 from game.IA.IA import IA
 from game.IA.soldierIA import SoldierIA
 from game.IA.villagerIA import VillagerIA
@@ -75,6 +76,9 @@ class Game:
         #Menu
         self.ecran_options = Save(self.screen, self.clock, self)
 
+        #FinPartie
+        self.ecran_fin_partie = FinPartie(self.screen, self.clock, self)
+
         # IA
         self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock)
         
@@ -96,6 +100,9 @@ class Game:
             self.chat.handle_event(event)
             self.ecran_options.ecran_options(event)
             self.IA.events(event)
+            if definitions.statut_partie != 0:
+                self.ecran_fin_partie.ecran_fin_partie(event)
+        
 
 
     def update(self):

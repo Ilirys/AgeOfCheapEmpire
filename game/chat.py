@@ -65,7 +65,10 @@ class Chat:
 
                     
                     elif self.text == "STEROIDS":
-                        print("training, building, farming are instantaneous for every players")
+                        definitions.EFFICIENCY = 100
+
+                    elif self.text == "STOPSTEROIDS":
+                        definitions.EFFICIENCY = 1
 
                     elif self.text == "speed = normal":
                         definitions.CURRENT_SPEED = "normal"

@@ -30,7 +30,7 @@ class Ressource:
             "House": {"wood": 25},
             "Barrack": {"wood": 175},
             "Storage": {"wood": 100},
-            "Farm": {"wood": 200},
+            "Farm": {"wood": 60},
             "Villageois": {"food": 50},
             "Soldier": {"food": 17},
             "horseman": {"food": 17},
