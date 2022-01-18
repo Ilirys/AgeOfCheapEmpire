@@ -284,7 +284,7 @@ class Villager(Worker):
     def farmer_cases(self, cible):  # Farme la cible
         if cible["tile"].ressource.typeRessource != "":
             self.ressource_Transp = cible["tile"].ressource.typeRessource
-            self.nb_ressource_Transp += self.efficiency*DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5
+            self.nb_ressource_Transp += self.efficiency*definitions.EFFICIENCY*DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5
             cible["tile"].ressource.nbRessources -= self.efficiency*DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5
         if cible["tile"].ressource.nbRessources <= 0:
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
@@ -343,7 +343,7 @@ class Villager(Worker):
     def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
         
         if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
-           self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+           self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1*definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
         else:
             self.construire = False
             self.busy = False

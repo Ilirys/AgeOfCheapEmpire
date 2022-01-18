@@ -48,6 +48,7 @@ Brown=(70,33, 0)
 Red=(175,0,0)
 Blue=(0,128,255)
 
+EFFICIENCY = 1
 
 def init():
     global afficher_minimap
