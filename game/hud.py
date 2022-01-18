@@ -17,6 +17,7 @@ class Hud:
         self.images_hud = self.load_images_hud()
         self.images_scale = self.load_images_scale()
         self.images_icons = self.load_unit_icons()
+        self.towncenter_icons = self.load_towncenter_icons()
 
         #Screen sized hud 
         self.hudmoi_surface = pygame.Surface((width,height),pygame.SRCALPHA) 
@@ -41,6 +42,7 @@ class Hud:
         #Display unit and building icons boolean
         self.display_unit_icons = False
         self.display_building_icons = False
+        self.display_towncenter_icons = False
 
         #fonts for units hp
         self.font = pygame.font.SysFont("arialblack", 10)
@@ -50,6 +52,7 @@ class Hud:
         self.create_ressource_hud()
 
         self.selected_unit_icon = None
+        self.selected_towncenter_icon = None
         self.selected_tile = None
         self.examined_tile = None
 
@@ -62,18 +65,20 @@ class Hud:
         self.age_surface.blit(self.images_hud["hudAge"],(0,0))
         
         render_pos = [20, self.height-self.height * 0.21 + 35]
-        unit_icons_render_pos = [20, self.height-self.height * 0.21 + 35]
+        unit_icons_render_pos = [19, self.height-self.height * 0.21 + 35]
+        towncenter_icons_render_pos = [19, self.height-self.height * 0.21 + 35]
         object_width = self.build_surface.get_width() // 10
 
         tiles = []
         unit_icons = []
+        towncenter_icons = []
 
         for image_name, image in self.images.items():
 
             pos = render_pos.copy()
-            pos = [pos[0] + 10, pos[1]]
+            pos = [pos[0] -5 , pos[1]]
             image_tmp = image.copy()
-            image_scale = self.scale_image(image_tmp, w=object_width)
+            image_scale = self.scale_image(image_tmp, w=object_width + 20)
             rect = image_scale.get_rect(topleft=pos)            
 
             tiles.append(
@@ -86,7 +91,7 @@ class Hud:
                 }
             )
 
-            render_pos[0] += self.build_surface.get_width() // 10
+            render_pos[0] += int(self.build_surface.get_width() // 10)
         
         for image_name, image in self.images_icons.items():
 
@@ -108,6 +113,27 @@ class Hud:
 
             unit_icons_render_pos[0] += self.build_surface.get_width() // 10
         self.unit_icons = unit_icons    
+        
+        for image_name, image in self.towncenter_icons.items():
+
+            pos = towncenter_icons_render_pos.copy()
+            pos = [pos[0] + 12, pos[1] - 4]
+            image_tmp = image.copy()
+            image_scale = self.scale_image(image_tmp, w=object_width)
+            rect = image_scale.get_rect(topleft=pos)            
+
+            towncenter_icons.append(
+                {
+                    "name": image_name,
+                    "icon": image_scale,
+                    "image": self.towncenter_icons[image_name],
+                    "rect": rect,
+                    "affordable": True
+                }
+            )
+
+            towncenter_icons_render_pos[0] += int(self.build_surface.get_width() // 1.73)
+        self.towncenter_icons = towncenter_icons   
 
         return tiles
     
@@ -141,6 +167,16 @@ class Hud:
                 if icon["rect"].collidepoint(mouse_pos) and icon["affordable"]:
                    if mouse_action[0]:
                        self.selected_unit_icon = icon
+        
+        elif self.display_towncenter_icons:
+            for icon in self.towncenter_icons:
+                if self.resource_manager.is_affordable(icon["name"]) and self.resource_manager.population < self.resource_manager.max_population:
+                   icon["affordable"] = True
+                else:
+                   icon["affordable"] = False
+                if icon["rect"].collidepoint(mouse_pos) and icon["affordable"]:
+                   if mouse_action[0]:
+                       self.selected_towncenter_icon = icon
 
                         
 
@@ -176,6 +212,9 @@ class Hud:
                 screen.blit(tile["icon"], tile["rect"].topleft)
         elif self.display_unit_icons:
             for icon in self.unit_icons:
+                 screen.blit(icon["icon"], icon["rect"].topleft)   
+        elif self.display_towncenter_icons:
+            for icon in self.towncenter_icons:
                  screen.blit(icon["icon"], icon["rect"].topleft)   
 
     
@@ -224,16 +263,24 @@ class Hud:
         return images
 
     def load_unit_icons(self):
-        iconVillageois = pygame.image.load("assets/HUD/icone_villageois.png").convert_alpha()
         iconSoldier = pygame.image.load("assets/HUD/icone_fantassinMassue.png").convert_alpha()
         iconHorseman = pygame.image.load("assets/HUD/icone_cavalier.png").convert_alpha()
         iconArcher = pygame.image.load("assets/HUD/icone_archer.png").convert_alpha()
 
         images = {
-            "Villageois" : iconVillageois,
             "Soldier" : iconSoldier,
             "horseman" : iconHorseman, 
             "Archer" : iconArcher
+        }
+        return images      
+
+    def load_towncenter_icons(self):
+        iconVillageois = pygame.image.load("assets/HUD/icone_villageois.png").convert_alpha()
+        iconPassage_Age = pygame.image.load("assets/HUD/icone_passageAge2.png").convert_alpha()
+
+        images = {
+            "Villageois" : iconVillageois,
+            "Passage_Age" : iconPassage_Age,
         }
         return images       
 
@@ -243,6 +290,7 @@ class Hud:
         hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         hudRessources = pygame.image.load("assets/HUD/Hud1v1.png").convert_alpha()
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
+        hudAge2 = pygame.image.load("assets/HUD/Hud1v1_Age2.png").convert_alpha()
         hudArbre= pygame.image.load("assets/HUD/Hud_Arbre_1920-1080.png").convert_alpha()
         hudBuisson = pygame.image.load("assets/HUD/Hud_Forum_1920-1080.png").convert_alpha()
         hudMineOr = pygame.image.load("assets/HUD/Hud_MineOr_1920-1080.png").convert_alpha()
@@ -265,6 +313,7 @@ class Hud:
             "hudVillageois": hudVillageois,
             "hudRessources": hudRessources,
             "hudAge": hudAge,
+            "hudAge2": hudAge2,
             "hudTowncenter": hudTowncenter,
             "hudArbre":hudArbre,
             "hudBuisson":hudBuisson ,

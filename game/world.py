@@ -1,3 +1,4 @@
+from tkinter.font import families
 import pygame
 import random
 import game.definitions as definitions
@@ -137,19 +138,19 @@ class World:
 
                     
                     if dicoBatiment[self.hud.selected_tile["name"]][1] == 1: #Pour taille de batiment 1x1
-                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
+                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager, age=self.resource_manager.age)
                         self.entities.append(ent)
                         ent.current_image = 1   #Petite image ruine pour construction
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
                         self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
-                        if self.hud.selected_tile["name"] == "House": self.resource_manager.max_population += 1
+                        if self.hud.selected_tile["name"] == "House": self.resource_manager.max_population += 5
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
                     elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
-                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
+                        ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager, age=self.resource_manager.age)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
                         for i in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
@@ -167,12 +168,29 @@ class World:
                 now = pygame.time.get_ticks()
                 if mouse_action[0]:
                     if now - self.move_timer > UNITS_SPAWN_TIME:
+                        # self.move_timer = now    
                         self.spawn_unit_autour_caserne(
                             self.hud.selected_unit_icon["name"], self.caserne_tile)
                         self.hud.selected_unit_icon = None
 
                         self.move_timer = now
                     else: self.hud.selected_unit_icon = None   
+        
+        elif self.hud.selected_towncenter_icon:  #Si les icones du towncenter sont selectionées, le clic gauche déclenche soit le spawn du villageois soit l'Age
+                now = pygame.time.get_ticks()
+                if mouse_action[0]:
+                    if self.hud.selected_towncenter_icon["name"] == "Villageois" and now - self.move_timer > UNITS_SPAWN_TIME:
+                        self.move_timer = now
+                        self.spawn_unit_autour_caserne(
+                            self.hud.selected_towncenter_icon["name"], self.towncenter_tile)
+                        self.hud.selected_towncenter_icon = None
+
+                    elif self.hud.selected_towncenter_icon["name"] == "Passage_Age" and now - self.move_timer > UNITS_SPAWN_TIME:
+                        self.move_timer = now
+                        self.resource_manager.apply_cost_to_resource(self.hud.selected_towncenter_icon["name"])
+                        self.passage_age_joueur()
+                        self.hud.selected_towncenter_icon = None 
+                    else: self.hud.selected_towncenter_icon = None   
 
         else:
 
@@ -305,31 +323,37 @@ class World:
                                      render_pos[1] - ((dicoBatiment[batiment.name][1] - 1) * 10) + camera.scroll.y - 5))
                     if self.examine_tile is not None:
                         if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
-                            mask = pygame.mask.from_surface(batiment.image.convert_alpha()).outline()
+                            mask = pygame.mask.from_surface(batiment.images[batiment.current_image].convert_alpha()).outline()
                             # affiche le rectangle blanc autour du batiment
                             mask = [(x + render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x + 2 - ((dicoBatiment[batiment.name][1]-1) * 190)/3, y + render_pos[1] - ((dicoBatiment[batiment.name][1] - 1) * 10) + camera.scroll.y - 5) for x, y in mask]
                             pygame.draw.polygon(screen, (255, 255, 255), mask, 2)
                             #affiche hud batiment
                             if (batiment.team=="blue"):
-                                if (batiment.name=="Towncenter"):
+                                if (batiment.name=="Towncenter" or batiment.name=="Towncenter2"):
                                     self.hud.display_unit_icons = False 
+                                    self.hud.display_towncenter_icons = True
                                     self.hud.blit_hud("hudTowncenter", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
-                                elif (batiment.name=="Storage"):
+                                elif (batiment.name=="Storage" or batiment.name=="Storage2"):
                                     self.hud.display_unit_icons = False
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.blit_hud("hudGrenier", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.storage_tile = self.world[x][y] #Used to drop resources of villager when full
-                                elif (batiment.name=="House"):
+                                elif (batiment.name=="House" or batiment.name=="House2"):
                                     self.hud.display_unit_icons = False 
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.blit_hud("hudHouse", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
-                                elif (batiment.name=="Farm"):
+                                elif (batiment.name=="Farm" or batiment.name=="Farm2"):
                                     self.hud.display_unit_icons = False 
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.blit_hud("hudFarm", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
-                                elif (batiment.name=="Barrack"):
+                                elif (batiment.name=="Barrack" or batiment.name=="Barrack2"):
+                                    self.hud.display_towncenter_icons = False
                                     self.hud.display_unit_icons = True
                                     self.hud.blit_hud("hudCaserne", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
+                        self.hud.display_towncenter_icons = False                
 
                     if batiment.pv < 0:
                         if batiment.name == "Barrack" or batiment.name == "Towncenter":
@@ -441,10 +465,10 @@ class World:
                 )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
         
-        mouse_pos = pygame.mouse.get_pos()
-        grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
-        txt = str(grid_pos)
-        draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
+        # mouse_pos = pygame.mouse.get_pos()
+        # grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+        # txt = str(grid_pos)
+        # draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
         
 
 
@@ -675,6 +699,15 @@ class World:
                     villager.construire = True
                     break    
 
+    def passage_age_joueur(self):
+        self.resource_manager.age = "2"
+        self.hud.age_surface.blit(self.hud.images_hud["hudAge2"],(0,0))
+        print("Ageing up!")
+        for batiment in self.entities:
+            if isinstance(batiment, Batiment):
+                if batiment.team == "blue":
+                    batiment.load_Age2_images()
+    
     def spawn_unit_autour_caserne(self, unit_name, tile): #On lui fournit la case de la caserne ou batiment 2x2 et il s'occupe de spawn autour
         if not self.world[tile["grid"][0] ][tile["grid"][1] + 2]["collision"]:
             if unit_name == "Villageois":
@@ -860,7 +893,7 @@ class World:
             for y in range(self.grid_length_y):
                 if self.batimentDTO[x][y] != None:
                     entDTO = self.batimentDTO[x][y]
-                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager, entDTO.pv, entDTO.current_image)
+                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager, entDTO.pv, entDTO.current_image, age=self.resource_manager.age)
                     for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
                         self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)
@@ -883,15 +916,15 @@ class World:
             for y in range(self.grid_length_y):
                 if self.batiment[x][y] != None:
                     ent = self.batiment[x][y]
-                    if ent.name == "Towncenter":
+                    if ent.name == "Towncenter" or ent.name == "Towncenter2":
                         entDTO = TowncenterDTO(ent.pos, ent.pv, ent.current_image)
-                    if ent.name == "House":
+                    if ent.name == "House" or ent.name == "House2":
                         entDTO = HouseDTO(ent.pos, ent.pv, ent.current_image )
-                    if ent.name == "Barrack":
+                    if ent.name == "Barrack" or ent.name == "Barrack2":
                         entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image   )
-                    if ent.name == "Storage":
+                    if ent.name == "Storage" or ent.name == "Storage2":
                         entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image   )
-                    if ent.name == "Farm":
+                    if ent.name == "Farm" or ent.name == "Farm2":
                         entDTO = FarmDTO(ent.pos, ent.pv, ent.current_image   )
                     self.batimentDTO[x][y] = entDTO
 

@@ -1,14 +1,14 @@
 import pygame
 
 #Population
-PLAYER_POPULATION = 10
+PLAYER_POPULATION = 5
 
 #Time-based settings
-UNITS_SPAWN_TIME = 10
+UNITS_SPAWN_TIME = 100
 
 # IA 
 IA_DECISION_TIME = 1000  #(L'IA prendra une decision chaque X ms au lieu de chaque frame, comme ça 0 perte de fps)
-IA_POPULATION = 10
+IA_POPULATION = 5
 #Speed
 DISPLACEMENT_SPEED = {"slow" : 0.5, "normal" : 1, "fast": 5, "veryfast": 8, "potato_pc": 100}
 
@@ -25,7 +25,7 @@ MAP_SIZE = 50
 
 #Resource
 LES_RESSOURCES = ["wood", "food", "gold", "stone"]
-INIT_RESSOURCE = [200, 200, 200, 200]
+INIT_RESSOURCE = [200, 200, 2000, 200]
 NB_RESSOURCES = [300,100,600,600]  #Nombre de bois par arbres, de food par buisson, de gold etc
 
 #Fonts
@@ -33,7 +33,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 600], "Towncenter2" : ["assets/Towncenter128-2.png", 2, 2400], "House2" : ["assets/House2.png", 1, 550], "Barrack2" : ["assets/barracks182-2.png", 2, 200], "Storage2" : ["assets/Stable128-2.png", 1, 600], "Farm2" : ["assets/stable_tool2.png", 2, 600], None : ["", 1] }
 
 
 #Colors
