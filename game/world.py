@@ -302,31 +302,42 @@ class World:
     def changeToNormalGrass(self, xEcran, yEcran, xMap, yMap):
         for x in range(xMap - 1, xMap + 2):
             for y in range(yMap - 1, yMap + 2):
-                if (x >= 0 and x < self.grid_length_x-1 and y >= 0 and y < self.grid_length_y-1 and self.world[x][y]["tile"].getCpt()==0):
+
+                if(x<=0):
+                    x=1
+                if(y<=0):
+                    y=1
+                if(x>= self.grid_length_x):
+                    x=self.grid_length_x-1
+                if(y >= self.grid_length_y):
+                    y = self.grid_length_y-1
+                #print("xmap = ",xMap,", ymap= ", yMap,"\n","x = ",x,", y= ", y,"\ncpt : ", self.world[x][y]["tile"].getCpt(),"\n" )
+
+                if (x >= 0 and x <= self.grid_length_x and y >= 0 and y <= self.grid_length_y and self.world[x][y]["tile"].getCpt()==0):
                     self.world[x][y]["tile"].setVisible(True)
                     self.world[x][y]["tile"].addCpt()
                     #affichage herbe haut gauche
                     if ((xMap == 0  and yMap !=0 and yMap != (self.grid_length_y - 1))):
                         self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -60 ,yEcran-36 ))
-                        print("haut gauche")
+                        #print("haut gauche")
                     #affichage herbe bas droit
-                    elif ((xMap == (self.grid_length_x - 1) and yMap !=0 and yMap != (self.grid_length_y - 1))):
+                    elif ((xMap == (self.grid_length_x - 1) and yMap != (self.grid_length_y - 1))):
                         self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -130 ,yEcran-65 ))
-                        print("bas droit")#ici
+                        #print("bas droit")
                     #affichage herbe droit haut
                     elif ((yMap == 0  and xMap !=0 and xMap != (self.grid_length_x - 1))):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
                         self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -130, yEcran -35))
-                        print("haut droit")
+                        #print("haut droit")
                     #affichage herbe gauche bas
                     elif ((yMap == (self.grid_length_y - 1) and xMap !=0 and xMap != (self.grid_length_x - 1))):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
                         self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -60, yEcran -65))
-                        print("bas gauche")#ici
+                        #print("bas gauche")#ici
                     #affichage herbe centrale (3x3)
                     elif xMap!=0 and yMap !=0 and xMap != (self.grid_length_x-1) and yMap != (self.grid_length_y-1):
                         self.grass_tiles.blit(self.tiles["grass3x3"],(xEcran + (self.grass_tiles.get_width()) / 2 - 128, yEcran - 65))
-                        print("pute ?")
-                    print("xmap = ",xMap,", ymap= ", yMap,"\n","x = ",x,", y= ", y,"\n" )
-
+                        #print("pute ?")
+                elif xMap==49 and yMap==0:
+                    self.grass_tiles.blit(self.tiles["grass"],(xEcran + (self.grass_tiles.get_width()) / 2 , yEcran ))
 
     def create_world(self): #Génère la map
         world = []
