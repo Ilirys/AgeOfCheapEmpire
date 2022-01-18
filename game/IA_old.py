@@ -1,4 +1,4 @@
-from pygame import *
+"""from pygame import *
 from .Ressource import Ressource
 from .soldierIA import SoldierIA
 from .horsemanIA import HorsemanIA
@@ -94,5 +94,5 @@ class IA:
             self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]
 
         if self.world.towncenter_IA_posx < 25 and self.world.towncenter_IA_posy < 25:
-            self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]
+            self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]"""
 

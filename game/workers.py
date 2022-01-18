@@ -23,7 +23,8 @@ class Worker:
 
         #Visual and audio effects
         self.name = "Villageois"
-        self.image = pygame.image.load('assets/sprites/villager/Villager.png').convert_alpha()
+        self.image_standby = self.world.animation.villager_standby
+        self.image = self.world.animation.villager_standby
         self.temp = 0
         self.animation = self.world.animation.villager_walk
         self.animation_mort = self.world.animation.villager_mort
@@ -98,7 +99,6 @@ class Worker:
 
                     self.progression = 0
                     self.attack = False
-
                     searching_for_path = False
                 elif self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0  or self.dest_tile["tile"].ressource.getNbRessources() != 0 :
                     # Reinitialise la derniere case de destination et la cible
@@ -228,6 +228,7 @@ class Worker:
                         self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
                         self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
                         self.create_path(self.cible.tile["grid"][0],self.cible.tile["grid"][1])
+                        self.cible.dest_tile = 0
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
@@ -285,7 +286,7 @@ class Worker:
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
         elif self.pv > 0:
-            self.image = self.world.animation.villager_standby
+            self.image = self.image_standby
 
     def delete(self):
         self.temp += 0.1

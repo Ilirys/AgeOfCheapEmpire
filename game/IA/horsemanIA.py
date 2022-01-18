@@ -17,34 +17,54 @@ class HorsemanIA(Horseman):
         self.IA.ressource_manager.population += 1
         self.busy = False 
         self.IA.warriors.append(self)
+        self.image_standby = pygame.image.load('assets\horsemanIA\Cavalierwalk001V2.png').convert_alpha()
+        self.animation = self.world.animation.horsemanIA_walk
 
     # override
 
     def update(self):
-
+        #if self.tile == self.dest_tile:
+            #self.create_path(40,40)
         # collision matrix (for pathfinding and buildings)
+
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+
 
         # Animation update
         self.update_sprite()
 
+        if self.attack == False and self.attack_bati == False:
+            if self.dest_tile == self.tile:
+                self.dest_tile = 0
+
         if self.dest_tile == self.tile:
             if self.attack:
                 self.attack_ani = True
-                self.cible.pv -= self.dmg
+                if self.cible != 0 and self.cible is not None:
+                    self.cible.pv -= self.dmg
                 # self.cible.create_path(self.tile["grid"][0],self.tile["grid"][1])
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != \
                         self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
-                    if self.cible.dest_tile == self.cible.tile:
-                        self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]][
-                            "collision"] = True
-                        self.world.unites[self.cible.dest_tile["grid"][0]][
-                            self.cible.dest_tile["grid"][1]] == self.cible
-                        self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
+                    #if self.cible.dest_tile == self.cible.tile:
+                        #self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
+                        #self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
+                        if self.cible is not None and self.cible != 0:
+                            self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
+                        self.cible.dest_tile = 0
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+                    self.cible = 0
+            elif self.attack_bati:
+                self.walkdown_animation = False
+
+                self.attack_ani = True
+                if self.cible != 0 and self.cible is not None:
+                    self.cible.pv -= self.dmg
+                    if self.cible.pv <= 0:
+                        self.attack = False
+                        self.attack_ani = False
 
         if self.path_index <= len(self.path) - 1:
             if self.dest_tile != self.tile:

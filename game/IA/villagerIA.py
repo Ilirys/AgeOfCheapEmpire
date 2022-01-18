@@ -18,6 +18,8 @@ class VillagerIA(Villager):
         self.IA.ressource_manager.apply_cost_to_resource(self.name)
         self.IA.ressource_manager.population += 1
         self.busy = False 
+        self.animation = self.world.animation.villagerIA_walk
+        self.image_standby = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
 
         #Farm
         self.storage_tile = self.IA.towncenter
@@ -27,6 +29,7 @@ class VillagerIA(Villager):
 
     #Override
     def update(self):
+
         # Updating mouse position and action and the grid_pos
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -34,13 +37,18 @@ class VillagerIA(Villager):
         # Animation update
         self.update_sprite()             
 
+        #if self.attack == False and self.farm == False and self.attack_bati == False:
+            #if self.dest_tile == self.tile:
+                #self.dest_tile = 0
+
         if self.dest_tile == self.tile:
             if self.attack:
                 self.walkdown_animation = False
                 self.cible.attacked = True
                 self.cible.attacker = self
                 #self.attack_ani = True
-                self.cible.pv -= self.dmg
+                if self.cible != 0 and self.cible is not None:
+                    self.cible.pv -= self.dmg
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
                     if self.cible.dest_tile == self.cible.tile:
                         self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
@@ -49,13 +57,15 @@ class VillagerIA(Villager):
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
+                    self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
                 #self.attack_ani = True
-                self.cible.pv -= self.dmg
-                if self.cible.pv <= 0:
-                    self.attack = False
-                    self.attack_ani = False
+                if self.cible is not None and self.cible != 0:
+                    self.cible.pv -= self.dmg
+                    if self.cible.pv <= 0:
+                        self.attack = False
+                        self.attack_ani = False
             elif self.farm:
                 self.farmer_cases_autour()
 

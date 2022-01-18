@@ -27,6 +27,7 @@ class Archer(Worker):
         self.animation_attack_rdown = self.world.animation.archer_attack_rdown
         self.animation_mort = self.world.animation.archer_mort
         self.image = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
+        self.image_standby = pygame.image.load('assets/archer/Archerwalk001.png').convert_alpha()
 
         # pathfinding
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
@@ -45,6 +46,7 @@ class Archer(Worker):
 
     def create_path(self, x, y):
         searching_for_path = True
+        self.attack = False
         while searching_for_path:
             self.dest_tile = self.world.world[x][y]
             if not self.dest_tile["collision"]:
@@ -152,7 +154,7 @@ class Archer(Worker):
             if self.temp + 0.2 >= len(self.animation_attack):
                 self.temp = 0
         elif self.pv > 0:
-            self.image = self.world.animation.archer_standby
+            self.image = self.image_standby
         # Override
 
     def delete(self):

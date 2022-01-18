@@ -189,6 +189,7 @@ class Villager(Worker):
                         self.world.world[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]]["collision"] = True
                         self.world.unites[self.cible.dest_tile["grid"][0]][self.cible.dest_tile["grid"][1]] == self.cible
                         self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
+                        self.cible.dest_tile = 0
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
