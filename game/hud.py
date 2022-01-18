@@ -188,7 +188,6 @@ class Hud:
     def load_images(self):
 
         # read images
-        towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         house = pygame.image.load("assets/house.png").convert_alpha()
         hudVillagois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         barrack = pygame.image.load("assets/barrack.png").convert_alpha()
@@ -198,7 +197,6 @@ class Hud:
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
         images = {
-            "Towncenter": towncenter,
             "House": house,
             "Barrack": barrack,
             "Storage" : storage,
@@ -209,7 +207,6 @@ class Hud:
     def load_images_scale(self):
 
         # read images
-        towncenter = pygame.image.load("assets/Towncenter.png").convert_alpha()
         house = pygame.image.load("assets/house.png").convert_alpha()
         hudVillageois = pygame.image.load("assets/HUD/Hud_Villageois_1920-1080.png").convert_alpha()
         barrack = pygame.image.load("assets/barrack.png").convert_alpha()
@@ -219,7 +216,6 @@ class Hud:
         hudAge = pygame.image.load("assets/HUD/Hud1v1_Age.png").convert_alpha()
 
         images = {
-            "Towncenter": towncenter,
             "House": house,
             "Barrack": barrack,
             "Storage" : storage,
