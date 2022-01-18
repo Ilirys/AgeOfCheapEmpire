@@ -217,7 +217,7 @@ class IA:
                 self.world.world[self.build_position_x][self.build_position_y]["collision"] = True
                 self.world.collision_matrix[self.build_position_y][self.build_position_x] = 0
                 self.world.world[self.build_position_x][self.build_position_y]["tile"].tile_batiment = self.world.world[self.build_position_x][self.build_position_y]
-                if name_of_building == "House": self.ressource_manager.max_population += 1
+                if name_of_building == "House": self.ressource_manager.max_population += 5
                 self.ordre_de_construction_villageois(self.build_position_x, self.build_position_y, name_of_building)
                 self.number_of_buildings += 1
                 print("------------------------------------------------------------> ", name_of_building, " en construction")

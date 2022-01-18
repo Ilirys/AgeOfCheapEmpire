@@ -145,7 +145,7 @@ class World:
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
                         self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
-                        if self.hud.selected_tile["name"] == "House": self.resource_manager.max_population += 1
+                        if self.hud.selected_tile["name"] == "House": self.resource_manager.max_population += 5
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
