@@ -156,4 +156,19 @@ class SoldierIA(Soldier):
         else:
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
-            self.render_pos_y = self.pos_y        
+            self.render_pos_y = self.pos_y    
+
+    def delete(self):
+        
+        
+        self.IA.ressource_manager.population -= 1  
+
+        self.world.entities.remove(self)
+
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+        self.IA.soldiers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.selected = False
+        self.temp = 0               

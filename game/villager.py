@@ -264,21 +264,19 @@ class Villager(Worker):
 
     #override
     def delete(self):
-        #if self.temp + 0.1 > 11 :
-            #self.temp = 0
-        #self.temp += 0.1
-        #self.image = self.animation_mort[int(self.temp)]
-        #if self.temp >= 10.9:
+        
+        
+        self.world.resource_manager.population -= 1  
 
-            self.world.entities.remove(self)
+        self.world.entities.remove(self)
 
-            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
-            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
-            self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
-            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-            self.selected = False
-            self.temp = 0
+        self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.selected = False
+        self.temp = 0
 
 
     #override
