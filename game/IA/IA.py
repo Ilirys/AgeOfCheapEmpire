@@ -163,7 +163,7 @@ class IA:
                     case 0:
                         if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"] and self.ressource_manager.population < self.pop_vague and self.attaque_en_cours == 0:
                             self.spawn_unit_autour_caserne("Soldier", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
-                        self.ressource_manager.resources["food"] += 1
+                        self.ressource_manager.resources["food"] += 5
                         self.test_attack_player_warriors()
                         if (self.demande_valide == 1) and (self.attaque_valide == 0) and (self.ressource_manager.population == self.pop_vague or self.ressource_manager.population >= 12):
                             self.attaque_valide = 1
@@ -174,11 +174,15 @@ class IA:
                             self.attaque_valide = 0
                             self.attaque_en_cours = 0
                             self.evolution += 1
-                        if self.ressource_manager.population == 0 and self.attaque_en_cours == 1:
+                        if self.ressource_manager.population == 0:
+                            if self.attaque_en_cours == 1:
+                                self.pop_vague += 1
                             self.demande_valide = 0
                             self.attaque_valide = 0
                             self.attaque_en_cours = 0
-                            self.pop_vague += 1
+                            
+                        if self.pop_vague ==1 and (self.world.resource_manager.population > 4 or self.world.resource_manager.resources["food"] > 200):
+                                self.evolution += 1
                         print(self.demande_valide, self.attaque_valide, self.attaque_en_cours)
 
                     case 1:
@@ -192,7 +196,7 @@ class IA:
                             self.attaque_valide = 0
                             self.attaque_en_cours = 0
                             self.evolution += 1
-                        elif self.ressource_manager.population == 0:
+                        if self.ressource_manager.population == 0:
                             self.demande_valide = 0
                             self.attaque_valide = 0
                             self.attaque_en_cours = 0

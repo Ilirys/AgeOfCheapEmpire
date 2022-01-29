@@ -711,7 +711,7 @@ class World:
                 Villager(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
@@ -724,7 +724,7 @@ class World:
                 Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)
@@ -737,7 +737,7 @@ class World:
                 Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)
@@ -750,7 +750,7 @@ class World:
                 Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)
@@ -763,7 +763,7 @@ class World:
                 Villager(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)
@@ -776,7 +776,7 @@ class World:
                 Villager(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)
@@ -789,7 +789,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)
@@ -802,7 +802,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)
@@ -815,7 +815,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)
@@ -828,7 +828,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
@@ -841,7 +841,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)
@@ -854,7 +854,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)
