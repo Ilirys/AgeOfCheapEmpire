@@ -76,7 +76,7 @@ class Chat:
                         definitions.CURRENT_SPEED = "fast"
                     elif self.text == "speed = veryfast":
                         definitions.CURRENT_SPEED = "veryfast"
-                    elif self.text == "speed = god":
+                    elif self.text == "speed = god" or self.text == "god":
                         definitions.CURRENT_SPEED = "potato_pc"
 
 

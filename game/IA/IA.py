@@ -15,7 +15,7 @@ from ..villager import Villager
 
 class IA:
 
-    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy="defensive"):
+    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy="vague"):
         self.team = team
         self.world = world
         self.camera = camera
@@ -55,9 +55,6 @@ class IA:
 
         self.compteur_construction_bat = 0
 
-        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
-        #SoldierIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
-        #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
 
         #Farm
         self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
@@ -77,6 +74,16 @@ class IA:
         self.gold_list_iterator = iter(self.gold_list)
         self.init_list_ressource()
 
+        if strategy=="vague": 
+            self.ressource_manager.max_population += 15
+            self.pop_vague = 1
+            self.attaque_valide = 0
+            self.demande_valide = 0
+            self.attaque_en_cours = 0
+            self.ressource_manager.resources["food"] = 0
+        else:
+            VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
+
         #Events
         self.take_decision_event = pygame.USEREVENT + 1
         pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
@@ -85,6 +92,7 @@ class IA:
         if e.type == self.take_decision_event:
             print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
             " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
+            print("POP: ", self.world.resource_manager.population, "\n")
             if self.strategy == "defensive":  
                 match self.evolution:
                     
@@ -142,33 +150,66 @@ class IA:
                             self.evolution += 1
                     
                     case 5:
-                        self.attack_town_center()
+                        self.farm(self.wood_list_iterator, len(self.villagers)%2)
+                        self.farm(self.food_list_iterator, len(self.villagers)%2)
                         
             elif self.strategy == "attaque":
                 pass
-            elif self.strategy == "blitz":
+            elif self.strategy == "blitz": 
                 pass
             elif self.strategy == "vague":
+                print(len(self.warriors))
                 match self.evolution:
                     case 0:
-                        if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]and self.number_of_buildings < 1:
-                            self.find_and_place_building("Barrack", 1)
-                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000)
-                        self.ressource_manager.resources["wood"] += 10
-                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Barrack"][2] + 100)):
-                            self.compteur_construction_bat = 0
-                            self.action_faite = 0
-                            self.number_of_buildings = 0
+                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"] and self.ressource_manager.population < self.pop_vague and self.attaque_en_cours == 0:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                        self.ressource_manager.resources["food"] += 1
+                        self.test_attack_player_warriors()
+                        if (self.demande_valide == 1) and (self.attaque_valide == 0) and (self.ressource_manager.population == self.pop_vague or self.ressource_manager.population >= 12):
+                            self.attaque_valide = 1
+                            self.attaque_en_cours = 1
+                        elif self.demande_valide == 1 and self.attaque_en_cours == 1:
+                            self.attack_player_warriors()
+                        elif self.demande_valide == 0 and self.attaque_en_cours == 1:
+                            self.attaque_valide = 0
+                            self.attaque_en_cours = 0
                             self.evolution += 1
+                        if self.ressource_manager.population == 0 and self.attaque_en_cours == 1:
+                            self.demande_valide = 0
+                            self.attaque_valide = 0
+                            self.attaque_en_cours = 0
+                            self.pop_vague += 1
+                        print(self.demande_valide, self.attaque_valide, self.attaque_en_cours)
 
                     case 1:
-                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
-                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
-                            self.number_of_buildings += 1
-                        self.ressource_manager.resources["food"] += 10
-                        if self.number_of_buildings >= 5:
-                            self.number_of_buildings = 0
+                        self.test_attack_villagers()
+                        if (self.demande_valide == 1) and (self.attaque_valide == 0):
+                            self.attaque_valide = 1
+                            self.attaque_en_cours = 1
+                        elif self.demande_valide == 1 and self.attaque_en_cours == 1:
+                            self.attack_villagers()
+                        elif (self.demande_valide == 0 and self.attaque_en_cours == 1) or self.world.resource_manager.population == 0:
+                            self.attaque_valide = 0
+                            self.attaque_en_cours = 0
                             self.evolution += 1
+                        elif self.ressource_manager.population == 0:
+                            self.demande_valide = 0
+                            self.attaque_valide = 0
+                            self.attaque_en_cours = 0
+                            self.pop_vague += 1
+                            self.evolution = 0
+
+                        print(self.demande_valide, self.attaque_valide, self.attaque_en_cours)
+                    
+                    case 2:
+                        self.attack_town_center()
+                        if self.ressource_manager.population == 0:
+                            self.demande_valide = 0
+                            self.attaque_valide = 0
+                            self.attaque_en_cours = 0
+                            self.pop_vague += 1
+                            self.evolution = 0
+                            
 
 
      
@@ -506,19 +547,43 @@ class IA:
                     if villager is not None and w is not None:
                         if w.attack == False :
                                 w.create_path(villager.tile["grid"][0],villager.tile["grid"][1])
+    
+    def test_attack_villagers(self):
+        a=0
+        for villager_x in self.world.villager:
+            for villager in villager_x:
+                for w in self.warriors:
+                    if villager is not None and w is not None:
+                        self.demande_valide = 1
+                        a=1
+        if a == 0:
+            self.demande_valide = 0
+                        
 
 
 
     def attack_player_warriors(self):
-            self.attacking = True
-            for unit_x in self.world.unites:
-                for unit in unit_x:
-                    for w in self.warriors:
-                        if unit is not None and w is not None and isinstance(unit,Villager) == False:
-                            if w.attack == False: # pour attaquer unités une par une sans appeller create path en boucle
-                                if unit.team == "blue":
+        self.attacking = True
+        for unit_x in self.world.unites:
+            for unit in unit_x:
+                for w in self.warriors:
+                    if unit is not None and w is not None and isinstance(unit,Villager) == False:
+                        if w.attack == False: # pour attaquer unités une par une sans appeller create path en boucle
+                            if unit.team == "blue":
                                     w.create_path(unit.tile["grid"][0], unit.tile["grid"][1]) # attaquer la premiere unités sachant que
-                                    print(1)
+
+    
+    def test_attack_player_warriors(self):
+        a=0
+        for unit_x in self.world.unites:
+            for unit in unit_x:
+                for w in self.warriors:
+                    if unit is not None and w is not None and isinstance(unit,Villager) == False:
+                            if unit.team == "blue":
+                                    self.demande_valide = 1
+                                    a=1
+        if a == 0:
+            self.demande_valide = 0
 
 
 
@@ -531,6 +596,7 @@ class IA:
                 if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].pv > 0:
                     if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].team != w.team and w.attack_bati == False:
                         w.create_path(self.player_towncenter["grid"][0], self.player_towncenter["grid"][1])
+    
 
 
 
