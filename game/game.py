@@ -47,10 +47,11 @@ class Game:
         #entities 
         self.entities = []
 
-        # resource manager IA
+        # resource manager
         self.resource_manager = Ressource()
         self.ressource_manager_IA = Ressource(team="red", max_population=definitions.IA_POPULATION)
         self.resource_manager.restore_save()
+        self.ressource_manager_IA.restore_save()
 
         # hud
         self.hud = Hud(self.resource_manager, self.width, self.height)

@@ -21,6 +21,7 @@ class SoldierIA(Soldier):
         self.attacker = 0
         self.attacked = False
         self.IA = IA
+        self.pv = pv
         self.busy = False 
         self.IA.ressource_manager.apply_cost_to_resource(self.name)
         self.IA.ressource_manager.population += 1

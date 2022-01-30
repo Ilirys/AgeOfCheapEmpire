@@ -21,6 +21,10 @@ class ArcherIA(Archer):
         self.image_standby = pygame.image.load('assets/archerIA/Archerwalk001V2.png').convert_alpha()
         self.animation = self.world.animation.archerIA_walk
 
+        #Lists
+        self.IA.warriors.append(self)
+        self.IA.archers[tile["grid"][0]][tile["grid"][1]] = self
+
     # override
 
     def update(self):
