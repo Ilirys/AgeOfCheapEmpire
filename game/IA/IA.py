@@ -845,7 +845,7 @@ class IA:
                 self.action_faite = restore_IA_dto.action_faite
                 self.compteur_construction_bat = restore_IA_dto.compteur_construction_bat
                 self.barrack_x = restore_IA_dto.barrack_x
-                self.barrack_y = restore_IA_dto.barrack_x
+                self.barrack_y = restore_IA_dto.barrack_y
                 input.close()
         except Exception as e: print("An error occured while loading IA save:", e)
 
