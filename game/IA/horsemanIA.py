@@ -20,6 +20,10 @@ class HorsemanIA(Horseman):
         self.image_standby = pygame.image.load('assets\horsemanIA\Cavalierwalk001V2.png').convert_alpha()
         self.animation = self.world.animation.horsemanIA_walk
 
+        #Lists
+        self.IA.warriors.append(self)
+        self.IA.horsemen[tile["grid"][0]][tile["grid"][1]] = self
+
     # override
 
     def update(self):

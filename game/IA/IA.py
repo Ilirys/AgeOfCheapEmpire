@@ -2,6 +2,10 @@ from time import process_time_ns
 from pygame import *
 import pygame
 from itertools import count, cycle
+from DTO.archerDTO import archerDTO
+from DTO.horsemanDTO import horsemanDTO
+from DTO.soldierDTO import soldierDTO
+from DTO.villagerDTO import villagerDTO
 from game.batiment import Batiment
 from ..Ressource import *
 from .soldierIA import SoldierIA
@@ -55,9 +59,11 @@ class IA:
 
         self.compteur_construction_bat = 0
 
-        VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
-        #SoldierIA(self.world.world[self.build_position_x - 1][self.build_position_y + 1], self.world,self.camera, self)
-        #VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y + 2], self.world,self.camera, self)
+        
+        # SoldierIA(self.world.world[0][0], self.world,self.camera, self)
+        # # Villager(self.world.world[1][0], self.world,self.camera)
+        # HorsemanIA(self.world.world[1][1], self.world,self.camera, self)
+        # ArcherIA(self.world.world[2][2], self.world,self.camera, self)
 
         #Farm
         self.world.world[self.build_position_x][self.build_position_y]["visited"] = True
@@ -80,6 +86,21 @@ class IA:
         #Events
         self.take_decision_event = pygame.USEREVENT + 1
         pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
+
+        #Save
+        self.villagersDTO = [[None for x in range(self.world.grid_length_x)] for y in range(self.world.grid_length_y)]
+        self.soldiersDTO = [[None for x in range(self.world.grid_length_x)] for y in range(self.world.grid_length_y)]
+        self.horsemenDTO = [[None for x in range(self.world.grid_length_x)] for y in range(self.world.grid_length_y)]
+        self.archersDTO = [[None for x in range(self.world.grid_length_x)] for y in range(self.world.grid_length_y)]
+        self.soldiers_save_file_path = definitions.SAVED_GAME_FOLDER + "soldiersIA"
+        self.horseman_save_file_path = definitions.SAVED_GAME_FOLDER + "horsemanIA"
+        self.villager_save_file_path = definitions.SAVED_GAME_FOLDER + "villagerIA"
+        self.archer_save_file_path = definitions.SAVED_GAME_FOLDER + "archerIA"
+
+        #Init
+        self.restore()
+        if self.villagers == [[None for x in range(self.world.grid_length_x)] for y in range(self.world.grid_length_y)]: VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
+
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
@@ -580,4 +601,113 @@ class IA:
                 if self.world.world[self.position_defense["grid"][0] - i][self.position_defense["grid"][1] - j]["collision"] == False:
                     if w.dest_tile == 0:
                         w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
+
+    def save(self):
+        for x in range(self.world.grid_length_x):
+            for y in range(self.world.grid_length_y):
+            
+                if self.soldiers[x][y] != None:
+                    currentsoldier = self.soldiers[x][y]
+                    self.world.collision_matrix[currentsoldier.tile["grid"][1]][currentsoldier.tile["grid"][0]] = 1
+                    self.world.world[currentsoldier.tile["grid"][0]][currentsoldier.tile["grid"][1]]["collision"] = False
+                    self.soldiersDTO[x][y] = soldierDTO(currentsoldier.name,currentsoldier.pv,currentsoldier.range,currentsoldier.dmg,currentsoldier.tile)
+                
+                if self.horsemen[x][y] != None:
+                    currenthorseman = self.horsemen[x][y]
+                    self.world.collision_matrix[currenthorseman.tile["grid"][1]][currenthorseman.tile["grid"][0]] = 1
+                    self.world.world[currenthorseman.tile["grid"][0]][currenthorseman.tile["grid"][1]]["collision"] = False
+                    self.horsemenDTO[x][y] = horsemanDTO(currenthorseman.name,currenthorseman.pv,currenthorseman.range,currenthorseman.dmg,currenthorseman.tile)
+                
+                if self.villagers[x][y] != None:
+                    currentvillager = self.villagers[x][y]
+                    self.world.collision_matrix[currentvillager.tile["grid"][1]][currentvillager.tile["grid"][0]] = 1
+                    self.world.world[currentvillager.tile["grid"][0]][currentvillager.tile["grid"][1]]["collision"] = False
+                    self.villagersDTO[x][y] = villagerDTO(currentvillager.name,currentvillager.pv,currentvillager.range,currentvillager.dmg,currentvillager.tile)
+                
+                if self.archers[x][y] != None:
+                    currentarcher = self.archers[x][y]
+                    self.world.collision_matrix[currentarcher.tile["grid"][1]][currentarcher.tile["grid"][0]] = 1
+                    self.world.world[currentarcher.tile["grid"][0]][currentarcher.tile["grid"][1]]["collision"] = False
+                    self.archersDTO[x][y] = archerDTO(currentarcher.name,currentarcher.pv,currentarcher.range,currentarcher.dmg,currentarcher.tile) 
+
+        try:   #Soldier save
+            with open(self.soldiers_save_file_path, "wb") as output:
+                pickle.dump(self.soldiersDTO,output)
+                output.close()
+        except: print("Couldnt dump soldiers IA save in file") 
+
+        try:   #horseman save
+            with open(self.horseman_save_file_path, "wb") as output:
+                pickle.dump(self.horsemenDTO,output)
+                output.close()
+        except: print("Couldnt dump horseman IA save in file")   
+        
+        try:   #villager save
+            with open(self.villager_save_file_path, "wb") as output:
+                pickle.dump(self.villagersDTO,output)
+                output.close()
+        except: print("Couldnt dump villager IA save in file") 
+        
+        try:   #archer save
+            with open(self.archer_save_file_path, "wb") as output:
+                pickle.dump(self.archersDTO,output)
+                output.close()
+        except: print("Couldnt dump archer IA save in file") 
+
+    def restore(self):
+        
+        try:    
+            with open(self.soldiers_save_file_path, "rb") as input:
+                restore_soldiers_dto = pickle.load(input)
+                input.close()
+                for x in range(self.world.grid_length_x):
+                    for y in range(self.world.grid_length_y):
+                        if restore_soldiers_dto[x][y] != None:
+                            currentsoldierDTO = restore_soldiers_dto[x][y]
+                            SoldierIA(currentsoldierDTO.tile,self.world,self.camera,self, pv=currentsoldierDTO.pv)
+                            self.ressource_manager.apply_cost_to_resource("Soldier", -1)
+        
+        except Exception as e: print("An error occured while loading soldier IA save:", e)
+
+
+        try:    
+            with open(self.horseman_save_file_path, "rb") as input:
+                restore_horseman_dto = pickle.load(input)
+                input.close()
+                for x in range(self.world.grid_length_x):
+                    for y in range(self.world.grid_length_y):
+                        if restore_horseman_dto[x][y] != None:
+                            currenthorsemanDTO = restore_horseman_dto[x][y]
+                            HorsemanIA(currenthorsemanDTO.tile,self.world,self.camera, self, currenthorsemanDTO.pv)
+                            self.ressource_manager.apply_cost_to_resource("horseman", -1)
+                
+        except Exception as e: print("An error occured while loading horseman IA save:", e)
+    
+        
+        try:    
+            with open(self.villager_save_file_path, "rb") as input:
+                restore_villager_dto = pickle.load(input)
+                input.close()
+                for x in range(self.world.grid_length_x):
+                    for y in range(self.world.grid_length_y):
+                        if restore_villager_dto[x][y] != None:
+                            currentvillagerDTO = restore_villager_dto[x][y]
+                            VillagerIA(currentvillagerDTO.tile,self.world,self.camera, self, currentvillagerDTO.pv)
+                            self.ressource_manager.apply_cost_to_resource("Villageois", -1)
+        
+        except Exception as e: print("An error occured while loading villager IA save:", e)
+        
+        
+        try:    
+            with open(self.archer_save_file_path, "rb") as input:
+                restore_archer_dto = pickle.load(input)
+                input.close()
+                for x in range(self.world.grid_length_x):
+                    for y in range(self.world.grid_length_y):
+                        if restore_archer_dto[x][y] != None:
+                            currentarcherDTO = restore_archer_dto[x][y]
+                            ArcherIA(currentarcherDTO.tile,self.world,self.camera, self, currentarcherDTO.pv)
+                            self.ressource_manager.apply_cost_to_resource("Archer", -1)
+
+        except Exception as e: print("An error occured while loading archer IA save:", e)                    
 

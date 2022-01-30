@@ -889,12 +889,12 @@ class World:
             for y in range(self.grid_length_y):
                 if self.batimentDTO[x][y] != None:
                     entDTO = self.batimentDTO[x][y]
-                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager, entDTO.pv, entDTO.current_image, age=self.resource_manager.age)
+                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager, entDTO.pv, entDTO.current_image, age=self.resource_manager.age, team=entDTO.team)
                     for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
                         self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)
                     self.batiment[x][y] = ent
-                    if entDTO.name == "Storage":
+                    if entDTO.name == "Storage" and entDTO.team == "blue":
                         self.storage_tile = self.world[x][y]
 
 
@@ -913,15 +913,15 @@ class World:
                 if self.batiment[x][y] != None:
                     ent = self.batiment[x][y]
                     if ent.name == "Towncenter" or ent.name == "Towncenter2":
-                        entDTO = TowncenterDTO(ent.pos, ent.pv, ent.current_image)
+                        entDTO = TowncenterDTO(ent.pos, ent.pv, ent.current_image, ent.team)
                     if ent.name == "House" or ent.name == "House2":
-                        entDTO = HouseDTO(ent.pos, ent.pv, ent.current_image )
+                        entDTO = HouseDTO(ent.pos, ent.pv, ent.current_image, ent.team )
                     if ent.name == "Barrack" or ent.name == "Barrack2":
-                        entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image   )
+                        entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image, ent.team   )
                     if ent.name == "Storage" or ent.name == "Storage2":
-                        entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image   )
+                        entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image, ent.team   )
                     if ent.name == "Farm" or ent.name == "Farm2":
-                        entDTO = FarmDTO(ent.pos, ent.pv, ent.current_image   )
+                        entDTO = FarmDTO(ent.pos, ent.pv, ent.current_image, ent.team   )
                     self.batimentDTO[x][y] = entDTO
 
         try:   

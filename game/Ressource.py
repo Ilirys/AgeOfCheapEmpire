@@ -45,7 +45,7 @@ class Ressource:
         }
 
         #Save
-        self.save_file_path = definitions.SAVED_GAME_FOLDER + "ressourceManager"
+        self.save_file_path = definitions.SAVED_GAME_FOLDER + "ressourceManager" + str(self.team)
 
     def getTypeRessource(self):
         return self.typeRessource

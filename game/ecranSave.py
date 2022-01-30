@@ -60,6 +60,8 @@ class Save:
                                 self.game.resource_manager.save()
                                 self.game.save()
                                 self.game.world.save()
+                                self.game.IA.save()
+                                self.game.ressource_manager_IA.save()
 
                         if button_4.collidepoint((mx, my)):
                             if btn == 1 :
