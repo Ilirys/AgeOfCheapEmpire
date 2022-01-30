@@ -2,6 +2,7 @@ from time import process_time_ns
 from pygame import *
 import pygame
 from itertools import count, cycle
+from DTO.IADTO import IADTO
 from DTO.archerDTO import archerDTO
 from DTO.horsemanDTO import horsemanDTO
 from DTO.soldierDTO import soldierDTO
@@ -29,6 +30,12 @@ class IA:
         self.strategy=strategy
         self.evolution = 0
         self.action_faite = 0
+        self.pop_vague = 0
+        self.attaque_valide = 0
+        self.demande_valide = 0
+        self.attaque_en_cours = 0
+        self.barrack_x = None
+        self.barrack_y = None
         self.clock = clock 
 
         #Units
@@ -96,6 +103,7 @@ class IA:
         self.horseman_save_file_path = definitions.SAVED_GAME_FOLDER + "horsemanIA"
         self.villager_save_file_path = definitions.SAVED_GAME_FOLDER + "villagerIA"
         self.archer_save_file_path = definitions.SAVED_GAME_FOLDER + "archerIA"
+        self.IA_save_file_path = definitions.SAVED_GAME_FOLDER + "IA"
 
         #Init
         self.restore()
@@ -105,7 +113,7 @@ class IA:
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
             print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
-            " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
+            " ] --> evolution ", self.evolution, " <--", self.number_of_buildings, "Action: ", self.action_faite, "Compteur: Villageois joueur, IA ", self.get_number_of_units_joueur("Villageois"), self.get_number_of_units_IA("Villageois"))
             if self.strategy == "defensive":  
                 match self.evolution:
                     
@@ -354,6 +362,7 @@ class IA:
                 self.world.world[x][y]["visited"] = False
 
     def init_list_ressource(self):
+        self.reset_world_visted_tiles()
         self.load_farm_list("food", self.food_list) 
         self.reset_world_visted_tiles()
         self.load_farm_list("wood", self.wood_list)
@@ -602,6 +611,43 @@ class IA:
                     if w.dest_tile == 0:
                         w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
 
+    def get_number_of_units_joueur(self, unit_name):
+        count = 0
+        for x in range(self.world.grid_length_x):
+            for y in range(self.world.grid_length_y):
+                if unit_name == "Villageois":
+                    if self.world.villager[x][y] != None:
+                        count += 1
+                if unit_name == "Soldier":
+                    if self.world.soldier[x][y] != None:
+                        count += 1   
+                if unit_name == "Horseman":
+                    if self.world.horseman[x][y] != None:
+                        count += 1   
+                if unit_name == "Archer":
+                    if self.world.archer[x][y] != None:
+                        count += 1    
+        return count    
+
+    def get_number_of_units_IA(self, unit_name):
+        count = 0
+        for x in range(self.world.grid_length_x):
+            for y in range(self.world.grid_length_y):
+                if unit_name == "Villageois":
+                    if self.villagers[x][y] != None:
+                        count += 1
+                if unit_name == "Soldier":
+                    if self.soldiers[x][y] != None:
+                        count += 1   
+                if unit_name == "Horseman":
+                    if self.horsemen[x][y] != None:
+                        count += 1   
+                if unit_name == "Archer":
+                    if self.archers[x][y] != None:
+                        count += 1    
+        return count                                 
+
+
     def save(self):
         for x in range(self.world.grid_length_x):
             for y in range(self.world.grid_length_y):
@@ -630,6 +676,13 @@ class IA:
                     self.world.world[currentarcher.tile["grid"][0]][currentarcher.tile["grid"][1]]["collision"] = False
                     self.archersDTO[x][y] = archerDTO(currentarcher.name,currentarcher.pv,currentarcher.range,currentarcher.dmg,currentarcher.tile) 
 
+        try:   #IA save
+            with open(self.IA_save_file_path, "wb") as output:
+                IA_dto = IADTO(self.team, self.strategy, self.pop_vague, self.attaque_valide, self.demande_valide, self.attaque_en_cours, self.evolution, self.number_of_buildings, self.action_faite, self.compteur_construction_bat, self.barrack_x, self.barrack_y)
+                pickle.dump(IA_dto,output)
+                output.close()
+        except Exception as e: print("Couldnt dump IA save in file", e)
+
         try:   #Soldier save
             with open(self.soldiers_save_file_path, "wb") as output:
                 pickle.dump(self.soldiersDTO,output)
@@ -656,6 +709,25 @@ class IA:
 
     def restore(self):
         
+        #IA restore
+        try:    
+            with open(self.IA_save_file_path, "rb") as input:
+                restore_IA_dto = pickle.load(input)
+                self.team = restore_IA_dto.team
+                self.strategy = restore_IA_dto.strategy
+                self.pop_vague = restore_IA_dto.pop_vague
+                self.attaque_valide = restore_IA_dto.attaque_valide
+                self.demande_valide = restore_IA_dto.demande_valide
+                self.attaque_en_cours = restore_IA_dto.attaque_en_cours
+                self.evolution = restore_IA_dto.evolution
+                self.number_of_buildings = restore_IA_dto.number_of_buildings
+                self.action_faite = restore_IA_dto.action_faite
+                self.compteur_construction_bat = restore_IA_dto.compteur_construction_bat
+                self.barrack_x = restore_IA_dto.barrack_x
+                self.barrack_y = restore_IA_dto.barrack_x
+                input.close()
+        except Exception as e: print("An error occured while loading IA save:", e)
+
         try:    
             with open(self.soldiers_save_file_path, "rb") as input:
                 restore_soldiers_dto = pickle.load(input)
