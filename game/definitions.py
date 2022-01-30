@@ -44,6 +44,8 @@ Brown=(70,33, 0)
 Red=(175,0,0)
 Blue=(0,128,255)
 
+#fog is activated or not
+Fog_On = False
 
 def init():
     global afficher_minimap

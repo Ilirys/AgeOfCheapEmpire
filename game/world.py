@@ -300,6 +300,7 @@ class World:
 
     #transforme la case x,y et celle autour en herbe "normale" (sans fog of war)
     def changeToNormalGrass(self, xEcran, yEcran, xMap, yMap):
+        self.world[xMap][yMap]["tile"].setVisible(True)
         for x in range(xMap - 1, xMap + 2):
             for y in range(yMap - 1, yMap + 2):
 
@@ -312,32 +313,35 @@ class World:
                 if(y >= self.grid_length_y):
                     y = self.grid_length_y-1
                 #print("xmap = ",xMap,", ymap= ", yMap,"\n","x = ",x,", y= ", y,"\ncpt : ", self.world[x][y]["tile"].getCpt(),"\n" )
+                #print(self.grid_length_y-1)
+                self.world[x][y]["tile"].setVisible(True)
+                if definitions.Fog_On:
+                    if (x >= 0 and x <= self.grid_length_x and y >= 0 and y <= self.grid_length_y):# and self.world[x][y]["tile"].getCpt()==0):
 
-                if (x >= 0 and x <= self.grid_length_x and y >= 0 and y <= self.grid_length_y and self.world[x][y]["tile"].getCpt()==0):
-                    self.world[x][y]["tile"].setVisible(True)
-                    self.world[x][y]["tile"].addCpt()
-                    #affichage herbe haut gauche
-                    if ((xMap == 0  and yMap !=0 and yMap != (self.grid_length_y - 1))):
-                        self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -60 ,yEcran-36 ))
-                        #print("haut gauche")
-                    #affichage herbe bas droit
-                    elif ((xMap == (self.grid_length_x - 1) and yMap != (self.grid_length_y - 1))):
-                        self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -130 ,yEcran-65 ))
-                        #print("bas droit")
-                    #affichage herbe droit haut
-                    elif ((yMap == 0  and xMap !=0 and xMap != (self.grid_length_x - 1))):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
-                        self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -130, yEcran -35))
-                        #print("haut droit")
-                    #affichage herbe gauche bas
-                    elif ((yMap == (self.grid_length_y - 1) and xMap !=0 and xMap != (self.grid_length_x - 1))):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
-                        self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -60, yEcran -65))
-                        #print("bas gauche")#ici
-                    #affichage herbe centrale (3x3)
-                    elif xMap!=0 and yMap !=0 and xMap != (self.grid_length_x-1) and yMap != (self.grid_length_y-1):
-                        self.grass_tiles.blit(self.tiles["grass3x3"],(xEcran + (self.grass_tiles.get_width()) / 2 - 128, yEcran - 65))
-                        #print("pute ?")
-                elif xMap==49 and yMap==0:
-                    self.grass_tiles.blit(self.tiles["grass"],(xEcran + (self.grass_tiles.get_width()) / 2 , yEcran ))
+                        self.world[x][y]["tile"].addCpt()
+                        #affichage herbe haut gauche
+                        if ((xMap == 0  and yMap !=0 and yMap != (self.grid_length_y - 1))):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -60 ,yEcran-36 ))
+                            #print("haut gauche")
+                        #affichage herbe bas droit
+                        elif ((xMap == (self.grid_length_x - 1) and yMap != (self.grid_length_y - 1) and y!=1)or (x==self.grid_length_x-1 and y == 2)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 -130 ,yEcran-65 ))
+                            #print("bas droit")
+                        #affichage herbe droit haut
+                        elif ((yMap == 0  and xMap !=0 and xMap != (self.grid_length_x - 1))):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -125, yEcran -32))
+                            #print("haut droit")
+                        #affichage herbe gauche bas
+                        elif ((yMap == (self.grid_length_y - 1) and xMap !=0 and xMap != (self.grid_length_x - 1)) or (x==2 and y == self.grid_length_y-1)):#((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 -60, yEcran -65))
+                            #print("bas gauche")#ici
+                        #affichage herbe centrale (3x3)
+                        elif xMap!=0 and yMap !=0 and xMap != (self.grid_length_x-1) and yMap != (self.grid_length_y-1):
+                            self.grass_tiles.blit(self.tiles["grass3x3"],(xEcran + (self.grass_tiles.get_width()) / 2 - 128, yEcran - 65))
+                            #print("pute ?")
+                    elif (xMap==49 and yMap==0) or (xMap==0 and yMap==0) or (xMap==49 and yMap==49):
+                        self.grass_tiles.blit(self.tiles["grass"],(xEcran + (self.grass_tiles.get_width()) / 2 , yEcran ))
+
 
     def create_world(self): #Génère la map
         world = []
@@ -349,31 +353,46 @@ class World:
 
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
                 #CHANGER ON/OFF POUR LE FOG OF WAR
-                self.grass_tiles.blit(self.tiles["grass_fog"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
+                if definitions.Fog_On:
+                    self.grass_tiles.blit(self.tiles["grass_fog"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
+                else:
+                    self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
 
                 if self.Bou.M1[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[0], LES_RESSOURCES[0]))
-                    world[grid_x][grid_y]["tile"].setVisible(False)
+                    if definitions.Fog_On:
+                        world[grid_x][grid_y]["tile"].setVisible(False)
+                    else:
+                        world[grid_x][grid_y]["tile"].setVisible(True)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], LES_RESSOURCES[1]))
-                    world[grid_x][grid_y]["tile"].setVisible(False)
+                    if definitions.Fog_On:
+                        world[grid_x][grid_y]["tile"].setVisible(False)
+                    else:
+                        world[grid_x][grid_y]["tile"].setVisible(True)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "gold":
 
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], LES_RESSOURCES[2]))
-                    world[grid_x][grid_y]["tile"].setVisible(False)
+                    if definitions.Fog_On:
+                        world[grid_x][grid_y]["tile"].setVisible(False)
+                    else:
+                        world[grid_x][grid_y]["tile"].setVisible(True)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], LES_RESSOURCES[3]))
-                    world[grid_x][grid_y]["tile"].setVisible(False)
+                    if definitions.Fog_On:
+                        world[grid_x][grid_y]["tile"].setVisible(False)
+                    else:
+                        world[grid_x][grid_y]["tile"].setVisible(True)
                     world[grid_x][grid_y]["collision"] = True
         return world    
 

@@ -19,7 +19,9 @@ class Tile:
         self.tile_batiment = 0
         self.batiment_pv = None
         self.visible = False
-        self.cpt = 0 # permet de savoir si le fog of war est dicipé 0= non 1 = oui
+        self.cpt = 0 # permet de savoir si le fog of war est dicipé 0= non 1 = oui (pas sûr de l'utilité)
+        self.visibleIA = False
+
 
     def getCpt(self):
         return self.cpt
@@ -32,6 +34,12 @@ class Tile:
 
     def getVisible(self):
         return self.visible
+
+    def setVisibleIA(self, monVisible):
+        self.visibleIA = monVisible
+
+    def getVisibleIA(self):
+        return self.visibleIA
 
     def isEmpty(self):
         return self.empty
