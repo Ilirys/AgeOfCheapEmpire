@@ -70,11 +70,11 @@ class Chat:
                     elif self.text == "STOPSTEROIDS":
                         definitions.EFFICIENCY = 1
 
-                    elif self.text == "speed = normal":
+                    elif self.text == "speed = normal" or self.text == "normal":
                         definitions.CURRENT_SPEED = "normal"
-                    elif self.text == "speed = fast":
+                    elif self.text == "speed = fast" or self.text == "fast":
                         definitions.CURRENT_SPEED = "fast"
-                    elif self.text == "speed = veryfast":
+                    elif self.text == "speed = veryfast" or self.text == "veryfast":
                         definitions.CURRENT_SPEED = "veryfast"
                     elif self.text == "speed = god" or self.text == "god":
                         definitions.CURRENT_SPEED = "potato_pc"

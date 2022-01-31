@@ -443,7 +443,7 @@ class World:
                         self.minimap.tab_minimap[x][y] = Blue
                         
                     if self.minimap.tab_minimap[x][y] != GreenLight:
-                        pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
+                        pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], ((2+9*x)*50/MAP_SIZE, (2+9*y)*50/MAP_SIZE, 9*50/MAP_SIZE, 9*50/MAP_SIZE))
                     
 
         if self.temp_tile is not None:
