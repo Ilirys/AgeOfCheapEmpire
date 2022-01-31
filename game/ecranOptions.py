@@ -34,11 +34,11 @@ class Options:
                 self.screen.blit(image, (0, 0))
 
             if definitions.clik == 1:
-                pygame.draw.rect(self.screen, (255, 215, 50), (1488, 235, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 215, 50), (1490, 236, 288, 45), 3)
             elif definitions.clik == 2:
-                pygame.draw.rect(self.screen, (255, 215, 50), (1488, 300, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 215, 50), (1490, 301, 288, 45), 3)
             elif definitions.clik == 3:
-                pygame.draw.rect(self.screen, (255, 215, 50), (1488, 366, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 215, 50), (1490, 367, 288, 45), 3)
 
 
             draw_text(self.screen, 'Options', 30, WHITE, (20, 20))
@@ -60,7 +60,7 @@ class Options:
 
 
             if button_ok.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (925, 915, 288, 42), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (926, 919, 288, 42), 3)
                 if click:
                     self.playing=False
 
@@ -82,19 +82,19 @@ class Options:
 
 
             if button_save1.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (1488, 235, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (1490, 236, 288, 45), 3)
                 if click:
                     definitions.SAVED_GAME_FOLDER = "save1/"
                     definitions.clik = 1
 
             if button_save2.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (1488, 300, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (1490, 301, 288, 45), 3)
                 if click:
                     definitions.SAVED_GAME_FOLDER = "save2/"
                     definitions.clik = 2
 
             if button_save3.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (1488, 366, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (1490, 367, 288, 45), 3)
                 if click:
                     definitions.SAVED_GAME_FOLDER = "save3/"
                     definitions.clik = 3
@@ -103,7 +103,7 @@ class Options:
                 if click:
                     image = pygame.image.load('assets/red.png').convert_alpha()
                     image.fill((255, 255, 255, 128), special_flags=BLEND_RGBA_MULT)
-                    self.screen.blit(image, (1799, 238))
+                    self.screen.blit(image, (1801, 238))
                     files1 = os.listdir("save1/")
                     for i in range(0, len(files1)):
                         os.remove("save1/" + '/' + files1[i])
@@ -112,7 +112,7 @@ class Options:
                 if click:
                     image = pygame.image.load('assets/red.png').convert_alpha()
                     image.fill((255, 255, 255, 128), special_flags=BLEND_RGBA_MULT)
-                    self.screen.blit(image, (1799, 303))
+                    self.screen.blit(image, (1801, 303))
                     files2 = os.listdir("save2/")
                     for i in range(0, len(files2)):
                         os.remove("save2/" + '/' + files2[i])
@@ -121,7 +121,7 @@ class Options:
                 if click:
                     image = pygame.image.load('assets/red.png').convert_alpha()
                     image.fill((255, 255, 255, 128), special_flags=BLEND_RGBA_MULT)
-                    self.screen.blit(image, (1799, 368))
+                    self.screen.blit(image, (1801, 368))
                     files3 = os.listdir("save3/")
                     for i in range(0, len(files3)):
                         os.remove("save3/" + '/' + files3[i])
