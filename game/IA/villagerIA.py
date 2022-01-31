@@ -20,6 +20,7 @@ class VillagerIA(Villager):
         self.busy = False 
         self.animation = self.world.animation.villagerIA_walk
         self.image_standby = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
+        self.image = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
 
         #Farm
         self.storage_tile = self.IA.towncenter

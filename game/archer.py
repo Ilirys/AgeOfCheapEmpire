@@ -49,62 +49,68 @@ class Archer(Worker):
         self.attack = False
         while searching_for_path:
             self.dest_tile = self.world.world[x][y]
-            if not self.dest_tile["collision"]:
-                self.grid = Grid(matrix=self.world.collision_matrix)
-                self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                self.end = self.grid.node(x, y)
-                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                self.path_index = 0
-                self.path, runs = finder.find_path(self.start, self.end, self.grid)
+            if self.dest_tile != self.tile:
+                if not self.dest_tile["collision"]:
+                    self.grid = Grid(matrix=self.world.collision_matrix)
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
+                    self.end = self.grid.node(x, y)
+                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                    self.path_index = 0
+                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-                self.progression = 0
-                self.attack = False
-                searching_for_path = False
-            elif (self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0):  # Si la case contient une unitées, pathfinding attaque
-                # On enleve la collision de la case du soldat (Or else can't get find_path to work)
+                    self.progression = 0
+                    self.attack = False
+                    searching_for_path = False
+                elif (self.world.unites[x][y] != None or self.world.world[x][y]["tile"].tile_batiment != 0):  # Si la case contient une unitées, pathfinding attaque
+                    # On enleve la collision de la case du soldat (Or else can't get find_path to work)
 
-                self.temp_tile = self.world.world[x][y]
-                self.world.world[x][y]["collision"] = False
-                self.world.collision_matrix[y][x] = 1
+                    self.temp_tile = self.world.world[x][y]
+                    self.world.world[x][y]["collision"] = False
+                    self.world.collision_matrix[y][x] = 1
 
-                self.grid = Grid(matrix=self.world.collision_matrix)
-                self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
-                self.end = self.grid.node(x, y)
-                finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-                self.path_index = 0
-                self.path, runs = finder.find_path(self.start, self.end, self.grid)
+                    self.grid = Grid(matrix=self.world.collision_matrix)
+                    self.start = self.grid.node(self.tile["grid"][0], self.tile["grid"][1])
+                    self.end = self.grid.node(x, y)
+                    finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+                    self.path_index = 0
+                    self.path, runs = finder.find_path(self.start, self.end, self.grid)
 
-                # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
-                if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:
-                    self.cible = self.world.unites[x][y]
-                    if self.dest_tile != self.tile:
-                        for i in range(2):
-                            if self.path:
-                                self.path.pop()
+                    # On enleve le dernier element de la liste (Pour ne pas aller SUR l'unité) et on Attaque
+                    if self.world.unites[x][y] != None and self.world.unites[x][y].team != self.team:
+                        self.cible = self.world.unites[x][y]
+                        if self.dest_tile != self.tile:
+                            for i in range(2):
                                 if self.path:
-                                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
-                    self.temp_tile_a = self.cible.tile
-                    self.attack = True
-
-                elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.world[x][y]["tile"].tile_batiment != None and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
-                    self.cible = self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
-
-                    if self.dest_tile != self.tile:
-                        for i in range(2):
+                                    self.path.pop()
+                                    if self.path:
+                                        self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                        self.temp_tile_a = self.cible.tile
+                        self.attack = True
+                    elif  self.world.unites[x][y] != None and self.world.unites[x][y].team == self.team:
+                        if self.path:
+                            self.path.pop()
                             if self.path:
-                                self.path.pop()
-                                if self.path:
-                                    self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
-                    self.attack_bati = True
-                self.progression = 0
-                searching_for_path = False
-                if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
-                        self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
-                        self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
-                        self.temp_tile = None
+                                self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
 
-            else:
-                break
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.world[x][y]["tile"].tile_batiment != None and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
+                        self.cible = self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
+
+                        if self.dest_tile != self.tile:
+                            for i in range(2):
+                                if self.path:
+                                    self.path.pop()
+                                    if self.path:
+                                        self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                        self.attack_bati = True
+                    self.progression = 0
+                    searching_for_path = False
+                    if self.temp_tile:  #Dans le cas ou on voulait aller a une case occupée, il faut remettre la collision de la case occupée a 1
+                            self.world.world[self.temp_tile["grid"][0]][self.temp_tile["grid"][1]]["collision"] = True
+                            self.world.collision_matrix[self.temp_tile["grid"][1]][self.temp_tile["grid"][0]] = 0
+                            self.temp_tile = None
+
+                else:
+                    break
 
     # Override
     def change_tile(self, new_tile):
@@ -123,6 +129,7 @@ class Archer(Worker):
             self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            print(1)
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y    
 

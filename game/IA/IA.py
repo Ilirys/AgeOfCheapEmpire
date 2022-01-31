@@ -37,6 +37,7 @@ class IA:
 
         self.position_defense = self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy]
         self.attacking = False
+        self.defending = False
 
         #Build
         self.number_of_buildings = 0    #Le nombre de batiments construits, qui sera réinitialisé quand on aura atteint le nombre désiré 
@@ -80,10 +81,11 @@ class IA:
         #Events
         self.take_decision_event = pygame.USEREVENT + 1
         pygame.time.set_timer(self.take_decision_event, IA_DECISION_TIME)
-
+        self.i = 0
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
-            print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
+            self.attack_villagers()
+            """print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
             " ] --> evolution ", self.evolution, " <--", self.number_of_buildings)
             if self.strategy == "defensive":  
                 match self.evolution:
@@ -168,7 +170,9 @@ class IA:
                         self.ressource_manager.resources["food"] += 10
                         if self.number_of_buildings >= 5:
                             self.number_of_buildings = 0
-                            self.evolution += 1
+                            self.evolution += 1"""
+                            
+
 
 
      
@@ -201,6 +205,7 @@ class IA:
             self.next_val_2 = next(self.switch_iterator_2)
 
             self.count += 1
+
 
     def build(self, name_of_building):  #Placer le batiment
         if self.build_position_x != self.towncenter["grid"][0] and self.build_position_y != self.towncenter["grid"][1] :    
@@ -500,6 +505,7 @@ class IA:
 
     def attack_villagers(self):
         self.attacking = True
+        self.defending = False
         for villager_x in self.world.villager:
             for villager in villager_x:
                 for w in self.warriors:
@@ -511,6 +517,7 @@ class IA:
 
     def attack_player_warriors(self):
             self.attacking = True
+            self.defending = False
             for unit_x in self.world.unites:
                 for unit in unit_x:
                     for w in self.warriors:
@@ -518,12 +525,13 @@ class IA:
                             if w.attack == False: # pour attaquer unités une par une sans appeller create path en boucle
                                 if unit.team == "blue":
                                     w.create_path(unit.tile["grid"][0], unit.tile["grid"][1]) # attaquer la premiere unités sachant que
-                                    print(1)
+
 
 
 
     def attack_town_center(self):
         self.attacking = True
+        self.defending = False
         for w in self.warriors:
             #print(1)
             if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]] is not None and w is not None:
@@ -533,6 +541,12 @@ class IA:
                         w.create_path(self.player_towncenter["grid"][0], self.player_towncenter["grid"][1])
 
 
+    def attack_caserne(self):
+        pass
+
+
+    def attack_house(self):
+        pass
 
 
     #def annul_attack(self):
@@ -543,22 +557,32 @@ class IA:
 
 
     def defend_town_center(self):
-        pass
+        if self.defending == True:
+            if self.world.batiment[self.towncenter["grid"][0]][self.towncenter["grid"][1]].attacked:
+                if self.world.batiment[self.towncenter["grid"][0]][self.towncenter["grid"][1]].attackers:
+                    for i in range(len(self.world.batiment[self.towncenter["grid"][0]][self.towncenter["grid"][1]].attackers)):
+                        for w in self.warriors:
+                            if self.world.batiment[self.towncenter["grid"][0]][self.towncenter["grid"][1]].attackers[i] and w:
+                                if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
+                                    w.create_path(self.world.batiment[self.towncenter["grid"][0]][self.towncenter["grid"][1]].attackers[i].tile["grid"][0],self.world.batiment[self.towncenter["grid"][0]][self.towncenter["grid"][1]].attackers[i].tile["grid"][1])
+
 
 
 
 
     def set_defense_pos(self):
-
         i = 0
         j = 0
-
+        self.attacking = False
+        self.defending = True
         if self.world.towncenter_IA_posx < 25 and self.world.towncenter_IA_posy < 25:
             self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy + 2]
             for w in self.warriors:
                 if self.world.world[self.position_defense["grid"][0] - i][self.position_defense["grid"][1] - j]["collision"] == False:
                     if w.dest_tile == 0:
                         w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
+
+
 
         if self.world.towncenter_IA_posx > 25 and self.world.towncenter_IA_posy < 25:
             self.position_defense = self.world.world[self.world.towncenter_IA_posx - 2 ][self.world.towncenter_IA_posy + 2]
@@ -567,6 +591,7 @@ class IA:
                     if w.dest_tile == 0:
                         w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
 
+
         if self.world.towncenter_IA_posx < 25 and self.world.towncenter_IA_posy > 25:
             self.position_defense = self.world.world[self.world.towncenter_IA_posx + 2][self.world.towncenter_IA_posy - 2]
             for w in self.warriors:
@@ -574,10 +599,39 @@ class IA:
                     if w.dest_tile == 0:
                         w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
 
+
         if self.world.towncenter_IA_posx > 25 and self.world.towncenter_IA_posy > 25:
             self.position_defense = self.world.world[self.world.towncenter_IA_posx - 2][self.world.towncenter_IA_posy - 2]
             for w in self.warriors:
                 if self.world.world[self.position_defense["grid"][0] - i][self.position_defense["grid"][1] - j]["collision"] == False:
                     if w.dest_tile == 0:
                         w.create_path(self.position_defense["grid"][0],self.position_defense["grid"][1])
+
+
+
+    def attack_batiment_IA(self,name):
+        for batiment_x in self.world.batiment:
+            for batiment in batiment_x:
+                if batiment.name == name:
+                    for w in self.warriors:
+                        if w is not None and batiment is not None:
+                            if w.attack_bati == False:
+                                w.create_path()
+
+
+    #def menace_tonwcenter(self):
+        #for unit_x in self.world.unites:
+            #for unit in unit_x:
+                #for w in self.warriors:
+                    #if unit is not None and w is not None and isinstance(unit, Villager) == False:
+                        #if distance(unit,towncenter) < 3:
+                            #if unit is not None and w is not None:
+                                #w.create_path(unit.tile["grid"][0],unit.tile["grid"][1])
+                            #if unit.pv < 0:
+                                #self.set_defense_pos()
+
+
+    #def distance(self,tile1,tile2):
+
+
 

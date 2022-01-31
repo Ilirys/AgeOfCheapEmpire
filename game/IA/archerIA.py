@@ -14,25 +14,36 @@ class ArcherIA(Archer):
     def __init__(self,tile,world,camera, IA, pv=2000,team="red"):
         super().__init__(tile,world,camera,pv,team)
         self.IA = IA
-        self.busy = False 
+        self.busy = False
+        self.attacked = False
+        self.attacker = 0
         self.IA.ressource_manager.apply_cost_to_resource(self.name)
         self.IA.ressource_manager.population += 1
         self.IA.warriors.append(self)
         self.image_standby = pygame.image.load('assets/archerIA/Archerwalk001V2.png').convert_alpha()
         self.animation = self.world.animation.archerIA_walk
+        self.animation_attack = self.world.animation.archerIA_attack
+        self.animation_attack_up = self.world.animation.archerIA_attack_up
+        self.animation_attack_ldown = self.world.animation.archerIA_attack_ldown
+        self.animation_attack_left = self.world.animation.archerIA_attack_left
+        self.animation_attack_uleft = self.world.animation.archerIA_attack_uleft
+        self.animation_attack_right = self.world.animation.archerIA_attack_right
+        self.animation_attack_uright = self.world.animation.archerIA_attack_uright
+        self.animation_attack_rdown = self.world.animation.archerIA_attack_rdown
 
     # override
 
     def update(self):
         # collision matrix (for pathfinding and buildings)
 
-        if self.attack == False:
+
+        if self.attack == False and self.attack_bati == False and self.attacked == False:
             if self.tile == self.dest_tile:
                 self.dest_tile = 0
 
 
-        #self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-        #self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
         # Animation update
         self.update_sprite()
@@ -52,6 +63,7 @@ class ArcherIA(Archer):
                         self.cible.dest_tile = 0
                 if self.cible.pv <= 0:
                     self.attack = False
+                    #self.cible.attacked = False
                     self.attack_ani = False
                     self.cible = 0
             elif self.attack_bati:
@@ -88,6 +100,8 @@ class ArcherIA(Archer):
         else:
             self.walkdown_animation = False
 
+
+
     #override
     def change_tile(self, new_tile):
         if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
@@ -104,8 +118,9 @@ class ArcherIA(Archer):
             self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
             self.path_index += 1
-        else: 
+        else:
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            print(1)
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y
 

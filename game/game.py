@@ -81,7 +81,13 @@ class Game:
 
         # IA
         self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock)
-        
+        SoldierIA(self.world.world[3][3],self.world,self.camera,self.IA)
+        ArcherIA(self.world.world[5][3], self.world, self.camera,self.IA)
+        HorsemanIA(self.world.world[2][3], self.world, self.camera,self.IA)
+
+        Soldier(self.world.world[30][30],self.world,self.camera)
+        Archer(self.world.world[5][30], self.world, self.camera)
+        Horseman(self.world.world[20][30], self.world, self.camera)
         #Save
         self.restore()
 

@@ -260,7 +260,7 @@ class Villager(Worker):
         #       self.temp = 0
 
         elif self.pv > 0:
-            self.image = self.world.animation.villager_standby
+            self.image = self.image_standby
 
     #override
     def delete(self):

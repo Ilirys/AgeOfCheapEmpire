@@ -126,6 +126,12 @@ class Worker:
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
+                    elif  self.world.unites[x][y] != None and self.world.unites[x][y].team == self.team:
+                        if self.path:
+                            self.path.pop()
+                            if self.path:
+                                self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+
                     elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team :
                         self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
                         self.attack_bati = True
@@ -217,7 +223,7 @@ class Worker:
                     self.world.hud.display_building_icons = False   #Ne plus afficher les icones de constructions
 
         if self.dest_tile == self.tile:
-            if self.attack:
+            if self.attack and self.cible:
                 self.cible.attacked = True
                 self.cible.attacker = self
                 self.attack_ani = True
@@ -233,10 +239,13 @@ class Worker:
                     self.attack = False
                     self.attack_ani = False
                     self.cible = 0
-            elif self.attack_bati:
+            elif self.attack_bati and self.cible:
                 self.walkdown_animation = False
                 self.attack_ani = True
-                self.cible.pv -= self.dmg
+                self.cible.attackers.append(self)
+                self.cible.attacked = True
+                if self.cible:
+                    self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False

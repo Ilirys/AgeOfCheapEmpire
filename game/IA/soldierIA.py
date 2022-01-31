@@ -18,6 +18,14 @@ class SoldierIA(Soldier):
         super().__init__(tile,world,camera, pv, team)
         self.image_standby = pygame.image.load('assets/soldierIA/Halbadierwalk001V2.png').convert_alpha()
         self.animation = self.world.animation.soldierIA_walk
+        self.animation_attack = self.world.animation.soldierIA_attack
+        self.animation_attack_up = self.world.animation.soldierIA_attack_up
+        self.animation_attack_ldown = self.world.animation.soldierIA_attack_ldown
+        self.animation_attack_left = self.world.animation.soldierIA_attack_left
+        self.animation_attack_uleft = self.world.animation.soldierIA_attack_uleft
+        self.animation_attack_right = self.world.animation.soldierIA_attack_right
+        self.animation_attack_uright = self.world.animation.soldierIA_attack_uright
+        self.animation_attack_rdown = self.world.animation.soldierIA_attack_rdown
         self.attacker = 0
         self.attacked = False
         self.IA = IA
@@ -38,9 +46,7 @@ class SoldierIA(Soldier):
             if self.dest_tile == self.tile:
                 self.dest_tile = 0
 
-        if self.dest_tile == self.tile:
-            if self.attacked == True :
-                self.create_path(self.attacker.tile["grid"][0], self.attacker.tile["grid"][1])
+
 
             #self.create_path(15,15)
 
@@ -69,6 +75,7 @@ class SoldierIA(Soldier):
                             self.cible.dest_tile = 0
                     if self.cible.pv <= 0:
                         self.attack = False
+                        #self.cible.attacked = False
                         self.attack_ani = False
                         self.cible = 0
             elif self.attack_bati:
@@ -103,6 +110,7 @@ class SoldierIA(Soldier):
 
         else:
             self.walkdown_animation = False
+
 
     def distance_tile(self,tile):
         return sqrt((self.tile["grid"][0] - tile["grid"][0])**2 + (self.tile["grid"][1] - tile["grid"][1])**2)
