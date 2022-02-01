@@ -41,7 +41,7 @@ class Ressource:
             "House2": {"wood": 25},
             "Barrack2": {"wood": 175},
             "Storage2": {"wood": 100},
-            "Farm2": {"wood": 200},
+            "Farm2": {"wood": 60},
         }
 
         #Save

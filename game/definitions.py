@@ -33,7 +33,7 @@ TAILLE_POLICE=40
 DEFAUT_POLICE='assets/font/arialbd.ttf'
 
 #Batiments
-dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 480], None : ["", 1] }
+dicoBatiment = {"Towncenter" : ["assets/towncenter.png", 2, 2400], "House" : ["assets/house.png", 1, 550], "Barrack" : ["assets/barrack.png", 2, 1200], "Storage" : ["assets/Stable128-64.png", 1, 600], "Farm" : ["assets/stable_tool.png", 2, 480], "Towncenter2" : ["assets/towncenter128-2.png", 2, 2400], "House2" : ["assets/House2.png", 1, 550], "Barrack2" : ["assets/barracks182-2.png", 2, 1200], "Storage2" : ["assets/Stable128-2.png", 1, 600], "Farm2" : ["assets/stable_tool2.png", 2, 480], None : ["", 1] }
 
 
 #Colors

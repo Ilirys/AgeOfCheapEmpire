@@ -90,7 +90,7 @@ class IA:
         self.gold_list_iterator = iter(self.gold_list)
         self.init_list_ressource()
 
-        if strategy=="vague": 
+        if self.strategy=="vague": 
             self.ressource_manager.max_population += 15
             self.pop_vague = 1
             self.attaque_valide = 0
@@ -117,12 +117,12 @@ class IA:
 
         #Init
         self.restore()
-        if self.villagers == [[None for x in range(self.world.grid_length_x)] for y in range(self.world.grid_length_y)]: VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
+        if self.villagers == [[None for x in range(self.world.grid_length_x)] for y in range(self.world.grid_length_y)] and self.strategy != "vague": VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
 
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
-            print("[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
+            print("Strategy", self.strategy, "[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
             " ] --> evolution ", self.evolution, " <--", self.number_of_buildings, "Action: ", self.action_faite, "Compteur: Villageois joueur, IA ", self.get_number_of_units_joueur("Villageois"), self.get_number_of_units_IA("Villageois"))
             print("POP: ", self.world.resource_manager.population, "\n")
             if self.strategy == "attaque":  
@@ -190,15 +190,15 @@ class IA:
                         if self.get_number_of_units_IA("Villageois") < 2 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
                             self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
                         elif self.get_number_of_units_IA("Soldier") >= 5 and self.get_number_of_units_IA("Horseman") >= 2:
-                            if (self.get_number_of_units_IA("Soldier") + self.get_number_of_units_IA("horseman") + self.get_number_of_units_IA("Archer")) !=0 :
+                            if (self.get_number_of_units_joueur("Soldier") + self.get_number_of_units_joueur("horseman") + self.get_number_of_units_joueur("Archer")) !=0 :
                                 self.attack_player_warriors()
-                            elif self.get_number_of_units_IA("Villageois") != 0 :
+                            elif self.get_number_of_units_joueur("Villageois") != 0 :
                                 self.attack_villagers()
                             else: self.attack_town_center()
                         elif self.get_number_of_units_IA("Soldier") < 5 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
                             self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
                         elif self.get_number_of_units_IA("Horseman") < 2 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["horseman"]["food"]:
-                            self.spawn_unit_autour_caserne("Horseman", self.world.world[self.barrack_x][self.barrack_y])
+                            self.spawn_unit_autour_caserne("horseman", self.world.world[self.barrack_x][self.barrack_y])
                         else:
                             self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois")-1)
                         if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"] and self.number_of_buildings < 3:
@@ -261,6 +261,7 @@ class IA:
                         else : self.farm(self.wood_list_iterator, self.get_number_of_units_IA("Villageois"))
                         if self.get_number_of_units_IA("Soldier") == 0:
                             self.evolution -=1
+    
 
             elif self.strategy == "vague":
                 print(len(self.warriors))
@@ -356,7 +357,7 @@ class IA:
         if self.build_position_x != self.towncenter["grid"][0] and self.build_position_y != self.towncenter["grid"][1] :    
             
             if dicoBatiment[name_of_building][1] == 1: #Pour taille de batiment 1x1
-                ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager, team = self.team)
+                ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager, team = self.team, age = self.ressource_manager.age)
                 self.world.entities.append(ent)
                 ent.current_image = 1   #Petite image ruine pour construction
                 self.world.batiment[self.build_position_x][self.build_position_y] = ent
@@ -376,7 +377,7 @@ class IA:
                 collision3 = self.world.world[self.build_position_x + 1][self.build_position_y + 1]["collision"]
                 collision4 = self.world.world[self.build_position_x ][self.build_position_y + 1]["collision"]
                 if (self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y) and (not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
-                    ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager, team= self.team)
+                    ent = Batiment(self.world.world[self.build_position_x][self.build_position_y]["render_pos"], name_of_building, self.ressource_manager, team= self.team, age = self.ressource_manager.age)
                     self.world.entities.append(ent)
                     self.world.batiment[self.build_position_x][self.build_position_y] = ent
                     for i in range (dicoBatiment[name_of_building][1]):
@@ -706,23 +707,9 @@ class IA:
                 if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].pv > 0:
                     if self.world.batiment[self.player_towncenter["grid"][0]][self.player_towncenter["grid"][1]].team != w.team and w.attack_bati == False:
                         w.create_path(self.player_towncenter["grid"][0], self.player_towncenter["grid"][1])
-    
-
-
-
-
-    #def annul_attack(self):
-        #for w in self.warriors:
-            #if w.attack == True:
-                #w.attack = False
-                #self.attacking = False
-
 
     def defend_town_center(self):
         pass
-
-
-
 
     def set_defense_pos(self):
 
@@ -824,7 +811,7 @@ class IA:
 
         try:   #IA save
             with open(self.IA_save_file_path, "wb") as output:
-                IA_dto = IADTO(self.team, self.strategy, self.pop_vague, self.attaque_valide, self.demande_valide, self.attaque_en_cours, self.evolution, self.number_of_buildings, self.action_faite, self.compteur_construction_bat, self.barrack_x, self.barrack_y)
+                IA_dto = IADTO(self.team, self.strategy, self.pop_vague, self.attaque_valide, self.demande_valide, self.attaque_en_cours, self.evolution, self.number_of_buildings, self.action_faite, self.compteur_construction_bat, self.barrack_x, self.barrack_y, self.world.towncenter_IA_posx, self.world.towncenter_IA_posy)
                 pickle.dump(IA_dto,output)
                 output.close()
         except Exception as e: print("Couldnt dump IA save in file", e)
@@ -871,6 +858,9 @@ class IA:
                 self.compteur_construction_bat = restore_IA_dto.compteur_construction_bat
                 self.barrack_x = restore_IA_dto.barrack_x
                 self.barrack_y = restore_IA_dto.barrack_y
+                self.world.towncenter_IA_posx = restore_IA_dto.towncenter_IA_posx
+                self.world.towncenter_IA_posy = restore_IA_dto.towncenter_IA_posy
+                
                 input.close()
         except Exception as e: print("An error occured while loading IA save:", e)
 

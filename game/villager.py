@@ -343,6 +343,8 @@ class Villager(Worker):
         
         if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
            self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1*definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+           if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv > pvMaxDuBatiment:
+               self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv = pvMaxDuBatiment
         else:
             self.construire = False
             self.busy = False

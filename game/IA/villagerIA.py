@@ -99,7 +99,7 @@ class VillagerIA(Villager):
 
         else:
             self.walkdown_animation = False
-
+        print("                                         busy : ", self.busy)
 
 
     #override
