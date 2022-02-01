@@ -63,6 +63,9 @@ def init():
     global clik
     clik = 0
 
+    global clik_ia
+    clik_ia = 0
+
     # Saves
     global SAVED_GAME_FOLDER
     SAVED_GAME_FOLDER = "data/"
@@ -78,3 +81,7 @@ def init():
     # Statut partie (0: en cours, 1: victoire, 2: défaite)
     global statut_partie
     statut_partie = 0
+
+    #Choix IA
+    global strat
+    strat = ""

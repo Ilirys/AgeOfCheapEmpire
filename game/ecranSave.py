@@ -68,7 +68,7 @@ class Save:
                                 tmp = 0
 
                     elif btn == 2:
-                        button_oui = pygame.Rect(745, 665, 230, 50)  # -> bouton oui
+                        button_oui = pygame.Rect(745, 666, 230, 50)  # -> bouton oui
                         #pygame.draw.rect(self.screen, (255, 230, 60), button_oui)
                         if button_oui.collidepoint((mx, my)):
                             pygame.draw.rect(self.screen, (255, 255, 255), (745, 663, 230, 53), 3)
@@ -76,7 +76,7 @@ class Save:
                                 pygame.quit()
                                 sys.exit()
 
-                        button_non = pygame.Rect(1005, 665, 230, 50)  # -> bouton non
+                        button_non = pygame.Rect(1005, 666, 230, 50)  # -> bouton non
                         #pygame.draw.rect(self.screen, (255, 215, 50), button_non)
                         if button_non.collidepoint((mx, my)):
                             pygame.draw.rect(self.screen, (255, 255, 255), (1004, 663, 230, 53), 3)
