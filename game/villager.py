@@ -118,30 +118,7 @@ class Villager(Worker):
             else:
                 searching_for_path = False
 
-    #override
-    def change_tile(self, new_tile):
-        if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
-            self.world.villager[self.tile["grid"][0]][self.tile["grid"][1]] = None
-            self.world.villager[new_tile[0]][new_tile[1]] = self
-            self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
-            self.world.unites[new_tile[0]][new_tile[1]] = self
 
-            self.tile = self.world.world[new_tile[0]][new_tile[1]]
-            self.render_pos_x = self.tile["render_pos"][0]
-            self.render_pos_y = self.tile["render_pos"][1]
-
-
-            #modif x, y => case normale (pas defog of war)
-            self.world.changeToNormalGrass(self.render_pos_x, self.render_pos_y, self.tile["grid"][0],  self.tile["grid"][1])
-
-
-            # collision matrix (for pathfinding and buildings)
-            self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
-            self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
-        else: 
-            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
-            self.render_pos_x = self.pos_x
-            self.render_pos_y = self.pos_y
 
 
     #override

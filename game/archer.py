@@ -103,7 +103,7 @@ class Archer(Worker):
 
             else:
                 break
-
+    """
     # Override
     def change_tile(self, new_tile):
         if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
@@ -125,7 +125,7 @@ class Archer(Worker):
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y    
-
+    """
     # #Override
     def update_sprite(self):
         if self.movestraight_animation == True:

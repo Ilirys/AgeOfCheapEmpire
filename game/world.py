@@ -88,6 +88,53 @@ class World:
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
 
+    def freeCaseAdj(self,typeDeBatiment, xMap, yMap, xEcran, yEcran):
+        for x in range(xMap - 1, xMap + 3):
+            for y in range(yMap - 1, yMap + 3):
+                if (x >= self.grid_length_x):
+                    x = self.grid_length_x - 1
+                if (y >= self.grid_length_y):
+                    y = self.grid_length_y - 1
+
+                self.world[x][y]["tile"].setVisible(True)
+                if (not((xMap == 0 and yMap == 0) or (xMap==0 and yMap==self.grid_length_y-1) or (xMap==self.grid_length_x-1 and yMap==self.grid_length_y-1) or (xMap == self.grid_length_x-1 and yMap == 0))):
+                    if typeDeBatiment == 1 and xMap != 0 and xMap != self.grid_length_x - 1 and yMap != 0 and yMap != self.grid_length_y - 1:
+                        if ((xMap == 0 and yMap != 0 and yMap != (self.grid_length_y - 1))):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 - 60, yEcran - 36))
+                            #self.grass_tiles.blit(self.tiles["grass_3x2Haut"],(xEcran + (self.grass_tiles.get_width()) / 2 - 120, yEcran))
+                        elif ((xMap == (self.grid_length_x - 1) and yMap != (self.grid_length_y - 1) and y != 1) or ( x == self.grid_length_x - 1 and y == 2)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 - 130, yEcran - 65))
+                        elif ((yMap == 0 and xMap != 0 and xMap != (self.grid_length_x - 1))):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Gauche"], (xEcran + (self.grass_tiles.get_width()) / 2 - 125, yEcran - 32))
+                        elif ((yMap == (self.grid_length_y - 1) and xMap != 0 and xMap != (self.grid_length_x - 1)) or (
+                                x == 2 and y == self.grid_length_y - 1)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 - 60, yEcran - 65))
+                        elif xMap != 0 and yMap != 0 and xMap != (self.grid_length_x - 1) and yMap != (self.grid_length_y - 1):
+                            self.grass_tiles.blit(self.tiles["grass3x3"],(xEcran + (self.grass_tiles.get_width()) / 2 - 128, yEcran - 65))
+                    else:
+                        if ((xMap == 0 and yMap != 0 and yMap != (self.grid_length_y - 1))):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 - 60, yEcran - 36))
+                            self.grass_tiles.blit(self.tiles["grass_3x2Haut"], (xEcran + (self.grass_tiles.get_width()) / 2 - 120, yEcran))
+                            # print("haut gauche")
+                        # affichage herbe bas droit
+                        elif ((xMap == (self.grid_length_x - 1) and yMap != (self.grid_length_y - 1) and y != 1) or (x == self.grid_length_x - 1 and y == 2)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Haut"],(xEcran + (self.grass_tiles.get_width()) / 2 - 130, yEcran - 65))
+                            # print("bas droit")
+                        # affichage herbe droit haut
+                        elif ((yMap == 0 and xMap != 0 and xMap != (self.grid_length_x - 1))):  # ((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 - 125, yEcran - 32))
+                            # print("haut droit")
+                        # affichage herbe gauche bas
+                        elif ((yMap == (self.grid_length_y - 1) and xMap != 0 and xMap != (self.grid_length_x - 1)) or ( x == 2 and y == self.grid_length_y - 1)):  # ((xMap ==0 and (xMap != 0 or yMap != (self.grid_length_y - 1))) or yMap == (self.grid_length_y - 1)):
+                            self.grass_tiles.blit(self.tiles["grass_3x2Gauche"],(xEcran + (self.grass_tiles.get_width()) / 2 - 60, yEcran - 65))
+                            # print("bas gauche")#ici
+                        # affichage herbe centrale (3x3)
+                        elif xMap != 0 and yMap != 0 and xMap != (self.grid_length_x - 1) and yMap != (self.grid_length_y - 1):
+                            self.grass_tiles.blit(self.tiles["grass3x3"], (xEcran + (self.grass_tiles.get_width()) / 2 -64, yEcran - 32))
+                            self.grass_tiles.blit(self.tiles["grass3x3"], (xEcran + (self.grass_tiles.get_width()) / 2 - 128, yEcran - 64))
+                            self.grass_tiles.blit(self.tiles["grass3x3"],(xEcran + (self.grass_tiles.get_width()) / 2 - 128, yEcran))
+                            self.grass_tiles.blit(self.tiles["grass3x3"], (xEcran + (self.grass_tiles.get_width()) / 2 -(128+64) , yEcran - 32))
+
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -125,7 +172,6 @@ class World:
                 
                 if mouse_action[0] and not collision:
 
-                    
                     if dicoBatiment[self.hud.selected_tile["name"]][1] == 1: #Pour taille de batiment 1x1
                         ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
                         self.entities.append(ent)
@@ -137,10 +183,12 @@ class World:
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
+                        if definitions.Fog_On: self.freeCaseAdj(1, self.world[grid_pos[0]][grid_pos[1]]["grid"][0], self.world[grid_pos[0]][grid_pos[1]]["grid"][1], render_pos[0], render_pos[1])
                     elif ((not collision2) and (not collision3) and (not collision4)):  # les 3 autres cases sont dispos
                         ent = Batiment(render_pos, self.hud.selected_tile["name"], self.resource_manager)
                         self.entities.append(ent)
                         self.batiment[grid_pos[0]][grid_pos[1]] = ent
+                        if definitions.Fog_On: self.freeCaseAdj(2, self.world[grid_pos[0]][grid_pos[1]]["grid"][0],self.world[grid_pos[0]][grid_pos[1]]["grid"][1], render_pos[0], render_pos[1])
                         for i in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                             for j in range (dicoBatiment[self.hud.selected_tile["name"]][1]):
                                 self.world[grid_pos[0]+i][grid_pos[1]+j]["collision"] = True
@@ -291,23 +339,21 @@ class World:
                     render_pos[1] - ((dicoBatiment[self.temp_tile["name"]][1] - 1) * 10) + camera.scroll.y - 5)                
                 )
         #ACTIVE LES COORDONNEES DU CURSEUR = -10FPS
-        '''
+
         mouse_pos = pygame.mouse.get_pos()
         grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
         txt = str(grid_pos)
         draw_text(screen, txt, 20, WHITE, (mouse_pos[0], mouse_pos[1]+20))
-        '''
+
 
     #transforme la case x,y et celle autour en herbe "normale" (sans fog of war)
     def changeToNormalGrass(self, xEcran, yEcran, xMap, yMap):
         self.world[xMap][yMap]["tile"].setVisible(True)
+
         for x in range(xMap - 1, xMap + 2):
             for y in range(yMap - 1, yMap + 2):
 
-                if(x<=0):
-                    x=1
-                if(y<=0):
-                    y=1
+
                 if(x>= self.grid_length_x):
                     x=self.grid_length_x-1
                 if(y >= self.grid_length_y):
@@ -316,7 +362,7 @@ class World:
                 #print(self.grid_length_y-1)
                 self.world[x][y]["tile"].setVisible(True)
                 if definitions.Fog_On:
-                    if (x >= 0 and x <= self.grid_length_x and y >= 0 and y <= self.grid_length_y):# and self.world[x][y]["tile"].getCpt()==0):
+                    if (x >= 0 and x <= self.grid_length_x and y >= 0 and y <= self.grid_length_y):# and self.world[xMap][yMap]["tile"].getCpt()==0):
 
                         self.world[x][y]["tile"].addCpt()
                         #affichage herbe haut gauche
@@ -352,47 +398,34 @@ class World:
                 world[grid_x].append(world_tile)
 
                 render_pos = world_tile["render_pos"] #Position de rendu pour coller les cases ensembles
-                #CHANGER ON/OFF POUR LE FOG OF WAR
+
                 if definitions.Fog_On:
+                    world[grid_x][grid_y]["tile"].setVisible(False)
                     self.grass_tiles.blit(self.tiles["grass_fog"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
                 else:
                     self.grass_tiles.blit(self.tiles["grass"],(render_pos[0] + (self.grass_tiles.get_width())/2 ,render_pos[1] ))
+                    world[grid_x][grid_y]["tile"].setVisible(True)
 
                 if self.Bou.M1[grid_x][grid_y] == "wood": #Checking if our ressource matrice, M1, has set any ressource on the tile
                     world[grid_x][grid_y]["tile"].nomElement = "tree"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[0], LES_RESSOURCES[0]))
-                    if definitions.Fog_On:
-                        world[grid_x][grid_y]["tile"].setVisible(False)
-                    else:
-                        world[grid_x][grid_y]["tile"].setVisible(True)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "fruit":
                     world[grid_x][grid_y]["tile"].nomElement = "food"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[1], LES_RESSOURCES[1]))
-                    if definitions.Fog_On:
-                        world[grid_x][grid_y]["tile"].setVisible(False)
-                    else:
-                        world[grid_x][grid_y]["tile"].setVisible(True)
+
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "gold":
 
                     world[grid_x][grid_y]["tile"].nomElement = "gold"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[2], LES_RESSOURCES[2]))
-                    if definitions.Fog_On:
-                        world[grid_x][grid_y]["tile"].setVisible(False)
-                    else:
-                        world[grid_x][grid_y]["tile"].setVisible(True)
                     world[grid_x][grid_y]["collision"] = True
 
                 if self.Bou.M1[grid_x][grid_y] == "stone":
                     world[grid_x][grid_y]["tile"].nomElement = "stone"
                     world[grid_x][grid_y]["tile"].setRessource(Ressource(NB_RESSOURCES[3], LES_RESSOURCES[3]))
-                    if definitions.Fog_On:
-                        world[grid_x][grid_y]["tile"].setVisible(False)
-                    else:
-                        world[grid_x][grid_y]["tile"].setVisible(True)
                     world[grid_x][grid_y]["collision"] = True
         return world    
 

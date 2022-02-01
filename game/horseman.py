@@ -38,7 +38,7 @@ class Horseman(Worker):
         self.hitbox = pygame.Rect(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
                                   self.pos_y - self.image.get_height() + self.camera.scroll.y + 75, 28, 60) #Overriden
     
-
+    """
     #Override
     def change_tile(self, new_tile):
         if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
@@ -60,7 +60,7 @@ class Horseman(Worker):
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y    
-
+    """
 
 
     #Override
