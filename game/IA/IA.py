@@ -127,7 +127,7 @@ class IA:
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
-            print("Strategy", definitions.strat, "[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"], " Gold : ", self.ressource_manager.resources["gold"],
+            print("Strategy", self.strategy, "[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"], " Gold : ", self.ressource_manager.resources["gold"],
             " ] --> evolution ", self.evolution, " <--")
             
             if self.strategy == "attaque":  
@@ -198,7 +198,7 @@ class IA:
                         else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
                         if self.get_number_of_units_IA("Soldier") >= 5:
                             self.number_of_buildings = 0
-                            self.evolution += 1
+                            self.evolution += 2
                     
                     case 5: # récolte or pour passage age
                         if self.get_number_of_units_IA("Villageois") < 3:
@@ -211,26 +211,29 @@ class IA:
                         else: self.farm(self.gold_list_iterator, self.get_number_of_units_IA("Villageois"))
 
                     case 6: # attaque
-                        if self.get_number_of_units_IA("Villageois") < 3:
-                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
-                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
-                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
-                        elif self.get_number_of_units_IA("Soldier") >= 5 and self.get_number_of_units_IA("Horseman") >= 2:
-                            if (self.get_number_of_units_joueur("Soldier") + self.get_number_of_units_joueur("horseman") + self.get_number_of_units_joueur("Archer")) !=0 :
-                                self.attack_player_warriors()
-                            elif self.get_number_of_units_joueur("Villageois") != 0 :
-                                self.attack_villagers()
-                            else: self.attack_town_center()
-                            if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
-                                self.find_and_place_building("Farm", self.get_number_of_units_IA("Villageois"))
-                            self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois")-1)
-                            self.farm(self.wood_list_iterator, 1)
-                        elif self.get_number_of_units_IA("Soldier") < 5 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
-                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
-                        elif self.get_number_of_units_IA("Horseman") < 2 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["horseman"]["food"]:
-                            self.spawn_unit_autour_caserne("horseman", self.world.world[self.barrack_x][self.barrack_y])
-                        else:
-                            self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        # if self.get_number_of_units_IA("Villageois") < 3:
+                        #     if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                        #         self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                        #     else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        # elif self.get_number_of_units_IA("Soldier") >= 5 and self.get_number_of_units_IA("Horseman") >= 2:
+                        #     if (self.get_number_of_units_joueur("Soldier") + self.get_number_of_units_joueur("horseman") + self.get_number_of_units_joueur("Archer")) !=0 :
+                        #         self.attack_player_warriors()
+                        #     elif self.get_number_of_units_joueur("Villageois") != 0 :
+                        #         self.attack_villagers()
+                        #     else: self.attack_town_center()
+                        #     if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
+                        #         self.find_and_place_building("Farm", self.get_number_of_units_IA("Villageois"))
+                        #     self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois")-1)
+                        #     self.farm(self.wood_list_iterator, 1)
+                        # elif self.get_number_of_units_IA("Soldier") < 5 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                        #     self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        # elif self.get_number_of_units_IA("Horseman") < 2 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["horseman"]["food"]:
+                        #     self.spawn_unit_autour_caserne("horseman", self.world.world[self.barrack_x][self.barrack_y])
+                        # else:
+                        #     self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
 
 
 
@@ -507,7 +510,7 @@ class IA:
         for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
            for villager in villager_x:
                if (villager != None and not villager.busy and len(self.farmers) < number_of_villagers):
-                    if self.tile["tile"].ressource.nbRessources <= 0:
+                    if self.tile != -1 and self.tile["tile"].ressource.nbRessources <= 0:
                         self.tile = next(ressource_to_farm_iterator, -1)
                     if self.tile != -1:
                         # print("here",tile["grid"][0], tile["grid"][1] )
@@ -817,7 +820,7 @@ class IA:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+2][y-1].tile["grid"][0],self.world.unites[x+2][y-1].tile["grid"][1])
 
-                        if dicoBatiment[self.world.batiment[x][y].name][1] == 2:
+                        if dicoBatiment[self.world.batiment[x][y].name][1] == 1:
                             if self.world.unites[x+1][y] != None and self.world.unites[x+1][y].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+1][y] and w:

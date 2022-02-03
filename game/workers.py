@@ -248,7 +248,7 @@ class Worker:
             elif self.attack_bati and self.cible:
                 self.walkdown_animation = False
                 self.attack_ani = True
-                self.cible.attackers.append(self)
+                #self.cible.attackers.append(self)
                 self.cible.attacked = True
                 if self.cible:
                     self.cible.pv -= self.dmg
