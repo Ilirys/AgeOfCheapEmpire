@@ -37,16 +37,11 @@ class VillagerIA(Villager):
         # Animation update
         self.update_sprite()             
 
-        #if self.attack == False and self.farm == False and self.attack_bati == False:
-            #if self.dest_tile == self.tile:
-                #self.dest_tile = 0
-
         if self.dest_tile == self.tile:
             if self.attack:
                 self.walkdown_animation = False
                 self.cible.attacked = True
                 self.cible.attacker = self
-                #self.attack_ani = True
                 if self.cible != 0 and self.cible is not None:
                     self.cible.pv -= self.dmg
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
@@ -60,7 +55,6 @@ class VillagerIA(Villager):
                     self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
-                #self.attack_ani = True
                 if self.cible is not None and self.cible != 0:
                     self.cible.pv -= self.dmg
                     if self.cible.pv <= 0:
@@ -74,6 +68,9 @@ class VillagerIA(Villager):
 
             elif self.transfer_resources_bool:
                 self.transfer_resources()  
+            else:
+                self.busy = False
+                if self in self.IA.farmers: self.IA.farmers.remove(self)     
  
 
 
@@ -99,7 +96,8 @@ class VillagerIA(Villager):
 
         else:
             self.walkdown_animation = False
-        print("                                         busy : ", self.busy)
+            self.tile = self.dest_tile
+        # print(" busy", self.busy, "farm ", self.farm, "cono", self.construire, "attack ", self.attack, "attabat", self.attack_bati)
 
 
     #override
@@ -137,6 +135,12 @@ class VillagerIA(Villager):
 
     #Override
     def farmer_cases_autour(self): 
+        # print("                                         busy : ", self.busy, "farm", self.farm, "ressource", self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources, "x et y", self.cible["grid"][0], self.cible["grid"][1], "type ",self.cible["tile"].ressource.typeRessource)
+        if self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources and self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.typeRessource == "": 
+            self.world.reset_tile(self.cible["grid"][0], self.cible["grid"][1])
+            self.busy = False
+            self.farm = False
+            if self in self.IA.farmers: self.IA.farmers.remove(self)
         if (self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources > 0):
             self.farmer_cases(self.cible)  
         else: 

@@ -56,7 +56,9 @@ class Villager(Worker):
 
                     self.attack_bati = False
 
-                    if farmReset: self.farm = False
+                    if farmReset: 
+                        self.farm = False
+                        self.busy = False
 
                     searching_for_path = False
                 elif self.world.unites[x][y] != None or self.world.batiment[x][y] or self.dest_tile["tile"].ressource.getNbRessources() != 0 or self.world.world[x][y]["tile"].tile_batiment != 0:

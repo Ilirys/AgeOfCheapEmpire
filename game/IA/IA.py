@@ -122,9 +122,9 @@ class IA:
 
     def events(self, e):    #Remplace l'update de l'IA, cette boucle est effectuée chaque X seconde pour limiter la perte d'fps
         if e.type == self.take_decision_event:
-            print("Strategy", self.strategy, "[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
-            " ] --> evolution ", self.evolution, " <--", self.number_of_buildings, "Action: ", self.action_faite, "Compteur: Villageois joueur, IA ", self.get_number_of_units_joueur("Villageois"), self.get_number_of_units_IA("Villageois"))
-            print("POP: ", self.world.resource_manager.population, "\n")
+            # print("Strategy", self.strategy, "[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
+            # " ] --> evolution ", self.evolution, " <--", self.number_of_buildings, "Action: ", self.action_faite, "Compteur: Villageois joueur, IA ", self.get_number_of_units_joueur("Villageois"), self.get_number_of_units_IA("Villageois"))
+            # print("POP: ", self.world.resource_manager.population, "\n")
             if self.strategy == "attaque":  
                 match self.evolution:
                     
