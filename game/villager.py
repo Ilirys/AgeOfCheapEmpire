@@ -202,7 +202,7 @@ class Villager(Worker):
                     self.attack_ani = False
             elif self.farm:
                 self.farmer_cases_autour()
-                self.attack_ani = True
+                self.farm_ani = True
 
             elif self.construire:
                 self.construire_batiment(self.batiment_tile, self.batiment_pv) 
@@ -260,6 +260,75 @@ class Villager(Worker):
             self.selected = False
             self.temp = 0
 
+
+    #override
+
+    def update_sprite(self):
+            if self.walkdown_animation == True:
+                self.temp += 0.2
+                self.image = self.animation[int(self.temp)]
+                if self.temp + 0.2 >= len(self.animation):
+                    self.temp = 0
+            elif self.attack_ani == True and self.attack == True:
+                self.temp += 0.2
+                if self.temp + 0.2 < 10:
+                    if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_up[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack[int(self.temp)]
+                    elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_ldown[int(self.temp)]
+                    elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_left[int(self.temp)]
+                    elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_uleft[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_right[int(self.temp)]
+                    elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_uright[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_rdown[int(self.temp)]
+
+            elif self.farm_ani == True and self.farm == True:
+                self.temp += 0.2
+                if self.temp + 0.2 < 10:
+                    if self.cible["grid"][0] < self.tile["grid"][0] and self.cible["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_up[int(self.temp)]
+                    elif self.cible["grid"][0] > self.tile["grid"][0] and self.cible["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack[int(self.temp)]
+                    elif self.cible["grid"][0] == self.tile["grid"][0] and self.cible["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_ldown[int(self.temp)]
+                    elif self.cible["grid"][0] < self.tile["grid"][0] and self.cible["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_left[int(self.temp)]
+                    elif self.cible["grid"][0] < self.tile["grid"][0] and self.cible["grid"][1] == \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_uleft[int(self.temp)]
+                    elif self.cible["grid"][0] > self.tile["grid"][0] and self.cible["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_right[int(self.temp)]
+                    elif self.cible["grid"][0] == self.tile["grid"][0] and self.cible["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_uright[int(self.temp)]
+                    elif self.cible["grid"][0] > self.tile["grid"][0] and self.cible["grid"][1] == \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_rdown[int(self.temp)]
+
+                if self.temp + 0.2 >= 14:
+                    self.temp = 0
+            else:
+                self.image = self.image_standby
 
     #override
     def farmer_cases(self, cible):  # Farme la cible

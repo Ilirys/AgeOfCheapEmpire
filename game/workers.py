@@ -32,9 +32,9 @@ class Worker:
         self.animation_attack_ldown = self.world.animation.villager_farm_ldown
         self.animation_attack_left = self.world.animation.villager_farm_left
         self.animation_attack_uleft = self.world.animation.villager_farm_uleft
-        #self.animation_attack_right = self.world.animation.villager_attack_right
-        #elf.animation_attack_uright = self.world.animation.villager_attack_uright
-        #self.animation_attack_rdown = self.world.animation.villager_attack_rdown
+        self.animation_attack_right = self.world.animation.villager_farm_right
+        self.animation_attack_uright = self.world.animation.villager_farm_uright
+        self.animation_attack_rdown = self.world.animation.villager_farm_rdown
         self.animation_mort = self.world.animation.villager_mort
         self.walkdown_animation = False
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
@@ -312,15 +312,15 @@ class Worker:
                     elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == \
                             self.tile["grid"][1]:
                         self.image = self.animation_attack_uleft[int(self.temp)]
-                    #elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < \
-                            #self.tile["grid"][1]:
-                        #self.image = self.animation_attack_right[int(self.temp)]
-                    #elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < \
-                            #self.tile["grid"][1]:
-                        #self.image = self.animation_attack_uright[int(self.temp)]
-                    #elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == \
-                            #self.tile["grid"][1]:
-                        #self.image = self.animation_attack_rdown[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_right[int(self.temp)]
+                    elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_uright[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_rdown[int(self.temp)]
                     else :
                         self.image = self.animation_attack[int(self.temp)]
                 if self.temp + 0.2 >= 14:
