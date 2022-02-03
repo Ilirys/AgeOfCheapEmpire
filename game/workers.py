@@ -27,13 +27,19 @@ class Worker:
         self.image = self.world.animation.villager_standby
         self.temp = 0
         self.animation = self.world.animation.villager_walk
+        self.animation_attack = self.world.animation.villager_farm
+        self.animation_attack_up = self.world.animation.villager_farm_up
+        self.animation_attack_ldown = self.world.animation.villager_farm_ldown
+        self.animation_attack_left = self.world.animation.villager_farm_left
+        self.animation_attack_uleft = self.world.animation.villager_farm_uleft
+        self.animation_attack_right = self.world.animation.villager_farm_right
+        self.animation_attack_uright = self.world.animation.villager_farm_uright
+        self.animation_attack_rdown = self.world.animation.villager_farm_rdown
         self.animation_mort = self.world.animation.villager_mort
         self.walkdown_animation = False
         self.sound = pygame.mixer.Sound('Sounds/villager_select4.WAV')
         self.attack_ani = False
         self.farm_ani = False
-        self.animation_attack = self.world.animation.villager_attack
-        self.animation_farm = self.world.animation.villager_farm
 
         # pathfinding
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = self
@@ -126,7 +132,13 @@ class Worker:
                         self.attack = True
                         self.temp_tile_a = self.cible.tile
 
-                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team :
+                    #elif  self.world.unites[x][y] != None and self.world.unites[x][y].team == self.team:
+                        #if self.path:
+                            #self.path.pop()
+                            #if self.path:
+                                #self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+
+                    elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].pv > 0 :
                         self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
                         self.attack_bati = True
 
@@ -217,7 +229,7 @@ class Worker:
                     self.world.hud.display_building_icons = False   #Ne plus afficher les icones de constructions
 
         if self.dest_tile == self.tile:
-            if self.attack:
+            if self.attack and self.cible:
                 self.cible.attacked = True
                 self.cible.attacker = self
                 self.attack_ani = True
@@ -233,10 +245,13 @@ class Worker:
                     self.attack = False
                     self.attack_ani = False
                     self.cible = 0
-            elif self.attack_bati:
+            elif self.attack_bati and self.cible:
                 self.walkdown_animation = False
                 self.attack_ani = True
-                if self.cible.pv > 0:self.cible.pv -= self.dmg
+                self.cible.attackers.append(self)
+                self.cible.attacked = True
+                if self.cible:
+                    self.cible.pv -= self.dmg
                 if self.cible.pv <= 0:
                     self.attack = False
                     self.attack_ani = False
@@ -274,19 +289,44 @@ class Worker:
                 
 
     def update_sprite(self):
-        if self.walkdown_animation == True:
-            self.temp +=0.2
-            self.image = self.animation[int(self.temp)]
-            if self.temp + 0.2 >= len(self.animation):
-                self.temp= 0
-
-        elif self.attack_ani == True:
-            self.temp += 0.2
-            self.image = self.animation_attack[int(self.temp)]
-            if self.temp + 0.2 >= len(self.animation_attack):
-                self.temp = 0
-        elif self.pv > 0:
-            self.image = self.image_standby
+            if self.walkdown_animation == True:
+                self.temp += 0.2
+                self.image = self.animation[int(self.temp)]
+                if self.temp + 0.2 >= len(self.animation):
+                    self.temp = 0
+            elif self.attack_ani == True and self.attack == True:
+                self.temp += 0.2
+                if self.temp + 0.2 < 10:
+                    if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_up[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack[int(self.temp)]
+                    elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_ldown[int(self.temp)]
+                    elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] > \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_left[int(self.temp)]
+                    elif self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] == \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_uleft[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_right[int(self.temp)]
+                    elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] < \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_uright[int(self.temp)]
+                    elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == \
+                            self.tile["grid"][1]:
+                        self.image = self.animation_attack_rdown[int(self.temp)]
+                    else :
+                        self.image = self.animation_attack[int(self.temp)]
+                if self.temp + 0.2 >= 14:
+                    self.temp = 0
+            else:
+                self.image = self.image_standby
 
     def delete(self):
         self.temp += 0.1

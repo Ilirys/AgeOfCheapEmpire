@@ -19,7 +19,16 @@ class VillagerIA(Villager):
         self.IA.ressource_manager.population += 1
         self.busy = False 
         self.animation = self.world.animation.villagerIA_walk
+        self.animation_attack = self.world.animation.villagerIA_farm
+        self.animation_attack_up = self.world.animation.villagerIA_farm_up
+        self.animation_attack_ldown = self.world.animation.villagerIA_farm_ldown
+        self.animation_attack_left = self.world.animation.villagerIA_farm_left
+        self.animation_attack_uleft = self.world.animation.villagerIA_farm_uleft
+        self.animation_attack_right = self.world.animation.villagerIA_farm_right
+        self.animation_attack_uright = self.world.animation.villagerIA_farm_uright
+        self.animation_attack_rdown = self.world.animation.villagerIA_farm_rdown
         self.image_standby = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
+        self.image = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
 
         #Farm
         self.storage_tile = self.IA.towncenter
@@ -61,7 +70,9 @@ class VillagerIA(Villager):
                         self.attack = False
                         self.attack_ani = False
             elif self.farm:
+                self.farm_ani = True
                 self.farmer_cases_autour()
+
 
             elif self.construire:
                 self.construire_batiment(self.batiment_tile, self.batiment_pv)
