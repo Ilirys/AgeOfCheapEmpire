@@ -374,7 +374,7 @@ class IA:
                 self.number_of_buildings += 1
                 print("------------------------------------------------------------> ", name_of_building, " en construction")
                 self.compteur_construction_bat = 0 # on remet à 0 le compteur pour qu'il puisse attendre le temps de construction du batiment
-                self.action_faite = 1
+                
 
             elif self.build_position_x + 1 in range(self.world.grid_length_x) and self.build_position_y + 1 in range(self.world.grid_length_y):
 
