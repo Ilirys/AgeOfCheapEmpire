@@ -107,7 +107,8 @@ class VillagerIA(Villager):
 
         else:
             self.walkdown_animation = False
-            self.tile = self.dest_tile
+            self.dest_tile = self.tile
+        # print("Tile", self.tile["grid"][0], self.tile["grid"][1], "Pos", self.pos_x, self.pos_y)
         # print(" busy", self.busy, "farm ", self.farm, "cono", self.construire, "attack ", self.attack, "attabat", self.attack_bati)
 
 

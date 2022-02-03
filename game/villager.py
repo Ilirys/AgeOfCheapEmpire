@@ -100,7 +100,7 @@ class Villager(Worker):
                         self.farm = False
                         if x == self.storage_tile["grid"][0] and y == self.storage_tile["grid"][1]:
                             self.transfer_resources_bool = True
-                            self.cible = self.cible1
+                            if self.team == "blue": self.cible = self.cible1
                     elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
                         self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]#self.world.world[x][y]["tile"].tile_batiment
 
@@ -338,8 +338,8 @@ class Villager(Worker):
             self.ressource_Transp = cible["tile"].ressource.typeRessource
             self.nb_ressource_Transp += self.efficiency*definitions.EFFICIENCY*DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5
             cible["tile"].ressource.nbRessources -= self.efficiency*definitions.EFFICIENCY*DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5
-        if cible["tile"].ressource.nbRessources <= 0:
-            self.world.reset_tile(cible["grid"][0], cible["grid"][1])
+            if cible["tile"].ressource.nbRessources <= 0:
+                self.world.reset_tile(cible["grid"][0], cible["grid"][1])
 
         if self.nb_ressource_Transp >= self.max_ressources:
             #if self.team ==  "red": self.world.reset_tile(self.cible["grid"][0], self.cible["grid"][1])
