@@ -1,3 +1,4 @@
+from html import entities
 from tkinter.font import families
 import pygame
 import random
@@ -219,6 +220,19 @@ class World:
             for y in range(self.grid_length_y):
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
+                if definitions.afficher_minimap == "oui":
+                    self.minimap.tab_minimap[x][y] = GreenLight
+                    if nomElement == "tree":
+                        self.minimap.tab_minimap[x][y] = Green
+                    elif nomElement == "stone":
+                        self.minimap.tab_minimap[x][y] = Grey
+                    elif nomElement == "gold":
+                        self.minimap.tab_minimap[x][y] = Gold
+                    elif nomElement == "food":
+                        self.minimap.tab_minimap[x][y] = Brown
+                    elif self.world[x][y]["collision"]:
+                        self.minimap.tab_minimap[x][y] = BLACK
+                    
                 if nomElement != "":  #Si le nom de l'element sur la case n'est pas vide alors on affiche la ressource correspondante (arbre etc)
                     screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
@@ -351,6 +365,9 @@ class World:
                                     self.hud.display_unit_icons = True
                                     self.hud.blit_hud("hudCaserne", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
+                            else:
+                                if definitions.afficher_minimap == "oui":
+                                    self.minimap.tab_minimap[x][y] = Red
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
                         self.hud.display_towncenter_icons = False                
@@ -384,7 +401,10 @@ class World:
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
-                    #if unites.pv > 0:
+                    if definitions.afficher_minimap == "oui":
+                        if unites.team == "blue":
+                            self.minimap.tab_minimap[x][y] = Blue
+                        else: self.minimap.tab_minimap[x][y] = Red
                                 
                     if unites.name == "horseman":
                         if unites.selected:
@@ -428,20 +448,9 @@ class World:
                         unites.delete()
 
                         self.hud.select_surface_empty = True
+
                 # minimap hud
                 if definitions.afficher_minimap == "oui":
-                    self.minimap.tab_minimap[x][y] = GreenLight
-                    if nomElement == "tree":
-                        self.minimap.tab_minimap[x][y] = Green
-                    elif nomElement == "stone":
-                        self.minimap.tab_minimap[x][y] = Grey
-                    elif nomElement == "gold":
-                        self.minimap.tab_minimap[x][y] = Gold
-                    elif nomElement == "food":
-                        self.minimap.tab_minimap[x][y] = Brown
-                    elif self.world[x][y]["collision"]:
-                        self.minimap.tab_minimap[x][y] = Blue
-                        
                     if self.minimap.tab_minimap[x][y] != GreenLight:
                         pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], ((2+9*x)*50/MAP_SIZE, (2+9*y)*50/MAP_SIZE, 9*50/MAP_SIZE, 9*50/MAP_SIZE))
                     
