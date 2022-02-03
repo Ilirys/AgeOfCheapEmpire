@@ -34,33 +34,48 @@ class Options:
                 self.screen.blit(image, (0, 0))
 
             if definitions.clik == 1:
-                pygame.draw.rect(self.screen, (255, 215, 50), (1488, 235, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 215, 50), (1355, 338, 275, 38), 3)
             elif definitions.clik == 2:
-                pygame.draw.rect(self.screen, (255, 215, 50), (1488, 300, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 215, 50), (1355, 438, 275, 39), 3)
             elif definitions.clik == 3:
-                pygame.draw.rect(self.screen, (255, 215, 50), (1488, 366, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 215, 50), (1355, 536, 275, 39), 3)
+
+
+            if definitions.clik_ia == 1:
+                pygame.draw.rect(self.screen, (255, 215, 50), (567, 383, 275, 41), 3)
+            elif definitions.clik_ia == 2:
+                pygame.draw.rect(self.screen, (255, 215, 50), (909, 383, 275, 41), 3)
+            elif definitions.clik_ia == 3:
+                pygame.draw.rect(self.screen, (255, 215, 50), (908, 477, 275, 41), 3)
+            elif definitions.clik_ia == 4:
+                pygame.draw.rect(self.screen, (255, 215, 50), (565, 474, 275, 41), 3)
 
 
             draw_text(self.screen, 'Options', 30, WHITE, (20, 20))
             mx, my = pygame.mouse.get_pos()  # récupération des clics de souris
 
-            button_normal = pygame.Rect(169, 249, 22, 22) # les boutons (ici, invisibles) -> bouton ok
-            button_fast = pygame.Rect(169, 299, 22, 22)
-            button_veryfast = pygame.Rect(169, 350, 22, 22)
+            button_normal = pygame.Rect(174, 249, 22, 22) # les boutons (ici, invisibles) -> bouton ok
+            button_fast = pygame.Rect(174, 299, 22, 22)
+            button_veryfast = pygame.Rect(174, 350, 22, 22)
 
-            button_ok = pygame.Rect(925,915,285,40)
+            button_ok = pygame.Rect(900, 900, 280, 40)
 
-            button_save1 = pygame.Rect(1488, 235, 288, 54)
-            button_save2 = pygame.Rect(1488, 300, 288, 54)
-            button_save3 = pygame.Rect(1488, 366, 288, 54)
+            button_save1 = pygame.Rect(1355, 338, 275, 38)
+            button_save2 = pygame.Rect(1353, 438, 275, 38)
+            button_save3 = pygame.Rect(1353, 536, 275, 38)
 
-            button_sup1 = pygame.Rect(1799, 238, 45, 40)
-            button_sup2 = pygame.Rect(1799, 303, 45, 40)
-            button_sup3 = pygame.Rect(1799, 368, 45, 40)
+            button_sup1 = pygame.Rect(1666, 336, 45, 40)
+            button_sup2 = pygame.Rect(1666, 438, 45, 40)
+            button_sup3 = pygame.Rect(1666, 536, 45, 40)
+
+            button_attaque = pygame.Rect(567, 383, 275, 38)
+            button_defense = pygame.Rect(909, 383, 275, 38)
+            button_blitz = pygame.Rect(908, 477, 275, 38)
+            button_vague = pygame.Rect(565, 474, 275, 38)
 
 
             if button_ok.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (925, 915, 288, 42), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (900, 900, 277, 42), 3)
                 if click:
                     self.playing=False
 
@@ -82,19 +97,19 @@ class Options:
 
 
             if button_save1.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (1488, 235, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (1355, 338, 275, 38), 3)
                 if click:
                     definitions.SAVED_GAME_FOLDER = "save1/"
                     definitions.clik = 1
 
             if button_save2.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (1488, 300, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (1353, 438, 276, 39), 3)
                 if click:
                     definitions.SAVED_GAME_FOLDER = "save2/"
                     definitions.clik = 2
 
             if button_save3.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
-                pygame.draw.rect(self.screen, (255, 255, 255), (1488, 366, 288, 45), 3)
+                pygame.draw.rect(self.screen, (255, 255, 255), (1353, 536, 276, 39), 3)
                 if click:
                     definitions.SAVED_GAME_FOLDER = "save3/"
                     definitions.clik = 3
@@ -103,7 +118,7 @@ class Options:
                 if click:
                     image = pygame.image.load('assets/red.png').convert_alpha()
                     image.fill((255, 255, 255, 128), special_flags=BLEND_RGBA_MULT)
-                    self.screen.blit(image, (1799, 238))
+                    self.screen.blit(image, (1668, 338))
                     files1 = os.listdir("save1/")
                     for i in range(0, len(files1)):
                         os.remove("save1/" + '/' + files1[i])
@@ -112,7 +127,7 @@ class Options:
                 if click:
                     image = pygame.image.load('assets/red.png').convert_alpha()
                     image.fill((255, 255, 255, 128), special_flags=BLEND_RGBA_MULT)
-                    self.screen.blit(image, (1799, 303))
+                    self.screen.blit(image, (1668, 438))
                     files2 = os.listdir("save2/")
                     for i in range(0, len(files2)):
                         os.remove("save2/" + '/' + files2[i])
@@ -121,16 +136,43 @@ class Options:
                 if click:
                     image = pygame.image.load('assets/red.png').convert_alpha()
                     image.fill((255, 255, 255, 128), special_flags=BLEND_RGBA_MULT)
-                    self.screen.blit(image, (1799, 368))
+                    self.screen.blit(image, (1668, 536))
                     files3 = os.listdir("save3/")
                     for i in range(0, len(files3)):
                         os.remove("save3/" + '/' + files3[i])
 
 
+            if button_attaque.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (567, 383, 275, 41), 3)
+                if click:
+                    definitions.strat = "attaque"
+                    definitions.clik_ia = 1
+
+            if button_defense.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (909, 383, 275, 41), 3)
+                if click:
+                    definitions.strat = "defense"
+                    definitions.clik_ia = 2
+
+            if button_blitz.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (908, 477, 275, 41), 3)
+                if click:
+                    definitions.strat = "vague"
+                    definitions.clik_ia = 3
+
+            if button_vague.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (565, 474, 275, 41), 3)
+                if click:
+                    definitions.strat = "blitz"
+                    definitions.clik_ia = 4
+
+
+
+
             # dessin des boutons pour s'assurer de leur bonne position
             # commentez les 3 lignes pour enlever les rectangles jaunes
-            # pygame.draw.rect(self.screen, (255, 215, 50), button_ok)
-            # pygame.draw.rect(self.screen, (255, 215, 50), button_veryfast)
+            #  pygame.draw.rect(self.screen, (255, 215, 50), button_ok)
+            #  pygame.draw.rect(self.screen, (255, 215, 50), button_veryfast)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_normal)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_fast)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_save1)
@@ -139,6 +181,10 @@ class Options:
             # pygame.draw.rect(self.screen, (255, 215, 50), button_sup1)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_sup2)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_sup3)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_attaque)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_defense)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_blitz)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_vague)
 
 
             click = False

@@ -81,7 +81,7 @@ class Game:
         self.ecran_fin_partie = FinPartie(self.screen, self.clock, self)
 
         # IA
-        self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock)
+        self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock, strategy = definitions.strat)
         
         #Save
         self.restore()
