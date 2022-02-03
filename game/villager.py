@@ -95,10 +95,12 @@ class Villager(Worker):
                         self.construire = False
                         self.attack_bati = False
                     elif self.world.batiment[x][y] and self.team == self.world.batiment[x][y].team :
+                        self.cible1 = self.cible
                         self.cible = self.dest_tile
                         self.farm = False
                         if x == self.storage_tile["grid"][0] and y == self.storage_tile["grid"][1]:
                             self.transfer_resources_bool = True
+                            self.cible = self.cible1
                     elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
                         self.cible =  self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]#self.world.world[x][y]["tile"].tile_batiment
 
@@ -340,6 +342,7 @@ class Villager(Worker):
             self.nb_ressource_Transp = 0
             self.ressource_Transp = "" 
             self.busy = False
+            self.create_path(self.cible["grid"][0], self.cible["grid"][1])    
 
     def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
         
