@@ -20,7 +20,7 @@ from ..villager import Villager
 
 class IA:
 
-    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy="blitz"):
+    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy=""):
         self.team = team
         self.world = world
         self.camera = camera
@@ -98,7 +98,6 @@ class IA:
             self.attaque_en_cours = 0
             self.ressource_manager.resources["food"] = 0
         else:
-            VillagerIA(self.world.world[self.build_position_x - 1][self.build_position_y], self.world,self.camera, self)
             self.pop_vague = 3
     
         self.attaque_en_cours = 0
@@ -323,7 +322,7 @@ class IA:
                     self.attaque_en_cours = 0
                     if self.pop_vague < 8: self.pop_vague += 1
                     else : self.ressource_manager.resources["food"] += 60
-                else: self.ressource_manager.resources["food"] += 5
+                else: self.ressource_manager.resources["food"] += 4 + self.pop_vague
                             
 
 
