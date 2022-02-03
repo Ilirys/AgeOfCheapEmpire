@@ -20,7 +20,7 @@ from ..villager import Villager
 
 class IA:
 
-    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy=""):
+    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy="attaque"):
         self.team = team
         self.world = world
         self.camera = camera
@@ -63,12 +63,13 @@ class IA:
         self.count_x = 0
         self.count_y = 0
         self.number_of_buildings = 0
-
+        self.tile = self.towncenter
         self.compteur_construction_bat = 0
 
         
         # SoldierIA(self.world.world[0][0], self.world,self.camera, self)
-        # # Villager(self.world.world[1][0], self.world,self.camera)
+        # VillagerIA(self.world.world[1][0], self.world,self.camera, self)
+        # VillagerIA(self.world.world[1+1][0], self.world,self.camera, self)
         # HorsemanIA(self.world.world[1][1], self.world,self.camera, self)
         # ArcherIA(self.world.world[2][2], self.world,self.camera, self)
 
@@ -126,6 +127,7 @@ class IA:
             # print("Strategy", self.strategy, "[ Wood : ", self.ressource_manager.resources["wood"], " Food : ", self.ressource_manager.resources["food"],
             # " ] --> evolution ", self.evolution, " <--", self.number_of_buildings, "Action: ", self.action_faite, "Compteur: Villageois joueur, IA ", self.get_number_of_units_joueur("Villageois"), self.get_number_of_units_IA("Villageois"))
             # print("POP: ", self.world.resource_manager.population, "\n")
+            
             if self.strategy == "attaque":  
                 match self.evolution:
                     
@@ -501,10 +503,11 @@ class IA:
         for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
            for villager in villager_x:
                if (villager != None and not villager.busy and len(self.farmers) < number_of_villagers):
-                    tile = next(ressource_to_farm_iterator, -1)
-                    if tile != -1:
+                    if self.tile["tile"].ressource.nbRessources <= 0:
+                        self.tile = next(ressource_to_farm_iterator, -1)
+                    if self.tile != -1:
                         # print("here",tile["grid"][0], tile["grid"][1] )
-                        villager.create_path(tile["grid"][0], tile["grid"][1], True)
+                        villager.create_path(self.tile["grid"][0], self.tile["grid"][1], True)
                         villager.busy = True
                         self.farmers.append(villager)
 

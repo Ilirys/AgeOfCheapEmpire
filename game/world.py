@@ -99,10 +99,6 @@ class World:
         #init
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
-        for x in range(self.grid_length_x):
-            for y in range(self.grid_length_y):
-                print(self.world[x][y]["tile"].ressource.typeRessource, "x ", x, "y ", y)
-
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()

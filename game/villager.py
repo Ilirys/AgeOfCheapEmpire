@@ -291,7 +291,7 @@ class Villager(Worker):
             self.world.reset_tile(cible["grid"][0], cible["grid"][1])
 
         if self.nb_ressource_Transp >= self.max_ressources:
-            if self.team ==  "red": self.world.reset_tile(self.cible["grid"][0], self.cible["grid"][1])
+            #if self.team ==  "red": self.world.reset_tile(self.cible["grid"][0], self.cible["grid"][1])
             self.create_path(self.storage_tile["grid"][0], self.storage_tile["grid"][1], True)    
 
     #override
