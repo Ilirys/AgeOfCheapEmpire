@@ -61,7 +61,7 @@ class ArcherIA(Archer):
                         if self.cible is not None and self.cible != 0:
                             self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
                         self.cible.dest_tile = 0
-                if self.cible.pv <= 0:
+                if self.cible is None or self.cible.pv <= 0:
                     self.attack = False
                     #self.cible.attacked = False
                     self.attack_ani = False
@@ -71,7 +71,7 @@ class ArcherIA(Archer):
                 self.attack_ani = True
                 if self.cible is not None and self.cible != 0:
                     self.cible.pv -= self.dmg
-                    if self.cible.pv <= 0:
+                    if self.cible is None or self.cible.pv <= 0:
                         self.attack = False
                         self.attack_ani = False
 

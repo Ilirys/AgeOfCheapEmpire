@@ -39,7 +39,7 @@ class HorsemanIA(Horseman):
         self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 0
         self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
 
-
+        #print(self.attack_bati)
         # Animation update
         self.update_sprite()
 
@@ -60,20 +60,19 @@ class HorsemanIA(Horseman):
                         if self.cible is not None and self.cible != 0:
                             self.create_path(self.cible.tile["grid"][0], self.cible.tile["grid"][1])
                         self.cible.dest_tile = 0
-            if self.cible:
-                    if self.cible.pv <= 0:
+                if self.cible:
+                    if self.cible is None or self.cible.pv <= 0:
                         self.attack = False
                         #self.cible.attacked = False
                         self.attack_ani = False
                         self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
-
                 self.attack_ani = True
                 if self.cible != 0 and self.cible is not None:
                     self.cible.pv -= self.dmg
-                    if self.cible.pv <= 0:
-                        self.attack = False
+                    if self.cible is None or self.cible.pv <= 0:
+                        self.attack_bati = False
                         self.attack_ani = False
 
         if self.path_index <= len(self.path) - 1:

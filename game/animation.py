@@ -7,7 +7,6 @@ class Animation:
         self.villager_standby = self.animation_villager_standby()
         self.villager_walk = self.animation_villager_walk()
         self.villager_attack = self.animation_villager_attack()
-        self.villager_farm = self.animation_villager_farm()
         self.soldier_walk = self.animation_soldier_walk()
         self.soldier_standby = self.animation_soldier_standby()
         self.soldier_attack = self.animation_soldier_attack()
@@ -70,6 +69,11 @@ class Animation:
         self.horsemanIA_attack_uright = self.animation_horsemanIA_attack_uright()
         self.horsemanIA_attack_rdown = self.animation_horsemanIA_attack_rdown()
         self.horsemanIA_attack = self.animation_horsemanIA_attack()
+        self.villager_farm = self.animation_worker_farm()
+        self.villager_farm_up = self.animation_worker_farm_up()
+        self.villager_farm_uleft = self.animation_worker_farm_uleft()
+        self.villager_farm_ldown = self.animation_worker_farm_ldown()
+        self.villager_farm_left = self.animation_worker_farm_left()
 
 
 
@@ -1029,3 +1033,102 @@ class Animation:
         horsemanIA_attack_uright.append(pygame.image.load('assets/horsemanIA/Cavalierattack039V2.png').convert_alpha())
         horsemanIA_attack_uright.append(pygame.image.load('assets/horsemanIA/Cavalierattack040V2.png').convert_alpha())
         return horsemanIA_attack_uright
+
+
+    def animation_worker_farm(self):
+        villager_farm = []
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack001.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack002.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack003.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack004.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack005.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack006.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack007.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack008.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack009.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack010.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack011.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack012.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack013.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack014.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack015.png').convert_alpha())
+        return villager_farm
+
+
+
+    def animation_worker_farm_ldown(self):
+        villager_farm = []
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack016.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack017.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack018.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack019.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack020.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack021.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack022.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack023.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack024.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack025.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack026.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack027.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack028.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack029.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack030.png').convert_alpha())
+        return villager_farm
+
+
+    def animation_worker_farm_left(self):
+        villager_farm = []
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack031.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack032.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack033.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack034.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack035.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack036.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack037.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack038.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack039.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack040.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack041.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack042.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack043.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack044.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack045.png').convert_alpha())
+        return villager_farm
+
+    def animation_worker_farm_uleft(self):
+        villager_farm = []
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack046.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack047.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack048.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack049.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack050.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack051.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack052.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack053.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack054.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack055.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack056.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack057.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack058.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack059.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack060.png').convert_alpha())
+        return villager_farm
+
+    def animation_worker_farm_up(self):
+        villager_farm = []
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack061.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack062.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack063.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack064.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack065.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack066.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack067.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack068.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack069.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack070.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack071.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack072.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack073.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack074.png').convert_alpha())
+        villager_farm.append(pygame.image.load('assets/villager/Villagerattack075.png').convert_alpha())
+        return villager_farm

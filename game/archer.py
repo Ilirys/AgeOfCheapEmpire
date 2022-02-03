@@ -86,11 +86,11 @@ class Archer(Worker):
                                         self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
                         self.temp_tile_a = self.cible.tile
                         self.attack = True
-                    elif  self.world.unites[x][y] != None and self.world.unites[x][y].team == self.team:
-                        if self.path:
-                            self.path.pop()
-                            if self.path:
-                                self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
+                    #elif  self.world.unites[x][y] != None and self.world.unites[x][y].team == self.team:
+                        #if self.path:
+                            #self.path.pop()
+                            #if self.path:
+                                #self.dest_tile = self.world.world[self.path[-1][0]][self.path[-1][-1]]
 
                     elif self.world.world[x][y]["tile"].tile_batiment != 0 and self.world.world[x][y]["tile"].tile_batiment != None and self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]].team != self.team:
                         self.cible = self.world.batiment[self.world.world[x][y]["tile"].tile_batiment["grid"][0]][self.world.world[x][y]["tile"].tile_batiment["grid"][1]]  #self.world.world[x][y]["tile"].tile_batiment
@@ -129,7 +129,6 @@ class Archer(Worker):
             self.path_index += 1
         else: 
             self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
-            print(1)
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y    
 
