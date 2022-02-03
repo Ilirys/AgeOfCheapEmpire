@@ -400,7 +400,6 @@ class IA:
                     self.number_of_buildings += 1
                     print("------------------------------------------------------------> ", name_of_building, " en construction")
                 self.compteur_construction_bat = 0 # on remet à 0 le compteur pour qu'il puisse attendre le temps de construction du batiment
-                self.action_faite = 1
             
     def ordre_de_construction_villageois(self, grid_pos_x, grid_pos_y, nom_du_batiment): #Ordonner a un villageois de construire
         for villager_x in self.villagers:  # Pour que le villageois construise un batiment, on trouve le villageois selectionné
