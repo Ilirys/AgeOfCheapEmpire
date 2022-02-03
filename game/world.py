@@ -364,9 +364,9 @@ class World:
                                     self.hud.display_unit_icons = True
                                     self.hud.blit_hud("hudCaserne", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
-                            else:
-                                if definitions.afficher_minimap == "oui":
-                                    self.minimap.tab_minimap[x][y] = Red
+                            # else:
+                            #     if definitions.afficher_minimap == "oui":
+                            #         self.minimap.tab_minimap[x][y] = Red
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
                         self.hud.display_towncenter_icons = False                
