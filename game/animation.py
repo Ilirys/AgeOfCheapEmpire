@@ -86,7 +86,15 @@ class Animation:
         self.villagerIA_farm_right = self.animation_workerIA_farm_right()
         self.villagerIA_farm_rdown = self.animation_workerIA_farm_rdown()
 
-
+        self.bigdaddy_standby = self.animation_bigdaddy_standby()
+        self.bigdaddy_walk_left = self.animation_bigdaddy_walk_left()
+        self.bigdaddy_walk_right = self.animation_bigdaddy_walk_right()
+        self.bigdaddy_attack_right = self.animation_bigdaddy_attack_right()
+        self.bigdaddy_attack_left = self.animation_bigdaddy_attack_left()
+        self.bigdaddy_attack_down_left = self.animation_bigdaddy_attack_down_left()
+        self.bigdaddy_attack_down_right = self.animation_bigdaddy_attack_down_right()
+        self.bigdaddy_attack_up_left = self.animation_bigdaddy_attack_up_left()
+        self.bigdaddy_attack_up_right = self.animation_bigdaddy_attack_up_right()
 
     def animation_villager_attack(self):
         villager_attack = []
@@ -703,7 +711,107 @@ class Animation:
         horsemanIA_walk.append(pygame.image.load('assets/horsemanIA/Cavalierwalk010V2.png').convert_alpha())
         return horsemanIA_walk
 
+    def animation_bigdaddy_standby(self):
+        bigdaddy_standby = []
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img.png').convert_alpha())
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img_1.png').convert_alpha())
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img_2.png').convert_alpha())
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img_3.png').convert_alpha())
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img_4.png').convert_alpha())
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img_5.png').convert_alpha())
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img_6.png').convert_alpha())
+        bigdaddy_standby.append(pygame.image.load('assets/bigdaddy/img_7.png').convert_alpha())
+        return bigdaddy_standby
 
+    def animation_bigdaddy_walk_right(self):
+        bigdaddy_walk = []
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_12.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_13.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_14.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_15.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_12.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_13.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_14.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_15.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_12.png').convert_alpha())
+        """bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_12.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_13.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_14.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_15.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_12.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_13.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_14.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_15.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_12.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_13.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_14.png').convert_alpha())
+        bigdaddy_walk.append(pygame.image.load('assets/bigdaddy/img_15.png').convert_alpha())"""
+        return bigdaddy_walk
+
+    def animation_bigdaddy_walk_left(self):
+        bigdaddy_walk = self.animation_bigdaddy_walk_right()
+        for i in range(len(bigdaddy_walk)):
+            bigdaddy_walk[i] = pygame.transform.flip(bigdaddy_walk[i], True, False)
+        return bigdaddy_walk
+
+
+    def animation_bigdaddy_attack_right(self):
+        bigdaddy_attack = []
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_20.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_21.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_22.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_23.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_24.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_25.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_26.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_27.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_28.png').convert_alpha())
+        return bigdaddy_attack
+
+    def animation_bigdaddy_attack_left(self):
+        bigdaddy_attack = self.animation_bigdaddy_attack_right()
+        for i in range(len(bigdaddy_attack)):
+            bigdaddy_attack[i] = pygame.transform.flip(bigdaddy_attack[i], True, False)
+        return bigdaddy_attack
+
+    def animation_bigdaddy_attack_up_right(self):
+        bigdaddy_attack = []
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_29.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_30.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_31.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_32.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_33.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_34.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_35.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_36.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_37.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_38.png').convert_alpha())
+        return bigdaddy_attack
+
+    def animation_bigdaddy_attack_up_left(self):
+        bigdaddy_attack = self.animation_bigdaddy_attack_up_right()
+        for i in range(len(bigdaddy_attack)):
+            bigdaddy_attack[i] = pygame.transform.flip(bigdaddy_attack[i], True, False)
+        return bigdaddy_attack
+
+    def animation_bigdaddy_attack_down_right(self):
+        bigdaddy_attack = []
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_39.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_40.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_41.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_42.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_43.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_44.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_45.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_46.png').convert_alpha())
+        bigdaddy_attack.append(pygame.image.load('assets/bigdaddy/img_47.png').convert_alpha())
+        return bigdaddy_attack
+
+    def animation_bigdaddy_attack_down_left(self):
+        bigdaddy_attack = self.animation_bigdaddy_attack_down_right()
+        for i in range(len(bigdaddy_attack)):
+            bigdaddy_attack[i] = pygame.transform.flip(bigdaddy_attack[i], True, False)
+        return bigdaddy_attack
     def animation_soldierIA_attack(self):
         soldierIA_attack = []
         soldierIA_attack.append(pygame.image.load('assets/soldierIA/Halbadierattack001.png').convert_alpha())
