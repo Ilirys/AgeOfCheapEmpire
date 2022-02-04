@@ -20,7 +20,7 @@ from ..villager import Villager
 
 class IA:
 
-    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy="attaque"):
+    def __init__(self,world, ressource_manager, camera, clock, team="red", strategy=""):
         self.team = team
         self.world = world
         self.camera = camera
@@ -133,11 +133,11 @@ class IA:
             if self.strategy == "attaque":  
                 match self.evolution:
                     
-                    case 0: # 3 Villageois
-                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                    case 0: # 1 Villageois
+                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"] and self.get_number_of_units_IA("Villageois") < 1 :
                             self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
                         else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
-                        if self.get_number_of_units_IA("Villageois") >= 3:
+                        if self.get_number_of_units_IA("Villageois") >= 1:
                             self.number_of_buildings = 0
                             self.evolution += 1
                             
@@ -156,7 +156,52 @@ class IA:
                             self.number_of_buildings = 0
                             self.evolution += 1
 
-                    case 2: # 3 fermes
+                    case 2: # 1 soldats
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Soldier") >= 1:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 3: # 2 Villageois (+1)
+                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                            self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Villageois") >= 2:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+                    
+                    case 4: # 1 maisons
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["wood"]>self.ressource_manager.costs["House"]["wood"] and self.number_of_buildings < 1:
+                            self.find_and_place_building("House", 1)
+                        else: self.farm(self.wood_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000) * definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["House"][2] + 200)):
+                            self.action_faite = 0
+                            self.compteur_construction_bat = 0
+                            if self.number_of_buildings >= 1:
+                                self.number_of_buildings = 0
+                                self.evolution += 1
+                    
+                    case 5: # 3 fermes
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
                         if self.get_number_of_units_IA("Villageois") < 3:
                             if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
                                 self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
@@ -172,23 +217,10 @@ class IA:
                                 self.number_of_buildings = 0
                                 self.evolution += 1
 
-                    case 3: # 3 maisons
-                        if self.get_number_of_units_IA("Villageois") < 3:
-                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
-                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
-                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
-                        elif self.ressource_manager.resources["wood"]>self.ressource_manager.costs["House"]["wood"] and self.number_of_buildings < 3:
-                            self.find_and_place_building("House", 1)
-                        else: self.farm(self.wood_list_iterator, self.get_number_of_units_IA("Villageois"))
-                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000) * definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
-                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["House"][2] + 200)):
-                            self.action_faite = 0
-                            self.compteur_construction_bat = 0
-                            if self.number_of_buildings >= 3:
-                                self.number_of_buildings = 0
-                                self.evolution += 1
-
-                    case 4: # 5 soldats
+                    case 6: # 3 soldats (+1)
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
                         if self.get_number_of_units_IA("Villageois") < 3:
                             if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
                                 self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
@@ -196,11 +228,48 @@ class IA:
                         elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
                             self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
                         else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
-                        if self.get_number_of_units_IA("Soldier") >= 5:
+                        if self.get_number_of_units_IA("Soldier") >= 3:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 7: # 3 maisons (+2)
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["wood"]>self.ressource_manager.costs["House"]["wood"] and self.number_of_buildings < 2:
+                            self.find_and_place_building("House", 1)
+                        else: self.farm(self.wood_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000) * definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["House"][2] + 200)):
+                            self.action_faite = 0
+                            self.compteur_construction_bat = 0
+                            if self.number_of_buildings >= 2:
+                                self.number_of_buildings = 0
+                                self.evolution += 1
+
+                    case 8: # Vérification du nombre de soldats / villageois
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Soldier") >= 3:
                             self.number_of_buildings = 0
                             self.evolution += 1
                     
-                    case 5: # récolte or pour passage age
+                    case 9: # Récolte or pour passage age
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
                         if self.get_number_of_units_IA("Villageois") < 3:
                             if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
                                 self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
@@ -210,7 +279,26 @@ class IA:
                             self.evolution +=1
                         else: self.farm(self.gold_list_iterator, self.get_number_of_units_IA("Villageois"))
 
-                    case 6: # attaque
+                    case 10: # 5 soldats (+2) + 2 chevaliers
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                        elif self.get_number_of_units_IA("Soldier") < 5 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        elif self.get_number_of_units_IA("Horseman") < 2 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("horseman", self.world.world[self.barrack_x][self.barrack_y])
+                        if self.get_number_of_units_IA("Soldier") >= 5 and self.get_number_of_units_IA("Horseman") >= 2:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 11: # Attaque
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
                         if self.get_number_of_units_IA("Villageois") < 3:
                             self.attacking = False
                             self.defending = True
@@ -218,7 +306,7 @@ class IA:
                             if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
                                 self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
                             else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
-                        elif self.get_number_of_units_IA("Soldier") >= 5 and self.get_number_of_units_IA("Horseman") >= 2:
+                        elif self.get_number_of_units_IA("Soldier") >= 5:
                             if (self.get_number_of_units_joueur("Soldier") + self.get_number_of_units_joueur("horseman") + self.get_number_of_units_joueur("Archer")) !=0 :
                                 self.attack_player_warriors()
                             elif self.get_number_of_units_joueur("Villageois") != 0 :
@@ -234,12 +322,194 @@ class IA:
                             self.defend_base()
                         if self.get_number_of_units_IA("Soldier") < 5 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
                             self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
-                        elif self.get_number_of_units_IA("Horseman") < 2 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["horseman"]["food"]:
-                            self.spawn_unit_autour_caserne("horseman", self.world.world[self.barrack_x][self.barrack_y])
                         else:
                             self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
 
+            elif self.strategy == "defense":
+                match self.evolution:
+                    
+                    case 0: # 1 Villageois
+                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"] and self.get_number_of_units_IA("Villageois") < 1 :
+                            self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Villageois") >= 1:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+                            
+                    case 1: # Caserne
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Barrack"]["wood"]and self.number_of_buildings < 1:
+                            self.find_and_place_building("Barrack", 1)
+                        else: self.farm(self.wood_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000) * definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Barrack"][2] + 100)):
+                            self.compteur_construction_bat = 0
+                            self.action_faite = 0
+                            self.number_of_buildings = 0
+                            self.evolution += 1
 
+                    case 2: # 1 soldats
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Soldier") >= 1:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 3: # 2 Villageois (+1)
+                        if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                            self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Villageois") >= 2:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+                    
+                    case 4: # 2 soldats (+1)
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Soldier") >= 2:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 5: # 3 maisons
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["wood"]>self.ressource_manager.costs["House"]["wood"] and self.number_of_buildings < 3:
+                            self.find_and_place_building("House", 1)
+                        else: self.farm(self.wood_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000) * definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["House"][2] + 200)):
+                            self.action_faite = 0
+                            self.compteur_construction_bat = 0
+                            if self.number_of_buildings >= 3:
+                                self.number_of_buildings = 0
+                                self.evolution += 1
+                    
+                    case 6: # 4 soldats (+2)
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Soldier") >= 4:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 7: # 3 fermes
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"] and self.number_of_buildings < 3:
+                            self.find_and_place_building("Farm", 1)
+                        else: self.farm(self.wood_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        self.compteur_construction_bat += 1 * round(self.clock.get_fps() * IA_DECISION_TIME / 1000) * definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+                        if (self.action_faite == 1) and (self.compteur_construction_bat >= (dicoBatiment["Farm"][2] + 100)):
+                            self.action_faite = 0
+                            self.compteur_construction_bat = 0
+                            if self.number_of_buildings >= 3:
+                                self.number_of_buildings = 0
+                                self.evolution += 1
+
+                    case 8: # Vérification du nombre de soldats / villageois
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Soldier") >= 4:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+                    
+                    case 9: # Récolte or pour passage age
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.ressource_manager.resources["gold"]>=self.ressource_manager.costs["Passage_Age"]["gold"]:
+                            self.passage_age_IA()
+                            self.evolution +=1
+                        else: self.farm(self.gold_list_iterator, self.get_number_of_units_IA("Villageois"))
+
+                    case 10: # 8 soldats (+4)
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                        elif self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        if self.attaque_en_cours == 1 and self.get_number_of_units_IA("Soldier") >= 4:
+                            self.number_of_buildings = 0
+                            self.evolution += 1
+
+                    case 11: # Attaque si l'IA a été attaquée auparavent
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
+                        if self.get_number_of_units_IA("Villageois") < 3:
+                            self.attacking = False
+                            self.defending = True
+                            self.defend_base()
+                            if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Villageois"]["food"]:
+                                self.spawn_unit_autour_caserne("Villageois", self.world.world[self.world.towncenter_IA_posx][self.world.towncenter_IA_posy])
+                            else: self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
+                        elif self.get_number_of_units_IA("Soldier") >= 5:
+                            if (self.get_number_of_units_joueur("Soldier") + self.get_number_of_units_joueur("horseman") + self.get_number_of_units_joueur("Archer")) !=0 :
+                                self.attack_player_warriors()
+                            elif self.get_number_of_units_joueur("Villageois") != 0 :
+                                self.attack_villagers()
+                            else: self.attack_town_center()
+                            if self.ressource_manager.resources["wood"]>self.ressource_manager.costs["Farm"]["wood"]:
+                                self.find_and_place_building("Farm", self.get_number_of_units_IA("Villageois"))
+                            self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois")-1)
+                            self.farm(self.wood_list_iterator, 1)
+                        elif self.get_number_of_units_IA("Soldier") <=3:
+                            self.attacking = False
+                            self.defending = True
+                            self.defend_base()
+                        if self.get_number_of_units_IA("Soldier") < 5 and self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
+                            self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
+                        else:
+                            self.farm(self.food_list_iterator, self.get_number_of_units_IA("Villageois"))
 
             elif self.strategy == "blitz": 
                  match self.evolution:
@@ -278,6 +548,9 @@ class IA:
                                 self.evolution += 1
                     
                     case 3:
+                        self.attacking = False
+                        self.defending = True
+                        self.defend_base()
                         if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"]:
                             self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
                         else:
@@ -288,7 +561,6 @@ class IA:
                             self.number_of_buildings = 0
                             self.evolution += 1
                             
-
                     case 4:
                         self.attack_town_center()
                         if self.ressource_manager.resources["wood"]>=self.ressource_manager.costs["Farm"]["wood"]:
@@ -297,7 +569,7 @@ class IA:
                         if self.get_number_of_units_IA("Soldier") == 0:
                             self.evolution +=1
                     
-                    case 3:
+                    case 5:
                         if self.ressource_manager.resources["food"]>self.ressource_manager.costs["Soldier"]["food"] and self.get_number_of_units_IA("Soldier")<self.pop_vague:
                             self.spawn_unit_autour_caserne("Soldier", self.world.world[self.barrack_x][self.barrack_y])
                         else:
@@ -311,6 +583,10 @@ class IA:
                                 elif self.get_number_of_units_joueur("Villageois") != 0 :
                                     self.attack_villagers()
                                 else: self.attack_town_center()
+                        else:
+                            self.attacking = False
+                            self.defending = True
+                            self.defend_base()
                         if self.attaque_en_cours ==1 and self.get_number_of_units_IA("Soldier") == 0:
                             self.attaque_en_cours = 0
                             self.pop_vague += 1
@@ -333,9 +609,13 @@ class IA:
                             print("Attaque Forum")
                 elif self.get_number_of_units_IA("Soldier") == 0 and self.attaque_en_cours == 1: 
                     self.attaque_en_cours = 0
-                    if self.pop_vague < 8: self.pop_vague += 1
+                    if self.pop_vague < 12: self.pop_vague += 1
                     else : self.ressource_manager.resources["food"] += 60
-                else: self.ressource_manager.resources["food"] += 4 + self.pop_vague
+                else:
+                    self.ressource_manager.resources["food"] += 4 + self.pop_vague
+                    self.attacking = False
+                    self.defending = True
+                    self.defend_base()
                             
 
 
@@ -751,122 +1031,123 @@ class IA:
                                     if self.world.unites[x+2][y] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+2][y].tile["grid"][0],self.world.unites[x+2][y].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x+2][y+1] != None and self.world.unites[x+2][y+1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+2][y+1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+2][y+1].tile["grid"][0],self.world.unites[x+2][y+1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x+2][y+2] != None and self.world.unites[x+2][y+2].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+2][y+2] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+2][y+2].tile["grid"][0],self.world.unites[x+2][y+2].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x+1][y+2] != None and self.world.unites[x+1][y+2].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+1][y+2] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+1][y+2].tile["grid"][0],self.world.unites[x+1][y+2].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x][y+2] != None and self.world.unites[x][y+2].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x][y+2] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x][y+2].tile["grid"][0],self.world.unites[x][y+2].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x-1][y+2] != None and self.world.unites[x-1][y+2].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x-1][y+2] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x-1][y+2].tile["grid"][0],self.world.unites[x-1][y+2].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x-1][y+1] != None and self.world.unites[x-1][y+1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x-1][y+1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x-1][y+1].tile["grid"][0],self.world.unites[x-1][y+1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x-1][y] != None and self.world.unites[x-1][y].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x-1][y] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x-1][y].tile["grid"][0],self.world.unites[x-1][y].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x-1][y-1] != None and self.world.unites[x-1][y-1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x-1][y-1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x-1][y-1].tile["grid"][0],self.world.unites[x-1][y-1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
 
                             if self.world.unites[x][y-1] != None and self.world.unites[x][y-1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x][y-1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x][y-1].tile["grid"][0],self.world.unites[x][y-1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x+1][y-1] != None and self.world.unites[x+1][y-1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+1][y-1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+1][y-1].tile["grid"][0],self.world.unites[x+1][y-1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x+2][y-1] != None and self.world.unites[x+2][y-1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+2][y-1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+2][y-1].tile["grid"][0],self.world.unites[x+2][y-1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                         if dicoBatiment[self.world.batiment[x][y].name][1] == 1:
                             if self.world.unites[x+1][y] != None and self.world.unites[x+1][y].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+1][y] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+1][y].tile["grid"][0],self.world.unites[x+1][y].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x+1][y+1] != None and self.world.unites[x+1][y+1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+1][y+1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+1][y+1].tile["grid"][0],self.world.unites[x+1][y+1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x][y+1] != None and self.world.unites[x ][y+1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x][y+1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x][y+1].tile["grid"][0],self.world.unites[x][y+1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x-1][y] != None and self.world.unites[x-1][y].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x-1][y] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x-1][y].tile["grid"][0],self.world.unites[x-1][y].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x-1][y-1] != None and self.world.unites[x-1][y-1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x-1][y-1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x-1][y-1].tile["grid"][0],self.world.unites[x-1][y-1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x][y-1] != None and self.world.unites[x][y-1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x][y-1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x][y-1].tile["grid"][0],self.world.unites[x][y-1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x+1][y-1] != None and self.world.unites[x+1][y-1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+1][y-1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x+1][y-1].tile["grid"][0],self.world.unites[x+1][y-1].tile["grid"][1])
-
+                                            self.attaque_en_cours = 1
                             if self.world.unites[x-1][y+1] != None and self.world.unites[x-1][y+1].team != self.team:
                                 for w in self.warriors:
                                     if self.world.unites[x+1][y+1] and w:
                                         if w.attack == False:  # pour attaquer unités une par une sans appeller create path en boucle
                                             w.create_path(self.world.unites[x-1][y+1].tile["grid"][0],self.world.unites[x-1][y+1].tile["grid"][1])
+                                            self.attaque_en_cours = 1
 
     def set_defense_pos(self): # Lilian remet i et j à 0 à chaque prochaine évolution stp
         self.attacking = False
