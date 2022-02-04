@@ -18,10 +18,10 @@ class Ressource:
         
         # resources
         self.resources = {
-            "wood": INIT_RESSOURCE[0],
-            "food": INIT_RESSOURCE[1],
-            "gold": INIT_RESSOURCE[2],
-            "stone": INIT_RESSOURCE[3]
+            "wood": definitions.INIT_RESSOURCE[0],
+            "food": definitions.INIT_RESSOURCE[1],
+            "gold": definitions.INIT_RESSOURCE[2],
+            "stone": definitions.INIT_RESSOURCE[3]
         }
 
         #costs
