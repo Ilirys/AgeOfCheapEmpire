@@ -51,6 +51,15 @@ class Options:
                 pygame.draw.rect(self.screen, (255, 215, 50), (565, 474, 275, 41), 3)
 
 
+            if definitions.clik_ress == 1:
+                pygame.draw.rect(self.screen, (255, 215, 50), (147, 647, 277, 41), 3)
+            elif definitions.clik_ress == 2:
+                pygame.draw.rect(self.screen, (255, 215, 50), (147, 732, 275, 41), 3)
+            elif definitions.clik_ress == 3:
+                pygame.draw.rect(self.screen, (255, 215, 50), (145, 811, 277, 41), 3)
+
+
+
             draw_text(self.screen, 'Options', 30, WHITE, (20, 20))
             mx, my = pygame.mouse.get_pos()  # récupération des clics de souris
 
@@ -72,6 +81,10 @@ class Options:
             button_defense = pygame.Rect(909, 383, 275, 38)
             button_blitz = pygame.Rect(908, 477, 275, 38)
             button_vague = pygame.Rect(565, 474, 275, 38)
+
+            button_peu = pygame.Rect(147, 647, 275, 38)
+            button_normress = pygame.Rect(147, 732, 275, 38)
+            button_beaucoup = pygame.Rect(147, 811, 275, 38)
 
 
             if button_ok.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
@@ -168,6 +181,25 @@ class Options:
 
 
 
+            if button_peu.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (147, 647, 277, 41), 3)
+                if click:
+                    definitions.INIT_RESSOURCE = [50, 50, 0, 0]
+                    definitions.clik_ress = 1
+
+            if button_normress.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (147, 732, 275, 41), 3)
+                if click:
+                    definitions.INIT_RESSOURCE = [200, 200, 0, 0]
+                    definitions.clik_ress = 2
+
+            if button_beaucoup.collidepoint((mx, my)): #zone de collision des boutons et action quand cliqué
+                pygame.draw.rect(self.screen, (255, 255, 255), (145, 811, 277, 41), 3)
+                if click:
+                    definitions.INIT_RESSOURCE = [500, 500, 0, 0]
+                    definitions.clik_ress = 3
+
+
 
             # dessin des boutons pour s'assurer de leur bonne position
             # commentez les 3 lignes pour enlever les rectangles jaunes
@@ -185,6 +217,9 @@ class Options:
             # pygame.draw.rect(self.screen, (255, 215, 50), button_defense)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_blitz)
             # pygame.draw.rect(self.screen, (255, 215, 50), button_vague)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_peu)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_normress)
+            # pygame.draw.rect(self.screen, (255, 215, 50), button_beaucoup)
 
 
             click = False

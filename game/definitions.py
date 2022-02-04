@@ -25,7 +25,6 @@ MAP_SIZE = 50
 
 #Resource
 LES_RESSOURCES = ["wood", "food", "gold", "stone"]
-INIT_RESSOURCE = [200, 200, 0, 0]
 NB_RESSOURCES = [150,100,600,600]  #Nombre de bois par arbres, de food par buisson, de gold etc
 
 #Fonts
@@ -65,6 +64,12 @@ def init():
 
     global clik_ia
     clik_ia = 0
+
+    global clik_ress
+    clik_ress = 0
+
+    global INIT_RESSOURCE
+    INIT_RESSOURCE = [200, 200, 0, 0]
 
     # Saves
     global SAVED_GAME_FOLDER
