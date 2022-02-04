@@ -8,6 +8,7 @@ https://docs.google.com/document/d/1NDFzMyTNC9Eg4u9IjMKViNXTThNjoVYQFZLxdRT2PV0/
 Modules to install
 ```
 pip install pygame
+pip install pathfinding
 ```
 You must also install [noise](https://www.lfd.uci.edu/~gohlke/pythonlibs/#noise)
 
