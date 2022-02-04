@@ -141,7 +141,7 @@ class Villager(Worker):
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
             self.path_index += 1
         else: 
-            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            if self.dest_tile != 0:self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y
 
@@ -301,7 +301,7 @@ class Villager(Worker):
                 if self.temp + 0.2 >= len(self.animation) -1:
                     self.temp = 0
 
-            elif self.farm_ani == True and self.farm == True:
+            elif (self.farm_ani == True and self.farm == True) or self.construire:
                 self.temp += 0.2
                 if self.temp + 0.2 < 14:
                     if self.cible["grid"][0] < self.tile["grid"][0] and self.cible["grid"][1] < \
