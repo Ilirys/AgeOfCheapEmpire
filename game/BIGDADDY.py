@@ -56,7 +56,7 @@ class Bigdaddy(Soldier):
                 #Override
     def update_sprite(self):
        if self.walkdown_animation == True:
-           if self.cible.tile["grid"][0] <= self.tile["grid"][0] and self.cible.tile["grid"][1] >= self.tile["grid"][1]:
+           if self.dest_tile["grid"][0] <= self.tile["grid"][0] and self.dest_tile["grid"][1] >= self.tile["grid"][1]:
                self.temp += 0.2
                self.image = self.animation_left[int(self.temp)]
                if self.temp + 0.2 >= len(self.animation_left):
@@ -87,7 +87,7 @@ class Bigdaddy(Soldier):
            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] == self.tile["grid"][1]:
                self.image = self.animation_attack_rdown[int(self.temp)]
 
-           if self.temp + 0.2 >= len(self.animation_attack):
+           if self.temp + 0.2 >= 9:
                self.temp= 0
        elif self.pv > 0: self.image = self.image_standby
 
