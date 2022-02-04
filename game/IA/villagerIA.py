@@ -161,16 +161,16 @@ class VillagerIA(Villager):
             self.busy = False  
 
     def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
-        
-        if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
-           self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1*definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
-           if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv > pvMaxDuBatiment:
-               self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv = pvMaxDuBatiment
-        else:
-            self.construire = False
-            self.busy = False
-            self.IA.action_faite = 1
-            self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].current_image = 2
+        if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]]:
+            if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
+                self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1*definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+                if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv > pvMaxDuBatiment:
+                    self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv = pvMaxDuBatiment
+            else:
+                self.construire = False
+                self.busy = False
+                self.IA.action_faite = 1
+                self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].current_image = 2
 
     def delete(self):
         

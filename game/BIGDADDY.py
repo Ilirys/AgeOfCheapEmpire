@@ -7,7 +7,7 @@ class Bigdaddy(Soldier):
     def __init__(self, tile, world, camera, pv=100000,  team="blue"):
         super().__init__(tile, world, camera, pv, team)
         self.name = "Bigdaddy"
-        self.dmg = 1000
+        self.dmg = 50
         self.animation_left = self.world.animation.bigdaddy_walk_left
         self.animation_right = self.world.animation.bigdaddy_walk_right
         self.animation_attack = self.world.animation.bigdaddy_attack_down_right
@@ -56,22 +56,23 @@ class Bigdaddy(Soldier):
                 #Override
     def update_sprite(self):
        if self.walkdown_animation == True:
-           if self.dest_tile["grid"][0] <= self.tile["grid"][0] and self.dest_tile["grid"][1] >= self.tile["grid"][1]:
-               self.temp += 0.2
-               self.image = self.animation_left[int(self.temp)]
-               if self.temp + 0.2 >= len(self.animation_left):
-                   self.temp = 0
-           else:
-               self.temp += 0.2
-               self.image = self.animation_right[int(self.temp)]
-               if self.temp + 0.2 >= len(self.animation_right):
-                   self.temp = 0
+            if self.dest_tile !=0:
+                if self.dest_tile["grid"][0] <= self.tile["grid"][0] and self.dest_tile["grid"][1] >= self.tile["grid"][1]:
+                    self.temp += 0.2
+                    self.image = self.animation_left[int(self.temp)]
+                    if self.temp + 0.2 >= len(self.animation_left):
+                        self.temp = 0
+                else:
+                    self.temp += 0.2
+                    self.image = self.animation_right[int(self.temp)]
+                    if self.temp + 0.2 >= len(self.animation_right):
+                        self.temp = 0
        elif self.attack_ani == True and self.attack == True:
            if self.temp + 0.2 >= 9:
                self.temp = 0
            self.temp +=0.2
            if self.cible.tile["grid"][0] < self.tile["grid"][0] and self.cible.tile["grid"][1] < self.tile["grid"][1]:
-               self.image = self.animation_attack_up_right[int(self.temp)]
+               self.image = self.animation_attack_uright[int(self.temp)]
            elif self.cible.tile["grid"][0] > self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:
                self.image = self.animation_attack[int(self.temp)]
            elif self.cible.tile["grid"][0] == self.tile["grid"][0] and self.cible.tile["grid"][1] > self.tile["grid"][1]:

@@ -89,4 +89,4 @@ def init():
 
     #Choix IA
     global strat
-    strat = "attaque"
+    strat = ""
