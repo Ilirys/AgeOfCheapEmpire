@@ -18,10 +18,10 @@ class Ressource:
         
         # resources
         self.resources = {
-            "wood": INIT_RESSOURCE[0],
-            "food": INIT_RESSOURCE[1],
-            "gold": INIT_RESSOURCE[2],
-            "stone": INIT_RESSOURCE[3]
+            "wood": definitions.INIT_RESSOURCE[0],
+            "food": definitions.INIT_RESSOURCE[1],
+            "gold": definitions.INIT_RESSOURCE[2],
+            "stone": definitions.INIT_RESSOURCE[3]
         }
 
         #costs
@@ -32,20 +32,20 @@ class Ressource:
             "Storage": {"wood": 100},
             "Farm": {"wood": 60},
             "Villageois": {"food": 50},
-            "Soldier": {"food": 17},
-            "horseman": {"food": 17},
-            "Archer": {"food": 17},
+            "Soldier": {"food": 60},
+            "horseman": {"food": 80},
+            "Archer": {"food": 50},
             "BIGDADDY": {"food": 30},
-            "Passage_Age": {"gold": 1500},
+            "Passage_Age": {"gold": 300},
             "Towncenter2": {},
             "House2": {"wood": 25},
             "Barrack2": {"wood": 175},
             "Storage2": {"wood": 100},
-            "Farm2": {"wood": 200},
+            "Farm2": {"wood": 60},
         }
 
         #Save
-        self.save_file_path = definitions.SAVED_GAME_FOLDER + "ressourceManager"
+        self.save_file_path = definitions.SAVED_GAME_FOLDER + "ressourceManager" + str(self.team)
 
     def getTypeRessource(self):
         return self.typeRessource

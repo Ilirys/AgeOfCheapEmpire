@@ -8,6 +8,9 @@ from DTO.villagerDTO import villagerDTO
 from DTO.workerDTO import workerDTO
 from DTO.soldierDTO import soldierDTO
 from DTO.horsemanDTO import horsemanDTO
+from DTO.bigdaddyDTO import BIGDADDYDTO
+from game.BIGDADDY import Bigdaddy
+
 from game.IA.horsemanIA import HorsemanIA
 from .definitions import *
 from .world import World
@@ -47,10 +50,11 @@ class Game:
         #entities 
         self.entities = []
 
-        # resource manager IA
+        # resource manager
         self.resource_manager = Ressource()
         self.ressource_manager_IA = Ressource(team="red", max_population=definitions.IA_POPULATION)
         self.resource_manager.restore_save()
+        self.ressource_manager_IA.restore_save()
 
         # hud
         self.hud = Hud(self.resource_manager, self.width, self.height)
@@ -80,7 +84,7 @@ class Game:
         self.ecran_fin_partie = FinPartie(self.screen, self.clock, self)
 
         # IA
-        self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock)
+        self.IA = IA(self.world, self.ressource_manager_IA, self.camera, clock, strategy = definitions.strat)
         
         #Save
         self.restore()
@@ -117,7 +121,7 @@ class Game:
 
         self.screen.fill(BLACK) #Arrière plan
         self.world.draw(self.screen, self.camera) #Fonction de dessin de la map
-        draw_text(self.screen,'FPS = {} IA = {} IA_POPULATION = {} IA_MAX_POP = {}'.format(round(self.clock.get_fps()), self.IA.ressource_manager.resources, self.IA.ressource_manager.population, self.IA.ressource_manager.max_population) ,25,WHITE,(10,70)) #Affichage des fps
+        draw_text(self.screen,'FPS = {}   IA = wood: {}, food: {}, gold: {}'.format(round(self.clock.get_fps()), self.IA.ressource_manager.resources["wood"], self.IA.ressource_manager.resources["food"], self.IA.ressource_manager.resources["gold"]) ,25,WHITE,(10,70)) #Affichage des fps
 
         self.hud.draw(self.screen) #Affichage du hud
         self.minimap.draw(self.screen) #Affichage de la minimap
@@ -161,6 +165,12 @@ class Game:
                     self.world.world[currentarcher.tile["grid"][0]][currentarcher.tile["grid"][1]]["collision"] = False
                     self.world.archerDTO[x][y] = archerDTO(currentarcher.name,currentarcher.pv,currentarcher.range,currentarcher.dmg,currentarcher.tile)
         
+                if self.world.bigdaddy[x][y] != None:
+                    currentbigdaddy = self.world.bigdaddy[x][y]
+                    self.world.collision_matrix[currentbigdaddy.tile["grid"][1]][currentbigdaddy.tile["grid"][0]] = 1
+                    self.world.world[currentbigdaddy.tile["grid"][0]][currentbigdaddy.tile["grid"][1]]["collision"] = False
+                    self.world.bigdaddyDTO[x][y] = BIGDADDYDTO(currentbigdaddy.pv, currentbigdaddy.team, currentbigdaddy.tile )
+        
         try:   #Worker save
             with open(self.world.workers_save_file_path, "wb") as output:
                 pickle.dump(self.world.workersDTO,output)
@@ -190,6 +200,12 @@ class Game:
                 pickle.dump(self.world.archerDTO,output)
                 output.close()
         except: print("Couldnt dump archer save in file") 
+        
+        try:   #bigr save
+            with open(self.world.bigdaddy_save_file_path, "wb") as output:
+                pickle.dump(self.world.bigdaddyDTO,output)
+                output.close()
+        except: print("Couldnt dump bigdaddy save in file") 
 
     def restore(self):
         try:    
@@ -260,6 +276,18 @@ class Game:
                             self.world.resource_manager.apply_cost_to_resource("Archer", -1)
 
         except Exception as e: print("An error occured while loading archer save:", e)
+
+        try:    
+            with open(self.world.bigdaddy_save_file_path, "rb") as input:
+                restore_bigdaddy_dto = pickle.load(input)
+                input.close()
+                for x in range(self.world.grid_length_x):
+                    for y in range(self.world.grid_length_y):
+                        if restore_bigdaddy_dto[x][y] != None:
+                            currentbigdaddyDTO = restore_bigdaddy_dto[x][y]
+                            Bigdaddy(currentbigdaddyDTO.tile, self.world, self.camera, currentbigdaddyDTO.pv)
+
+        except Exception as e: print("An error occured while loading bigdadd save:", e)
      
 
 

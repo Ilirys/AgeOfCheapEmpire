@@ -60,6 +60,8 @@ class Save:
                                 self.game.resource_manager.save()
                                 self.game.save()
                                 self.game.world.save()
+                                self.game.IA.save()
+                                self.game.ressource_manager_IA.save()
 
                         if button_4.collidepoint((mx, my)):
                             if btn == 1 :
@@ -68,18 +70,18 @@ class Save:
                                 tmp = 0
 
                     elif btn == 2:
-                        button_oui = pygame.Rect(745, 665, 230, 50)  # -> bouton oui
+                        button_oui = pygame.Rect(745, 666, 230, 50)  # -> bouton oui
                         #pygame.draw.rect(self.screen, (255, 230, 60), button_oui)
                         if button_oui.collidepoint((mx, my)):
-                            pygame.draw.rect(self.screen, (255, 255, 255), (745, 663, 230, 53), 3)
+                            pygame.draw.rect(self.screen, (255, 255, 255), (745, 664, 230, 52), 3)
                             if click:
                                 pygame.quit()
                                 sys.exit()
 
-                        button_non = pygame.Rect(1005, 665, 230, 50)  # -> bouton non
+                        button_non = pygame.Rect(1005, 666, 230, 50)  # -> bouton non
                         #pygame.draw.rect(self.screen, (255, 215, 50), button_non)
                         if button_non.collidepoint((mx, my)):
-                            pygame.draw.rect(self.screen, (255, 255, 255), (1004, 663, 230, 53), 3)
+                            pygame.draw.rect(self.screen, (255, 255, 255), (1004, 664, 230, 52), 3)
                             if click:
                                 image2 = pygame.image.load('assets/black.png').convert_alpha()
                                 self.screen.blit(image2, (0, 0))

@@ -24,10 +24,13 @@ class Batiment:
 
     def update(self):
         
-        if self.name == "Farm":
+        if self.name == "Farm" or self.name == "Farm2":
             now = pygame.time.get_ticks()
             if (now - self.resource_cooldown) > 2000:
-                self.resource_manager.resources["food"] += 1
+                if self.resource_manager.age == "2":
+                    self.resource_manager.resources["food"] += 2
+                else:
+                    self.resource_manager.resources["food"] += 1
                 self.resource_cooldown = now
         else:
             pass

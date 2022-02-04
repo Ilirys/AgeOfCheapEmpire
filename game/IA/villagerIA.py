@@ -19,7 +19,16 @@ class VillagerIA(Villager):
         self.IA.ressource_manager.population += 1
         self.busy = False 
         self.animation = self.world.animation.villagerIA_walk
+        self.animation_attack = self.world.animation.villagerIA_farm
+        self.animation_attack_up = self.world.animation.villagerIA_farm_up
+        self.animation_attack_ldown = self.world.animation.villagerIA_farm_ldown
+        self.animation_attack_left = self.world.animation.villagerIA_farm_left
+        self.animation_attack_uleft = self.world.animation.villagerIA_farm_uleft
+        self.animation_attack_right = self.world.animation.villagerIA_farm_right
+        self.animation_attack_uright = self.world.animation.villagerIA_farm_uright
+        self.animation_attack_rdown = self.world.animation.villagerIA_farm_rdown
         self.image_standby = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
+        self.image = pygame.image.load('assets/villagerIA/Villagerwalk001V2.png').convert_alpha()
 
         #Farm
         self.storage_tile = self.IA.towncenter
@@ -37,16 +46,11 @@ class VillagerIA(Villager):
         # Animation update
         self.update_sprite()             
 
-        #if self.attack == False and self.farm == False and self.attack_bati == False:
-            #if self.dest_tile == self.tile:
-                #self.dest_tile = 0
-
         if self.dest_tile == self.tile:
             if self.attack:
                 self.walkdown_animation = False
                 self.cible.attacked = True
                 self.cible.attacker = self
-                #self.attack_ani = True
                 if self.cible != 0 and self.cible is not None:
                     self.cible.pv -= self.dmg
                 if self.world.world[self.cible.tile["grid"][0]][self.cible.tile["grid"][1]] != self.world.world[self.temp_tile_a["grid"][0]][self.temp_tile_a["grid"][1]]:
@@ -60,20 +64,24 @@ class VillagerIA(Villager):
                     self.cible = 0
             elif self.attack_bati:
                 self.walkdown_animation = False
-                #self.attack_ani = True
                 if self.cible is not None and self.cible != 0:
                     self.cible.pv -= self.dmg
                     if self.cible.pv <= 0:
                         self.attack = False
                         self.attack_ani = False
             elif self.farm:
+                self.farm_ani = True
                 self.farmer_cases_autour()
+
 
             elif self.construire:
                 self.construire_batiment(self.batiment_tile, self.batiment_pv)
 
             elif self.transfer_resources_bool:
                 self.transfer_resources()  
+            else:
+                self.busy = False
+                if self in self.IA.farmers: self.IA.farmers.remove(self)     
  
 
 
@@ -99,7 +107,9 @@ class VillagerIA(Villager):
 
         else:
             self.walkdown_animation = False
-
+            self.dest_tile = self.tile
+        # print("Tile", self.tile["grid"][0], self.tile["grid"][1], "Pos", self.pos_x, self.pos_y)
+        # print(" busy", self.busy, "farm ", self.farm, "cono", self.construire, "attack ", self.attack, "attabat", self.attack_bati)
 
 
     #override
@@ -119,7 +129,7 @@ class VillagerIA(Villager):
             self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = True
             self.path_index += 1
         else: 
-            self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
+            if self.dest_tile != 0: self.create_path(self.dest_tile["grid"][0], self.dest_tile["grid"][1])
             self.render_pos_x = self.pos_x
             self.render_pos_y = self.pos_y
 
@@ -137,10 +147,43 @@ class VillagerIA(Villager):
 
     #Override
     def farmer_cases_autour(self): 
+        # print("                                         busy : ", self.busy, "farm", self.farm, "ressource", self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources, "x et y", self.cible["grid"][0], self.cible["grid"][1], "type ",self.cible["tile"].ressource.typeRessource)
+        if self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources and self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.typeRessource == "": 
+            self.world.reset_tile(self.cible["grid"][0], self.cible["grid"][1])
+            self.busy = False
+            self.farm = False
+            if self in self.IA.farmers: self.IA.farmers.remove(self)
         if (self.world.world[self.cible["grid"][0]][self.cible["grid"][1]]["tile"].ressource.nbRessources > 0):
             self.farmer_cases(self.cible)  
         else: 
             if self in self.IA.farmers: self.IA.farmers.remove(self)          
             self.farm = False    
-            self.busy = False   
+            self.busy = False  
+
+    def construire_batiment(self, batiment_tile, pvMaxDuBatiment): #Augmente les pv des batiments jusqua son max        
+        if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]]:
+            if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv < pvMaxDuBatiment :
+                self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv += 1*definitions.EFFICIENCY*int(DISPLACEMENT_SPEED[definitions.CURRENT_SPEED]/5)
+                if self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv > pvMaxDuBatiment:
+                    self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].pv = pvMaxDuBatiment
+            else:
+                self.construire = False
+                self.busy = False
+                self.IA.action_faite = 1
+                self.world.batiment[batiment_tile["grid"][0]][batiment_tile["grid"][1]].current_image = 2
+
+    def delete(self):
+        
+        
+        self.IA.ressource_manager.population -= 1  
+
+        self.world.entities.remove(self)
+
+        self.world.collision_matrix[self.tile["grid"][1]][self.tile["grid"][0]] = 1  # Free the last tile from collision
+        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
+
+        self.IA.villagers[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
+        self.selected = False
+        self.temp = 0       
         

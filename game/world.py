@@ -1,3 +1,4 @@
+from html import entities
 from tkinter.font import families
 import pygame
 import random
@@ -71,6 +72,9 @@ class World:
         self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.bigdaddy = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.bigdaddyDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         self.unites_combat = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
 
@@ -94,11 +98,11 @@ class World:
         self.horseman_save_file_path = definitions.SAVED_GAME_FOLDER + "horseman"
         self.villager_save_file_path = definitions.SAVED_GAME_FOLDER + "villager"
         self.archer_save_file_path = definitions.SAVED_GAME_FOLDER + "archer"
+        self.bigdaddy_save_file_path = definitions.SAVED_GAME_FOLDER + "bigdaddy"
 
         #init
         self.restore_save()
         if self.batiment == [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]: self.générerCamp = self.générer_camp()
-
     def update(self, camera):
         mouse_pos = pygame.mouse.get_pos()
         mouse_action = pygame.mouse.get_pressed()
@@ -145,7 +149,7 @@ class World:
                         self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                         self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
                         self.world[grid_pos[0]][grid_pos[1]]["tile"].tile_batiment = self.world[grid_pos[0]][grid_pos[1]]
-                        if self.hud.selected_tile["name"] == "House": self.resource_manager.max_population += 5
+                        if self.hud.selected_tile["name"] == "House" and self.resource_manager.max_population < 30 : self.resource_manager.max_population += 5
                         self.ordre_de_construction_villageois(grid_pos)
                         self.hud.selected_tile = None
 
@@ -219,6 +223,19 @@ class World:
             for y in range(self.grid_length_y):
                 render_pos = self.world[x][y]["render_pos"]
                 nomElement = self.world[x][y]["tile"].nomElement
+                if definitions.afficher_minimap == "oui":
+                    self.minimap.tab_minimap[x][y] = GreenLight
+                    if nomElement == "tree":
+                        self.minimap.tab_minimap[x][y] = Green
+                    elif nomElement == "stone":
+                        self.minimap.tab_minimap[x][y] = Grey
+                    elif nomElement == "gold":
+                        self.minimap.tab_minimap[x][y] = Gold
+                    elif nomElement == "food":
+                        self.minimap.tab_minimap[x][y] = Brown
+                    elif self.world[x][y]["collision"]:
+                        self.minimap.tab_minimap[x][y] = BLACK
+                    
                 if nomElement != "":  #Si le nom de l'element sur la case n'est pas vide alors on affiche la ressource correspondante (arbre etc)
                     screen.blit(self.tiles[nomElement],
                                 (render_pos[0] + self.grass_tiles.get_width()/2 + camera.scroll.x +25,
@@ -351,6 +368,9 @@ class World:
                                     self.hud.display_unit_icons = True
                                     self.hud.blit_hud("hudCaserne", str(batiment.pv), screen, population=str(self.resource_manager.population), max_population=str(self.resource_manager.max_population))
                                     self.caserne_tile = self.world[x][y] #Used to spawn units on the right tile
+                            # else:
+                            #     if definitions.afficher_minimap == "oui":
+                            #         self.minimap.tab_minimap[x][y] = Red
                     elif not self.examine_tile:
                         self.hud.display_unit_icons = False                
                         self.hud.display_towncenter_icons = False                
@@ -384,7 +404,10 @@ class World:
                 # draw units
                 unites = self.unites[x][y]
                 if unites is not None:
-                    #if unites.pv > 0:
+                    if definitions.afficher_minimap == "oui":
+                        if unites.team == "blue":
+                            self.minimap.tab_minimap[x][y] = Blue
+                        else: self.minimap.tab_minimap[x][y] = Red
                                 
                     if unites.name == "horseman":
                         if unites.selected:
@@ -428,22 +451,11 @@ class World:
                         unites.delete()
 
                         self.hud.select_surface_empty = True
+
                 # minimap hud
                 if definitions.afficher_minimap == "oui":
-                    self.minimap.tab_minimap[x][y] = GreenLight
-                    if nomElement == "tree":
-                        self.minimap.tab_minimap[x][y] = Green
-                    elif nomElement == "stone":
-                        self.minimap.tab_minimap[x][y] = Grey
-                    elif nomElement == "gold":
-                        self.minimap.tab_minimap[x][y] = Gold
-                    elif nomElement == "food":
-                        self.minimap.tab_minimap[x][y] = Brown
-                    elif self.world[x][y]["collision"]:
-                        self.minimap.tab_minimap[x][y] = Blue
-                        
                     if self.minimap.tab_minimap[x][y] != GreenLight:
-                        pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], (2+9*x, 2+9*y, 9, 9))
+                        pygame.draw.rect(self.minimap.minimap_surface, self.minimap.tab_minimap[x][y], ((2+9*x)*50/MAP_SIZE, (2+9*y)*50/MAP_SIZE, 9*50/MAP_SIZE, 9*50/MAP_SIZE))
                     
 
         if self.temp_tile is not None:
@@ -711,7 +723,7 @@ class World:
                 Villager(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera) 
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] ][tile["grid"][1] + 2], self, self.camera)
@@ -724,7 +736,7 @@ class World:
                 Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 2], self, self.camera)
@@ -737,7 +749,7 @@ class World:
                 Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] + 1 ], self, self.camera)
@@ -750,7 +762,7 @@ class World:
                 Villager(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] -1 ][tile["grid"][1] ], self, self.camera)
@@ -763,7 +775,7 @@ class World:
                 Villager(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0]  -1 ][tile["grid"][1] - 1], self, self.camera)
@@ -776,7 +788,7 @@ class World:
                 Villager(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] ][tile["grid"][1] - 1], self, self.camera)
@@ -789,7 +801,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] - 1], self, self.camera)
@@ -802,7 +814,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] -1 ], self, self.camera)
@@ -815,7 +827,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] ], self, self.camera)
@@ -828,7 +840,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +1 ], self, self.camera)
@@ -841,7 +853,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +2 ][tile["grid"][1] +2 ], self, self.camera)
@@ -854,7 +866,7 @@ class World:
                 Villager(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Soldier":
                 Soldier(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
-            if unit_name == "horseman":
+            if unit_name == "horseman" and self.resource_manager.age != "":
                 Horseman(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)    
             if unit_name == "Archer":
                 Archer(self.world[tile["grid"][0] +1 ][tile["grid"][1] +2 ], self, self.camera)
@@ -889,12 +901,12 @@ class World:
             for y in range(self.grid_length_y):
                 if self.batimentDTO[x][y] != None:
                     entDTO = self.batimentDTO[x][y]
-                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager, entDTO.pv, entDTO.current_image, age=self.resource_manager.age)
+                    ent = Batiment(entDTO.pos, entDTO.name, self.resource_manager, entDTO.pv, entDTO.current_image, age=self.resource_manager.age, team=entDTO.team)
                     for resource, cost in self.resource_manager.costs[entDTO.name].items(): #Giving back the resources spent reloading save
                         self.resource_manager.resources[resource] += cost  
                     self.entities.append(ent)
                     self.batiment[x][y] = ent
-                    if entDTO.name == "Storage":
+                    if entDTO.name == "Storage" and entDTO.team == "blue":
                         self.storage_tile = self.world[x][y]
 
 
@@ -913,15 +925,15 @@ class World:
                 if self.batiment[x][y] != None:
                     ent = self.batiment[x][y]
                     if ent.name == "Towncenter" or ent.name == "Towncenter2":
-                        entDTO = TowncenterDTO(ent.pos, ent.pv, ent.current_image)
+                        entDTO = TowncenterDTO(ent.pos, ent.pv, ent.current_image, ent.team)
                     if ent.name == "House" or ent.name == "House2":
-                        entDTO = HouseDTO(ent.pos, ent.pv, ent.current_image )
+                        entDTO = HouseDTO(ent.pos, ent.pv, ent.current_image, ent.team )
                     if ent.name == "Barrack" or ent.name == "Barrack2":
-                        entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image   )
+                        entDTO = BarrackDTO(ent.pos, ent.pv, ent.current_image, ent.team   )
                     if ent.name == "Storage" or ent.name == "Storage2":
-                        entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image   )
+                        entDTO = StorageDTO(ent.pos, ent.pv, ent.current_image, ent.team   )
                     if ent.name == "Farm" or ent.name == "Farm2":
-                        entDTO = FarmDTO(ent.pos, ent.pv, ent.current_image   )
+                        entDTO = FarmDTO(ent.pos, ent.pv, ent.current_image, ent.team   )
                     self.batimentDTO[x][y] = entDTO
 
         try:   
