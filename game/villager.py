@@ -301,7 +301,7 @@ class Villager(Worker):
                 if self.temp + 0.2 >= len(self.animation) -1:
                     self.temp = 0
 
-            elif self.farm_ani == True and self.farm == True:
+            elif (self.farm_ani == True and self.farm == True) or self.construire:
                 self.temp += 0.2
                 if self.temp + 0.2 < 14:
                     if self.cible["grid"][0] < self.tile["grid"][0] and self.cible["grid"][1] < \

@@ -72,6 +72,9 @@ class World:
         self.archer = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
         self.archerDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
+        self.bigdaddy = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.bigdaddyDTO = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+
         self.unites_combat = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
 
@@ -95,6 +98,7 @@ class World:
         self.horseman_save_file_path = definitions.SAVED_GAME_FOLDER + "horseman"
         self.villager_save_file_path = definitions.SAVED_GAME_FOLDER + "villager"
         self.archer_save_file_path = definitions.SAVED_GAME_FOLDER + "archer"
+        self.bigdaddy_save_file_path = definitions.SAVED_GAME_FOLDER + "bigdaddy"
 
         #init
         self.restore_save()

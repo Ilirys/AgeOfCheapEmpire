@@ -27,7 +27,7 @@ class Bigdaddy(Soldier):
         self.world.unites[tile["grid"][0]][tile["grid"][1]] = self
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = None
         if self.team == "blue":
-            self.world.horseman[tile["grid"][0]][tile["grid"][1]] = self
+            self.world.bigdaddy[tile["grid"][0]][tile["grid"][1]] = self
 
         # selection
         self.hitbox = pygame.Rect(self.pos_x + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x + 47,
@@ -38,8 +38,8 @@ class Bigdaddy(Soldier):
         if not self.world.world[new_tile[0]][new_tile[1]]["collision"]:
             self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
             self.world.unites[new_tile[0]][new_tile[1]] = self
-            self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
-            self.world.horseman[new_tile[0]][new_tile[1]] = self
+            self.world.bigdaddy[self.tile["grid"][0]][self.tile["grid"][1]] = None
+            self.world.bigdaddy[new_tile[0]][new_tile[1]] = self
 
             self.tile = self.world.world[new_tile[0]][new_tile[1]]
             self.render_pos_x = self.tile["render_pos"][0]
@@ -100,7 +100,7 @@ class Bigdaddy(Soldier):
            self.tile["grid"][0]] = 1  # Free the last tile from collision
        self.world.world[self.tile["grid"][0]][self.tile["grid"][1]]["collision"] = False
 
-       self.world.horseman[self.tile["grid"][0]][self.tile["grid"][1]] = None
+       self.world.bigdaddy[self.tile["grid"][0]][self.tile["grid"][1]] = None
        self.world.unites[self.tile["grid"][0]][self.tile["grid"][1]] = None
        self.selected = False
        self.temp = 0
